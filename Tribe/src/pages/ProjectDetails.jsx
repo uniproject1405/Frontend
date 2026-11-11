@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link as RouterLink, useParams } from "react-router";
 import {
-  Alert, Avatar, Box, Button, Card, Chip, CircularProgress, LinearProgress, Stack, Typography,
+  Avatar, Box, Button, Card, Chip, CircularProgress, Stack, Typography,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
@@ -22,12 +22,21 @@ function JoinArea({ details }) {
     );
   }
   let label = "Request to join";
-  let hint = "";
+  let hint = relation === "none" && !full ? "The owner will review your request" : "";
   if (relation === "member") { label = "You're on this team"; }
   else if (relation === "pending") { label = "Request sent"; hint = "Waiting for a reply"; }
   else if (closed) { label = "Project closed"; }
   else if (full) { label = "Project is full"; }
   const disabled = relation !== "none" || closed || full;
+
+  if (closed && relation === "none") {
+    return (
+      <>
+        <Typography sx={{ fontWeight: 600, mb: 1.5 }}>This project is closed</Typography>
+        <Button fullWidth variant="outlined" component={RouterLink} to="/my-projects">Back to projects</Button>
+      </>
+    );
+  }
 
   return (
     <>
@@ -59,7 +68,14 @@ function ProjectDetailsView({ projectId }) {
 
   if (error) {
     return (
-      <Box>{back}<Alert severity="error">{error}</Alert></Box>
+      <Box>
+        {back}
+        <Card sx={{ p: 4, textAlign: "center" }}>
+          <Typography variant="h6" component="h1" sx={{ fontWeight: 600, mb: 0.5 }}>We couldn't find this project</Typography>
+          <Typography color="text.secondary" sx={{ mb: 2 }}>It may have been removed.</Typography>
+          <Button variant="contained" component={RouterLink} to="/my-projects">Go to My Projects</Button>
+        </Card>
+      </Box>
     );
   }
   if (!details) {
@@ -67,32 +83,30 @@ function ProjectDetailsView({ projectId }) {
   }
 
   const { project, owner, members, spotsLeft } = details;
-  const taken = project.capacity - spotsLeft;
 
   return (
     <Box sx={{ maxWidth: 1000 }}>
       {back}
-      <Stack direction="row" spacing={2} sx={{ mb: 0.5, alignItems: "center" }}>
+      <Stack direction="row" sx={{ mb: 0.5, alignItems: "center", gap: 2, flexWrap: "wrap" }}>
         <Typography variant="h4" component="h1" sx={{ fontWeight: 700, wordBreak: "break-word" }}>
           {project.title}
         </Typography>
-        <Chip label={project.status === "open" ? "Open" : "Closed"} color={project.status === "open" ? "success" : "default"} variant="outlined" />
+        {project.status !== "open" && <Chip label="Closed" variant="outlined" />}
       </Stack>
       {project.goal && <Typography color="text.secondary" sx={{ mb: 3 }}>{project.goal}</Typography>}
 
       <Box sx={{ display: "grid", gap: 3, gridTemplateColumns: { xs: "1fr", md: "1fr 320px" }, alignItems: "start" }}>
         <Stack spacing={3} sx={{ order: { xs: 2, md: 1 } }}>
-          <Card sx={{ p: 3 }}>
+          <Card sx={{ p: { xs: 2, sm: 3 } }}>
             <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 1 }}>About</Typography>
-            <Typography sx={{ whiteSpace: "pre-line", wordBreak: "break-word" }}>{project.description}</Typography>
+            <Typography sx={{ whiteSpace: "pre-line", wordBreak: "break-word", mb: 2 }}>{project.description}</Typography>
+            {project.requiredSkills?.length > 0 && (
+              <Stack direction="row" sx={{ gap: 1, flexWrap: "wrap" }}>
+                {project.requiredSkills.map((sk) => <Chip key={sk} label={sk} sx={skillChipSx} />)}
+              </Stack>
+            )}
           </Card>
-          <Card sx={{ p: 3 }}>
-            <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 1.5 }}>Skills needed</Typography>
-            <Stack direction="row" sx={{ gap: 1, flexWrap: "wrap" }}>
-              {project.requiredSkills?.map((s) => <Chip key={s} label={s} sx={skillChipSx} />)}
-            </Stack>
-          </Card>
-          <Card sx={{ p: 3 }}>
+          <Card sx={{ p: { xs: 2, sm: 3 } }}>
             <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 1.5 }}>Team</Typography>
             <Stack spacing={1.5}>
               <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
@@ -106,7 +120,7 @@ function ProjectDetailsView({ projectId }) {
                   <Typography>{m.name}</Typography>
                 </Stack>
               ))}
-              {members.length === 0 && (
+              {members.length === 0 && project.status === "open" && details.relation === "none" && (
                 <Typography color="text.secondary">No members yet. Be the first to join.</Typography>
               )}
             </Stack>
@@ -114,15 +128,11 @@ function ProjectDetailsView({ projectId }) {
         </Stack>
 
         <Card sx={{ p: 3, position: { md: "sticky" }, top: { md: 24 }, order: { xs: 1, md: 2 } }}>
-          <Typography variant="h5" component="p" sx={{ fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>
-            {spotsLeft} of {project.capacity} spots left
-          </Typography>
-          <LinearProgress
-            variant="determinate"
-            value={project.capacity ? (taken / project.capacity) * 100 : 0}
-            sx={{ my: 1.5, height: 8, borderRadius: 4 }}
-          />
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5 }}>Owner: {owner.name}</Typography>
+          {project.status === "open" && (
+            <Typography variant="h5" component="p" sx={{ fontWeight: 700, fontVariantNumeric: "tabular-nums", mb: 2.5 }}>
+              {spotsLeft === 0 ? "No spots left" : `${spotsLeft} of ${project.capacity} spots left`}
+            </Typography>
+          )}
           <JoinArea details={details} />
         </Card>
       </Box>
