@@ -1,6 +1,11 @@
 
 import { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router";
+import { useNotifications, markAllRead, markRead } from "../services/notificationService";
+import NotificationRow from "../components/NotificationRow";
+import { getProfile, PROFILE_KEY } from "../services/currentUser";
+import { useMyStats } from "../services/membershipService";
+import { useStoredJson } from "../services/store";
 import {
   AppBar,
   Avatar,
@@ -25,6 +30,7 @@ import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRou
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
+import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 
 const drawerWidth = 260;
@@ -40,13 +46,31 @@ const menuItems = [
     icon: <AddCircleOutlineRoundedIcon />,
     href: "/create-project",
   },
+  {
+    title: "Notifications",
+    icon: <NotificationsNoneRoundedIcon />,
+    href: "/notifications",
+    badge: true,
+  },
+  {
+    title: "Profile",
+    icon: <PersonRoundedIcon />,
+    href: "/profile",
+  },
 ];
+
+const EMPTY = {};
 
 function DashboardLayout({ children, pageTitle = "Dashboard" }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [bellAnchor, setBellAnchor] = useState(null);
   const [userAnchor, setUserAnchor] = useState(null);
   const navigate = useNavigate();
+  useStoredJson(PROFILE_KEY, EMPTY);
+  const profile = getProfile();
+  const { items: notes, unread } = useNotifications();
+  const stats = useMyStats();
+  const unreadLabel = unread > 99 ? "99+" : unread;
   const location = useLocation();
 
   const sidebar = (
@@ -110,6 +134,11 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
   </ListItemIcon>
 
   <ListItemText primary={item.title} />
+  {item.badge && unread > 0 && (
+    <Box component="span" sx={{ bgcolor: "#E3C39D", color: "#071739", borderRadius: 10, px: 0.9, fontSize: 11, fontWeight: 700, lineHeight: "18px" }}>
+      {unreadLabel}
+    </Box>
+  )}
 </ListItemButton>
 
         ))}
@@ -198,20 +227,11 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
               }}
             >
               <Badge
-                variant="dot"
-                invisible
+                badgeContent={unread}
+                max={99}
                 color="error"
                 overlap="circular"
-                sx={{
-                  "& .MuiBadge-badge": {
-                    top: 4,
-                    right: 4,
-                    width: 7,
-                    height: 7,
-                    minWidth: 7,
-                    border: "1.5px solid #F5F8FA",
-                  },
-                }}
+                sx={{ "& .MuiBadge-badge": { fontSize: 10, minWidth: 16, height: 16, px: 0.5 } }}
               >
                 <NotificationsNoneRoundedIcon sx={{ fontSize: 18 }} />
               </Badge>
@@ -256,7 +276,7 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
                   fontWeight: 700,
                 }}
               >
-                Be
+                {profile.name[0]}
               </Avatar>
 
               <Box sx={{ display: { xs: "none", sm: "block" }, minWidth: 0 }}>
@@ -264,14 +284,14 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
                   variant="body2"
                   sx={{ fontWeight: 600, color: "#071739", lineHeight: 1.2, fontSize: 11.5 }}
                 >
-                  Be Confidency
+                  {profile.name}
                 </Typography>
                 <Typography
                   variant="caption"
                   color="text.secondary"
                   sx={{ display: "block", lineHeight: 1.2, fontSize: 9.5 }}
                 >
-                  Account
+                  {stats.toReview > 0 ? `${stats.toReview} to review` : profile.headline || "Account"}
                 </Typography>
               </Box>
 
@@ -287,9 +307,29 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
         anchorEl={bellAnchor}
         open={Boolean(bellAnchor)}
         onClose={() => setBellAnchor(null)}
+        slotProps={{ paper: { sx: { width: 360, maxWidth: "calc(100vw - 24px)" } } }}
       >
-        <MenuItem disabled sx={{ opacity: 1, color: "text.secondary" }}>
-          You're all caught up
+        <Box sx={{ px: 2, py: 1, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Typography sx={{ fontWeight: 700 }}>Notifications</Typography>
+          <Box component="button" type="button" disabled={unread === 0} onClick={markAllRead} sx={{ all: "unset", cursor: "pointer", fontSize: 13, color: "#071739", textDecoration: "underline", "&[disabled]": { opacity: 0.4, cursor: "default" } }}>
+            Mark all read
+          </Box>
+        </Box>
+        <Divider />
+        {notes.length === 0 && (
+          <Typography color="text.secondary" sx={{ p: 2 }}>You're all caught up</Typography>
+        )}
+        {notes.slice(0, 5).map((item) => (
+          <NotificationRow
+            key={item.id}
+            item={item}
+            dense
+            onOpen={(x) => { markRead(x.id); setBellAnchor(null); navigate(x.link || "/my-projects"); }}
+          />
+        ))}
+        <Divider />
+        <MenuItem onClick={() => { setBellAnchor(null); navigate("/notifications"); }} sx={{ justifyContent: "center", fontWeight: 600 }}>
+          View all {notes.length > 0 ? `(${notes.length})` : ""}
         </MenuItem>
       </Menu>
 
@@ -297,23 +337,24 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
         anchorEl={userAnchor}
         open={Boolean(userAnchor)}
         onClose={() => setUserAnchor(null)}
+        slotProps={{ paper: { sx: { width: 280, maxWidth: "calc(100vw - 24px)" } } }}
       >
-        <MenuItem
-          onClick={() => {
-            setUserAnchor(null);
-            navigate("/my-projects");
-          }}
-        >
-          My Projects
+        <Box sx={{ px: 2, py: 1.5 }}>
+          <Typography sx={{ fontWeight: 700, wordBreak: "break-word" }}>{profile.name}</Typography>
+          {profile.headline && <Typography variant="body2" color="text.secondary">{profile.headline}</Typography>}
+          <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+            {stats.created} created · {stats.joined} joined · {stats.waiting} waiting
+          </Typography>
+        </Box>
+        <Divider />
+        <MenuItem onClick={() => { setUserAnchor(null); navigate("/profile"); }}>View profile</MenuItem>
+        <MenuItem onClick={() => { setUserAnchor(null); navigate("/my-projects"); }}>
+          My Projects{stats.toReview > 0 ? ` · ${stats.toReview} to review` : ""}
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            setUserAnchor(null);
-            navigate("/my-projects?tab=requests");
-          }}
-        >
-          Sent requests
+        <MenuItem onClick={() => { setUserAnchor(null); navigate("/my-projects?tab=requests"); }}>
+          Sent requests{stats.waiting > 0 ? ` · ${stats.waiting} waiting` : ""}
         </MenuItem>
+        <MenuItem onClick={() => { setUserAnchor(null); navigate("/notifications"); }}>Notifications</MenuItem>
       </Menu>
 
       <Drawer

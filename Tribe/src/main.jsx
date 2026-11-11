@@ -5,8 +5,11 @@ import { ThemeProvider, CssBaseline } from "@mui/material";
 
 import tribeTheme from "./theme/tribeTheme";
 import App from "./App.jsx";
+import { ensureSeed } from "./mocks/seedData";
 import "@fontsource-variable/inter";
 import "./index.css";
+
+ensureSeed();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

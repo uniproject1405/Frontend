@@ -89,7 +89,7 @@ function ProjectDetailsView({ projectId }) {
   const { project, owner, members, spotsLeft } = details;
 
   return (
-    <Box sx={{ maxWidth: 1000 }}>
+    <Box sx={{ maxWidth: 1200, mx: "auto", width: "100%" }}>
       <Snackbar open={sent} autoHideDuration={3000} onClose={() => setSent(false)} anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
         <Alert severity="success" variant="filled" onClose={() => setSent(false)}>Request sent. Find replies in My Projects.</Alert>
       </Snackbar>
@@ -102,8 +102,8 @@ function ProjectDetailsView({ projectId }) {
       </Stack>
       {project.goal && <Typography color="text.secondary" sx={{ mb: 3 }}>{project.goal}</Typography>}
 
-      <Box sx={{ display: "grid", gap: 3, gridTemplateColumns: { xs: "1fr", md: "1fr 320px" }, alignItems: "start" }}>
-        <Stack spacing={3} sx={{ order: { xs: 2, md: 1 } }}>
+      <Box sx={{ display: "grid", gap: 3, gridTemplateColumns: { xs: "minmax(0,1fr)", md: "minmax(0,1fr) 300px", xl: "minmax(0,1fr) 360px" }, alignItems: "start" }}>
+        <Stack spacing={3} sx={{ order: { xs: 2, md: 1 }, minWidth: 0 }}>
           <Card sx={{ p: { xs: 2, sm: 3 } }}>
             <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 1 }}>About</Typography>
             <Typography sx={{ whiteSpace: "pre-line", wordBreak: "break-word", mb: 2 }}>{project.description}</Typography>
@@ -134,7 +134,7 @@ function ProjectDetailsView({ projectId }) {
           </Card>
         </Stack>
 
-        <Card sx={{ p: 3, position: { md: "sticky" }, top: { md: 24 }, order: { xs: 1, md: 2 } }}>
+        <Card sx={{ p: 3, position: { md: "sticky" }, top: { md: 88 }, order: { xs: 1, md: 2 } }}>
           {project.status === "open" && (
             <Typography variant="h5" component="p" sx={{ fontWeight: 700, fontVariantNumeric: "tabular-nums", mb: 2.5 }}>
               {spotsLeft === 0 ? "No spots left" : `${spotsLeft} of ${project.capacity} spots left`}

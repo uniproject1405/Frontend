@@ -17,7 +17,7 @@ function Row({ to, title, meta, action }) {
         <Typography component={RouterLink} to={to} sx={{ fontWeight: 600, color: "text.primary", textDecoration: "none", "&:hover": { textDecoration: "underline" }, "&::after": { content: '""', position: "absolute", inset: 0 } }}>
           {title}
         </Typography>
-        <Typography variant="body2" color="text.secondary">{meta}</Typography>
+        <Typography variant="body2" component="div" color="text.secondary">{meta}</Typography>
       </Box>
       {action}
     </Card>

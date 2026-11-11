@@ -7,6 +7,8 @@ import ProjectRequests from "./pages/ProjectRequests";
 import CreateProject from "./pages/CreateProject";
 import EditProject from "./pages/EditProject";
 import ProjectDetails from "./pages/ProjectDetails";
+import Notifications from "./pages/Notifications";
+import Profile from "./pages/Profile";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/my-projects" replace /> },
@@ -47,6 +49,22 @@ const router = createBrowserRouter([
     element: (
       <DashboardLayout pageTitle="Project">
         <ProjectDetails />
+      </DashboardLayout>
+    ),
+  },
+  {
+    path: "/notifications",
+    element: (
+      <DashboardLayout pageTitle="Notifications">
+        <Notifications />
+      </DashboardLayout>
+    ),
+  },
+  {
+    path: "/profile",
+    element: (
+      <DashboardLayout pageTitle="Profile">
+        <Profile />
       </DashboardLayout>
     ),
   },

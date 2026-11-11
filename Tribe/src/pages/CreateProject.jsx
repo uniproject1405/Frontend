@@ -251,7 +251,7 @@ async function handleSubmit(event) {
 
   return (
     <Box sx={{ width: "100%", minWidth: 0, px: { xs: 0, sm: 1 } }}>
-      <Box sx={{ width: "100%", maxWidth: 1000, mx: "auto", minWidth: 0 }}>
+      <Box sx={{ width: "100%", maxWidth: 1200, mx: "auto", minWidth: 0 }}>
         <Button
           component={Link}
           to="/my-projects"
@@ -329,6 +329,7 @@ async function handleSubmit(event) {
           </Box>
         </Box>
 
+        <Box sx={{ display: "grid", gap: 3, gridTemplateColumns: { xs: "minmax(0,1fr)", lg: "minmax(0,1fr) 320px" }, alignItems: "start" }}>
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <Stack spacing={3}>
             {activeStep === 0 && (
@@ -575,6 +576,30 @@ async function handleSubmit(event) {
               </Box>
             )}
           </Stack>
+        </Box>
+
+        <Card sx={{ display: { xs: "none", lg: "block" }, position: "sticky", top: 88, borderRadius: "16px" }} aria-label="Project preview">
+          <CardContent sx={{ p: 3 }}>
+            <Typography variant="overline" color="text.secondary">Preview</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 700, mt: 0.5, wordBreak: "break-word", color: formData.title ? "text.primary" : "text.disabled" }}>
+              {formData.title || "Your project title"}
+            </Typography>
+            <Typography color="text.secondary" sx={{ mt: 0.5, wordBreak: "break-word" }}>
+              {formData.goal || "Your goal appears here"}
+            </Typography>
+            <Stack direction="row" sx={{ gap: 0.75, flexWrap: "wrap", mt: 2 }}>
+              {String(formData.requiredSkills).split(",").map((x) => x.trim()).filter(Boolean).slice(0, 8).map((x) => (
+                <Chip key={x} size="small" label={x} sx={{ bgcolor: "#F0F3F8", color: "#4B6382" }} />
+              ))}
+            </Stack>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+              Team capacity: {formData.capacity || "–"}
+            </Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 2 }}>
+              This is how people will see your project.
+            </Typography>
+          </CardContent>
+        </Card>
         </Box>
       </Box>
 

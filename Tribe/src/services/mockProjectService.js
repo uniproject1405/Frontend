@@ -1,5 +1,7 @@
 
 import initialProjects from "../mocks/projects";
+import { applySeed } from "../mocks/seedData";
+import { emitChange } from "./store";
 
 const PROJECTS_KEY = "tribe_projects";
 const REQUESTS_KEY = "tribe_project_requests";
@@ -17,6 +19,7 @@ function readStorage(key, fallback) {
 // Save data to LocalStorage
 function writeStorage(key, data) {
   localStorage.setItem(key, JSON.stringify(data));
+  emitChange();
 }
 
 // Initialize projects
@@ -132,6 +135,20 @@ export async function updateRequestStatus(requestId, status) {
     throw new Error("Request not found.");
   }
 
+  if (status === "accepted" && requests[index].status !== "accepted") {
+    const project = getProjects().find(
+      (item) => String(item.id) === String(requests[index].projectId)
+    );
+    const taken = requests.filter(
+      (request) =>
+        String(request.projectId) === String(requests[index].projectId) &&
+        request.status === "accepted"
+    ).length;
+    if (project && taken >= project.capacity) {
+      throw new Error("This project is full. No spots are left.");
+    }
+  }
+
   const updatedRequest = {
     ...requests[index],
     status,
@@ -147,6 +164,6 @@ export async function updateRequestStatus(requestId, status) {
 
 // Reset mock data for development
 export async function resetMockData() {
-  writeStorage(PROJECTS_KEY, initialProjects);
-  writeStorage(REQUESTS_KEY, []);
+  applySeed();
+  emitChange();
 }

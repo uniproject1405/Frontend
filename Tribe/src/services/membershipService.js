@@ -1,6 +1,8 @@
 import currentUser from "./currentUser";
 import owners from "../mocks/owners";
 import { getProjectById, getMyProjects } from "./mockProjectService";
+import { emitChange, useStoredJson } from "./store";
+import { addNotification } from "./notificationService";
 
 const REQUESTS_KEY = "tribe_project_requests";
 
@@ -14,6 +16,7 @@ export function readRequests() {
 
 export function writeRequests(requests) {
   localStorage.setItem(REQUESTS_KEY, JSON.stringify(requests));
+  emitChange();
 }
 
 export function getOwner(projectId) {
@@ -89,6 +92,12 @@ export async function createJoinRequest(projectId, message = "") {
     createdAt: new Date().toISOString(),
   };
   writeRequests([...readRequests(), request]);
+  addNotification({
+    type: "request_sent",
+    title: `Request sent to ${project.title}`,
+    body: `Waiting for a reply from ${getOwner(project.id).name}`,
+    link: "/my-projects?tab=requests",
+  });
   return request;
 }
 
@@ -98,4 +107,29 @@ export async function withdrawRequest(requestId) {
   if (!target) throw new Error("Request not found.");
   if (target.status !== "pending") throw new Error("Only waiting requests can be withdrawn.");
   writeRequests(all.filter((r) => r !== target));
+}
+
+const NONE = [];
+
+// Counts shown on the profile page and the account menu.
+export function useMyStats() {
+  const projects = useStoredJson("tribe_projects", NONE);
+  const requests = useStoredJson(REQUESTS_KEY, NONE);
+  const mineIds = projects.filter((p) => getOwner(p.id).id === currentUser.id).map((p) => String(p.id));
+  const toReview = requests.filter((q) => q.status === "pending" && mineIds.includes(String(q.projectId)));
+  const byProject = mineIds
+    .map((id) => ({
+      project: projects.find((p) => String(p.id) === id),
+      count: toReview.filter((q) => String(q.projectId) === id).length,
+    }))
+    .filter((x) => x.count > 0);
+  const mine = requests.filter((q) => q.userId === currentUser.id);
+  return {
+    created: mineIds.length,
+    joined: mine.filter((q) => q.status === "accepted").length,
+    waiting: mine.filter((q) => q.status === "pending").length,
+    notAccepted: mine.filter((q) => q.status === "rejected").length,
+    toReview: toReview.length,
+    byProject,
+  };
 }
