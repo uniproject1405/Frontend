@@ -5,6 +5,7 @@ import { ThemeProvider, CssBaseline } from "@mui/material";
 
 import tribeTheme from "./theme/tribeTheme";
 import App from "./App.jsx";
+import "@fontsource-variable/inter";
 import "./index.css";
 
 createRoot(document.getElementById("root")).render(

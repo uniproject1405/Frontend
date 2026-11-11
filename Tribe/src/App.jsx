@@ -6,6 +6,7 @@ import MyProjects from "./pages/MyProjects";
 import ProjectRequests from "./pages/ProjectRequests";
 import CreateProject from "./pages/CreateProject";
 import EditProject from "./pages/EditProject";
+import ProjectDetails from "./pages/ProjectDetails";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/my-projects" replace /> },
@@ -38,6 +39,14 @@ const router = createBrowserRouter([
     element: (
       <DashboardLayout pageTitle="Edit Project">
         <EditProject />
+      </DashboardLayout>
+    ),
+  },
+  {
+    path: "/projects/:projectId",
+    element: (
+      <DashboardLayout pageTitle="Project">
+        <ProjectDetails />
       </DashboardLayout>
     ),
   },
