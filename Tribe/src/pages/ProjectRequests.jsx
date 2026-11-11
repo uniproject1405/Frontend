@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   Alert,
+  Avatar,
   Box,
   Button,
   Card,
   CardContent,
   Chip,
   CircularProgress,
-  Divider,
   Stack,
   Typography,
 } from "@mui/material";
@@ -235,56 +235,47 @@ function ProjectRequests() {
 
               return (
                 <Card key={request.id}>
-                  <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                    <Stack spacing={2}>
-                      <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        justifyContent="space-between"
-                        alignItems={{ xs: "flex-start", sm: "center" }}
-                        spacing={1}
-                      >
-                        <Typography
-                          variant="h6"
-                          sx={{ overflowWrap: "anywhere", color: "#071739", fontWeight: 700 }}
-                        >
-                          {applicantName}
-                        </Typography>
-                        <Chip
-                          label={status.charAt(0).toUpperCase() + status.slice(1)}
-                          size="small"
-                          color={
-                            status === "accepted"
-                              ? "success"
-                              : status === "rejected"
-                                ? "error"
-                                : "default"
-                          }
-                          variant="outlined"
-                        />
-                      </Stack>
-
-                      {request.message && (
+                  <Box
+                    sx={{
+                      p: { xs: 2, sm: 2.5 },
+                      display: "grid",
+                      gap: 2,
+                      alignItems: "center",
+                      gridTemplateColumns: { xs: "minmax(0,1fr)", sm: isPending ? "minmax(0,1fr) auto" : "minmax(0,1fr)" },
+                    }}
+                  >
+                    <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start", minWidth: 0 }}>
+                      <Avatar sx={{ bgcolor: "#F0F3F8", color: "#071739", fontWeight: 700 }}>
+                        {applicantName[0]}
+                      </Avatar>
+                      <Box sx={{ minWidth: 0, flex: 1 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
+                          <Typography variant="h6" sx={{ overflowWrap: "anywhere", color: "#071739", fontWeight: 700, fontSize: 17 }}>
+                            {applicantName}
+                          </Typography>
+                          <Chip
+                            label={status.charAt(0).toUpperCase() + status.slice(1)}
+                            size="small"
+                            color={status === "accepted" ? "success" : status === "rejected" ? "error" : "default"}
+                            variant="outlined"
+                          />
+                        </Box>
                         <Typography
                           variant="body2"
                           color="text.secondary"
-                          sx={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}
+                          sx={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere", mt: 0.5, fontStyle: request.message ? "normal" : "italic" }}
                         >
-                          {request.message}
+                          {request.message || "No message"}
                         </Typography>
-                      )}
+                      </Box>
+                    </Box>
 
-                      <Divider />
-
-                      <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        spacing={1.5}
-                        sx={{ pt: 0.5 }}
-                      >
+                    {isPending && (
+                      <Box sx={{ display: "flex", gap: 1, justifyContent: { xs: "flex-start", sm: "flex-end" } }}>
                         <Button
                           variant="contained"
                           color="success"
-                          sx={{ px: 3, minWidth: 100 }}
-                          disabled={!isPending || isUpdating}
+                          disabled={isUpdating}
                           onClick={() => handleRequestAction(request.id, "accepted")}
                         >
                           {updatingId === request.id ? "Updating..." : "Accept"}
@@ -292,15 +283,14 @@ function ProjectRequests() {
                         <Button
                           variant="outlined"
                           color="error"
-                          sx={{ px: 3, minWidth: 100 }}
-                          disabled={!isPending || isUpdating}
+                          disabled={isUpdating}
                           onClick={() => handleRequestAction(request.id, "rejected")}
                         >
                           Reject
                         </Button>
-                      </Stack>
-                    </Stack>
-                  </CardContent>
+                      </Box>
+                    )}
+                  </Box>
                 </Card>
               );
             })

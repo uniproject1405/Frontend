@@ -24,7 +24,6 @@ import {
   Typography,
 } from "@mui/material";
 
-import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import FolderRoundedIcon from "@mui/icons-material/FolderRounded";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
@@ -144,29 +143,29 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
         ))}
       </List>
 
-      <Box
-        sx={{
-          mt: 6,
-          mx: 1,
-          p: 2.5,
-          borderRadius: 3,
-          bgcolor: "rgba(255,255,255,0.07)",
-          border: "1px solid rgba(255,255,255,0.1)",
-        }}
-      >
-        <DashboardRoundedIcon sx={{ color: "#E3C39D", mb: 1 }} />
-
-        <Typography variant="subtitle2" sx={{ color: "#FFFFFF" }}>
-          Your creative space
-        </Typography>
-
-        <Typography
-          variant="caption"
-          sx={{ color: "#A4B5C4", display: "block", mt: 1 }}
-        >
-          Build projects and collaborate with talented people.
-        </Typography>
-      </Box>
+      <Typography variant="overline" sx={{ display: "block", color: "#A4B5C4", px: 2, mt: 4, mb: 0.5 }}>
+        Your activity
+      </Typography>
+      <List dense sx={{ display: "grid", gap: 0.5 }}>
+        {[
+          ["Requests to review", stats.toReview, "/my-projects"],
+          ["Waiting for a reply", stats.waiting, "/my-projects?tab=requests"],
+          ["Teams you joined", stats.joined, "/my-projects?tab=joined"],
+        ].map(([label, value, href]) => (
+          <ListItemButton
+            key={label}
+            component={NavLink}
+            to={href}
+            onClick={() => setMobileOpen(false)}
+            sx={{ borderRadius: "10px", color: "#CDD5DB", "&:hover": { bgcolor: "rgba(255,255,255,0.09)", color: "#FFFFFF" } }}
+          >
+            <ListItemText primary={label} slotProps={{ primary: { sx: { fontSize: 14 } } }} />
+            <Box component="span" sx={{ fontWeight: 700, fontVariantNumeric: "tabular-nums", color: label === "Requests to review" && value > 0 ? "#E3C39D" : "#FFFFFF" }}>
+              {value}
+            </Box>
+          </ListItemButton>
+        ))}
+      </List>
     </Box>
   );
 

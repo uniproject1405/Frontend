@@ -37,16 +37,19 @@ function NotificationRow({ item, onOpen, dense = false }) {
         alignItems: "flex-start",
         p: dense ? 1.25 : 2,
         cursor: "pointer",
-        bgcolor: item.read ? "transparent" : "rgba(7,23,57,0.04)",
-        "&:hover": { bgcolor: "#EEF2F7" },
+        bgcolor: item.read ? "#E9EDF2" : "#FFFFFF",
+        borderLeft: item.read ? "3px solid transparent" : "3px solid #071739",
+        opacity: 1,
+        transition: "background-color .15s",
+        "&:hover": { bgcolor: item.read ? "#DFE5EC" : "#F3F6FA" },
         "&:focus-visible": { outline: "2px solid #071739", outlineOffset: -2 },
       }}
     >
-      <Avatar sx={{ width: 34, height: 34, bgcolor: "#F0F3F8", color: meta.color }}>
+      <Avatar sx={{ width: 34, height: 34, bgcolor: item.read ? "#D5DCE5" : "#F0F3F8", color: item.read ? "#7A8798" : meta.color }}>
         <Icon sx={{ fontSize: 18 }} />
       </Avatar>
       <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Typography sx={{ fontWeight: item.read ? 500 : 700, fontSize: 14, wordBreak: "break-word" }}>{item.title}</Typography>
+        <Typography sx={{ fontWeight: item.read ? 400 : 700, fontSize: 14, wordBreak: "break-word", color: item.read ? "#5F6F84" : "#071739" }}>{item.title}</Typography>
         {item.body && (
           <Typography variant="body2" color="text.secondary" sx={{ wordBreak: "break-word", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
             {item.body}
