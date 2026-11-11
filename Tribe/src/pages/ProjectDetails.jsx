@@ -134,7 +134,18 @@ function ProjectDetailsView({ projectId }) {
               </Stack>
             </Card>
           )}
-          <Card sx={{ p: { xs: 2, sm: 3 } }}>
+        </Stack>
+
+        <Box sx={{ display: { xs: "contents", md: "flex" }, flexDirection: "column", gap: 3, order: { md: 2 }, minWidth: 0, position: { md: "sticky" }, top: { md: 24 } }}>
+        <Card sx={{ p: 3, order: { xs: 1, md: 0 } }}>
+          {project.status === "open" && (
+            <Typography variant="h5" component="p" sx={{ fontWeight: 700, fontVariantNumeric: "tabular-nums", mb: 2.5 }}>
+              {spotsLeft === 0 ? "No spots left" : `${spotsLeft} of ${project.capacity} spots left`}
+            </Typography>
+          )}
+          <JoinArea details={details} />
+        </Card>
+          <Card sx={{ p: { xs: 2, sm: 3 }, order: { xs: 3, md: 0 } }}>
             <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 1.5 }}>Team</Typography>
             <Stack spacing={1.5}>
               <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
@@ -156,16 +167,7 @@ function ProjectDetailsView({ projectId }) {
               )}
             </Stack>
           </Card>
-        </Stack>
-
-        <Card sx={{ p: 3, position: { md: "sticky" }, top: { md: 24 }, order: { xs: 1, md: 2 } }}>
-          {project.status === "open" && (
-            <Typography variant="h5" component="p" sx={{ fontWeight: 700, fontVariantNumeric: "tabular-nums", mb: 2.5 }}>
-              {spotsLeft === 0 ? "No spots left" : `${spotsLeft} of ${project.capacity} spots left`}
-            </Typography>
-          )}
-          <JoinArea details={details} />
-        </Card>
+        </Box>
       </Box>
     </Box>
   );
