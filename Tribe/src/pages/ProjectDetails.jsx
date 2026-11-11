@@ -8,6 +8,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { getProjectDetails } from "../services/membershipService";
 import JoinRequestDialog from "../components/JoinRequestDialog";
 
+const MEMBERS_SHOWN = 5;
 const skillChipSx = { bgcolor: "#F0F3F8", color: "#4B6382", fontWeight: 500 };
 
 function JoinArea({ details, onJoin }) {
@@ -55,6 +56,7 @@ function ProjectDetailsView({ projectId }) {
   const [joining, setJoining] = useState(false);
   const [sent, setSent] = useState(false);
   const [reload, setReload] = useState(0);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -87,6 +89,7 @@ function ProjectDetailsView({ projectId }) {
   }
 
   const { project, owner, members, spotsLeft } = details;
+  const shown = showAll ? members : members.slice(0, MEMBERS_SHOWN);
 
   return (
     <Box sx={{ maxWidth: 1200, mx: "auto", width: "100%" }}>
@@ -169,7 +172,7 @@ function ProjectDetailsView({ projectId }) {
               </Box>
             </Stack>
             {owner.bio && <Typography variant="body2" sx={{ color: "text.secondary", pl: 6.5, mt: -0.5 }}>{owner.bio}</Typography>}
-            {members.map((m) => (
+            {shown.map((m) => (
               <Stack key={m.id} direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
                 <Avatar sx={{ bgcolor: "#4B6382", width: 36, height: 36 }}>{m.name[0]}</Avatar>
                 <Box sx={{ minWidth: 0 }}>
@@ -178,6 +181,11 @@ function ProjectDetailsView({ projectId }) {
                 </Box>
               </Stack>
             ))}
+            {members.length > MEMBERS_SHOWN && (
+              <Button size="small" onClick={() => setShowAll((v) => !v)} sx={{ alignSelf: "flex-start" }}>
+                {showAll ? "Show fewer" : `Show ${members.length - MEMBERS_SHOWN} more members`}
+              </Button>
+            )}
             {members.length === 0 && project.status === "open" && details.relation === "none" && (
               <Typography color="text.secondary">No members yet. Be the first to join.</Typography>
             )}
