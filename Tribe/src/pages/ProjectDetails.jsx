@@ -141,47 +141,49 @@ function ProjectDetailsView({ projectId }) {
               </Stack>
             </Card>
           )}
-          <Card sx={{ p: { xs: 2, sm: 3 } }}>
-            <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 1.5 }}>Team</Typography>
-            <Stack spacing={1.5}>
-              <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
-                <Avatar sx={{ bgcolor: "primary.main", width: 36, height: 36 }}>{owner.name[0]}</Avatar>
-                <Box sx={{ minWidth: 0 }}>
-                  <Typography component="div">{owner.name} <Chip size="small" label="Owner" sx={{ bgcolor: "#E3C39D", color: "#071739", ml: 0.5 }} /></Typography>
-                  {owner.headline && <Typography variant="body2" color="text.secondary">{owner.headline}</Typography>}
-                </Box>
-              </Stack>
-              {owner.bio && <Typography variant="body2" sx={{ color: "text.secondary", pl: 6.5, mt: -0.5 }}>{owner.bio}</Typography>}
-              {members.map((m) => (
-                <Stack key={m.id} direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
-                  <Avatar sx={{ bgcolor: "#4B6382", width: 36, height: 36 }}>{m.name[0]}</Avatar>
-                  <Box sx={{ minWidth: 0 }}>
-                    <Typography>{m.name}</Typography>
-                    {m.headline && <Typography variant="body2" color="text.secondary">{m.headline}</Typography>}
-                  </Box>
-                </Stack>
-              ))}
-              {members.length === 0 && project.status === "open" && details.relation === "none" && (
-                <Typography color="text.secondary">No members yet. Be the first to join.</Typography>
-              )}
-            </Stack>
-          </Card>
         </Stack>
 
-        <Card sx={{ p: 3, position: { md: "sticky" }, top: { md: 88 }, order: { xs: 1, md: 2 } }}>
-          {project.status === "open" && (
-            <Typography variant="h5" component="p" sx={{ fontWeight: 700, fontVariantNumeric: "tabular-nums", mb: 2.5 }}>
-              {spotsLeft === 0 ? "No spots left" : `${spotsLeft} of ${project.capacity} spots left`}
-            </Typography>
-          )}
-          <JoinArea details={details} onJoin={() => setJoining(true)} />
-          <JoinRequestDialog
-            project={project}
-            open={joining}
-            onClose={() => setJoining(false)}
-            onSent={() => { setJoining(false); setSent(true); setReload((n) => n + 1); }}
-          />
+        <Box sx={{ display: { xs: "contents", md: "flex" }, flexDirection: "column", gap: 3, order: { md: 2 }, minWidth: 0, position: { md: "sticky" }, top: { md: 88 } }}>
+          <Card sx={{ p: 3, order: { xs: 1, md: 0 } }}>
+            {project.status === "open" && (
+              <Typography variant="h5" component="p" sx={{ fontWeight: 700, fontVariantNumeric: "tabular-nums", mb: 2.5 }}>
+                {spotsLeft === 0 ? "No spots left" : `${spotsLeft} of ${project.capacity} spots left`}
+              </Typography>
+            )}
+            <JoinArea details={details} onJoin={() => setJoining(true)} />
+            <JoinRequestDialog
+              project={project}
+              open={joining}
+              onClose={() => setJoining(false)}
+              onSent={() => { setJoining(false); setSent(true); setReload((n) => n + 1); }}
+            />
+          </Card>
+        <Card sx={{ p: { xs: 2, sm: 3 }, order: { xs: 3, md: 0 } }}>
+          <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 1.5 }}>Team</Typography>
+          <Stack spacing={1.5}>
+            <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
+              <Avatar sx={{ bgcolor: "primary.main", width: 36, height: 36 }}>{owner.name[0]}</Avatar>
+              <Box sx={{ minWidth: 0 }}>
+                <Typography component="div">{owner.name} <Chip size="small" label="Owner" sx={{ bgcolor: "#E3C39D", color: "#071739", ml: 0.5 }} /></Typography>
+                {owner.headline && <Typography variant="body2" color="text.secondary">{owner.headline}</Typography>}
+              </Box>
+            </Stack>
+            {owner.bio && <Typography variant="body2" sx={{ color: "text.secondary", pl: 6.5, mt: -0.5 }}>{owner.bio}</Typography>}
+            {members.map((m) => (
+              <Stack key={m.id} direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
+                <Avatar sx={{ bgcolor: "#4B6382", width: 36, height: 36 }}>{m.name[0]}</Avatar>
+                <Box sx={{ minWidth: 0 }}>
+                  <Typography>{m.name}</Typography>
+                  {m.headline && <Typography variant="body2" color="text.secondary">{m.headline}</Typography>}
+                </Box>
+              </Stack>
+            ))}
+            {members.length === 0 && project.status === "open" && details.relation === "none" && (
+              <Typography color="text.secondary">No members yet. Be the first to join.</Typography>
+            )}
+          </Stack>
         </Card>
+        </Box>
       </Box>
     </Box>
   );
