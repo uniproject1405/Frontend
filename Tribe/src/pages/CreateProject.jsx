@@ -502,19 +502,23 @@ async function handleSubmit(event) {
               </Card>
             )}
 
-            <Stack
-              direction={{ xs: "column", sm: "row" }}
-              justifyContent="space-between"
-              spacing={2}
-              sx={{ width: "100%" }}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column-reverse", sm: "row" },
+                alignItems: { xs: "stretch", sm: "center" },
+                justifyContent: "space-between",
+                gap: 1.5,
+                pt: 1,
+              }}
             >
-              <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
                 <Button
                   type="button"
                   variant="outlined"
                   onClick={handleBackStep}
                   disabled={activeStep === 0}
-                  fullWidth
+                  sx={{ whiteSpace: "nowrap", flex: { xs: 1, sm: "none" } }}
                 >
                   Back
                 </Button>
@@ -523,25 +527,30 @@ async function handleSubmit(event) {
                   variant="outlined"
                   color="secondary"
                   onClick={handleOpenResetDialog}
-                  fullWidth
+                  sx={{ whiteSpace: "nowrap", flex: { xs: 1, sm: "none" } }}
                 >
-                  Reset Form
+                  Reset
                 </Button>
-                <Button component={Link} to="/my-projects" variant="text" fullWidth>
+                <Button
+                  component={Link}
+                  to="/my-projects"
+                  variant="text"
+                  sx={{ whiteSpace: "nowrap", flex: { xs: 1, sm: "none" } }}
+                >
                   Cancel
                 </Button>
-              </Stack>
+              </Box>
 
               <Button
                 type="submit"
                 variant="contained"
                 disabled={isSubmitted}
                 startIcon={activeStep === 2 ? <AddRoundedIcon /> : undefined}
-                sx={{ px: 4, borderRadius: "8px" }}
+                sx={{ px: 4, whiteSpace: "nowrap" }}
               >
                 {isSubmitted ? "Submitting..." : activeStep === 2 ? "Submit Project" : "Next"}
               </Button>
-            </Stack>
+            </Box>
 
             {message && !isSubmitted && (
               <Box

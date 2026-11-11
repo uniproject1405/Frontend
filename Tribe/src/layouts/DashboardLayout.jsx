@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { NavLink, useLocation } from "react-router";
+import { NavLink, useLocation, useNavigate } from "react-router";
 import {
   AppBar,
   Avatar,
@@ -8,6 +8,8 @@ import {
   Box,
   Divider,
   Drawer,
+  Menu,
+  MenuItem,
   IconButton,
   List,
   ListItemButton,
@@ -42,6 +44,9 @@ const menuItems = [
 
 function DashboardLayout({ children, pageTitle = "Dashboard" }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [bellAnchor, setBellAnchor] = useState(null);
+  const [userAnchor, setUserAnchor] = useState(null);
+  const navigate = useNavigate();
   const location = useLocation();
 
   const sidebar = (
@@ -172,9 +177,15 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
           >
             {/* Visual notification control; connect to the notifications feature when its API is available. */}
             <Box
+              component="button"
+              type="button"
               aria-label="Notifications"
-              role="img"
+              onClick={(event) => setBellAnchor(event.currentTarget)}
               sx={{
+                cursor: "pointer",
+                p: 0,
+                "&:hover": { bgcolor: "#E8EDF3" },
+                "&:focus-visible": { outline: "2px solid #071739", outlineOffset: 2 },
                 width: 32,
                 height: 32,
                 display: "grid",
@@ -188,6 +199,7 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
             >
               <Badge
                 variant="dot"
+                invisible
                 color="error"
                 overlap="circular"
                 sx={{
@@ -212,7 +224,18 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
             />
 
             <Box
+              component="button"
+              type="button"
+              aria-label="Account menu"
+              onClick={(event) => setUserAnchor(event.currentTarget)}
               sx={{
+                cursor: "pointer",
+                border: 0,
+                bgcolor: "transparent",
+                font: "inherit",
+                textAlign: "left",
+                "&:hover": { bgcolor: "#F0F3F8" },
+                "&:focus-visible": { outline: "2px solid #071739", outlineOffset: 2 },
                 display: "flex",
                 alignItems: "center",
                 gap: 0.75,
@@ -259,6 +282,39 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
           </Box>
         </Toolbar>
       </AppBar>
+
+      <Menu
+        anchorEl={bellAnchor}
+        open={Boolean(bellAnchor)}
+        onClose={() => setBellAnchor(null)}
+      >
+        <MenuItem disabled sx={{ opacity: 1, color: "text.secondary" }}>
+          You're all caught up
+        </MenuItem>
+      </Menu>
+
+      <Menu
+        anchorEl={userAnchor}
+        open={Boolean(userAnchor)}
+        onClose={() => setUserAnchor(null)}
+      >
+        <MenuItem
+          onClick={() => {
+            setUserAnchor(null);
+            navigate("/my-projects");
+          }}
+        >
+          My Projects
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            setUserAnchor(null);
+            navigate("/my-projects?tab=requests");
+          }}
+        >
+          Sent requests
+        </MenuItem>
+      </Menu>
 
       <Drawer
         variant="temporary"
@@ -313,17 +369,6 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
               pb: 5,
               px: { xs: 2, sm: 3, md: 4, lg: 5 },
 
-          "&::after": {
-              content: '""',
-              position: "absolute",
-              top: 0,
-              bottom: 0,
-              right: "85px",
-              width: "2px",
-              backgroundColor: "#071739",
-              display: { xs: "none", lg: "block" },
-              pointerEvents: "none",
-              },
           }}
 >
           {children}

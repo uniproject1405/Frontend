@@ -27,6 +27,7 @@ import {
 } from "../services/mockProjectService";
 import ProjectCard from "../components/ProjectCard";
 import MembershipTabs from "../components/MembershipTabs";
+import CloseProjectDialog from "../components/CloseProjectDialog";
 
 function MyProjects() {
   const navigate = useNavigate();
@@ -36,6 +37,9 @@ function MyProjects() {
 
   const [projects, setProjects] = useState([]);
   const [status, setStatus] = useState("loading");
+  const [closeTarget, setCloseTarget] = useState(null);
+  const [isClosing, setIsClosing] = useState(false);
+  const [closeError, setCloseError] = useState("");
   const [toast, setToast] = useState(location.state?.message || "");
 
   const loadProjects = useCallback(async () => {
@@ -78,14 +82,15 @@ function MyProjects() {
     return () => window.clearTimeout(timer);
   }, [toast]);
 
-  async function handleClose(project) {
+  function handleClose(project) {
     if (!project?.id) return;
+    setCloseError("");
+    setCloseTarget(project);
+  }
 
-    const confirmed = window.confirm(
-      `Are you sure you want to close "${project.title}"?`
-    );
-
-    if (!confirmed) return;
+  async function confirmClose(project) {
+    setIsClosing(true);
+    setCloseError("");
 
     try {
       const updatedProject = await closeProject(project.id);
@@ -98,10 +103,13 @@ function MyProjects() {
         )
       );
 
+      setCloseTarget(null);
       setToast("Project closed successfully.");
     } catch (error) {
       console.error("Failed to close project:", error);
-      setToast(error.message || "Could not close the project.");
+      setCloseError(error.message || "Could not close the project.");
+    } finally {
+      setIsClosing(false);
     }
   }
 
@@ -126,12 +134,9 @@ function MyProjects() {
   return (
     <Box
     sx={{
-      width: {
-        xs: "100%",
-        lg: "calc(100% - 90px)",
-      },
-      maxWidth: "1180px",
-      mx: { xs: "auto", lg: 0 },
+      width: "100%",
+      maxWidth: "1500px",
+      mx: "auto",
       boxSizing: "border-box",
     }}
   >
@@ -376,7 +381,8 @@ function MyProjects() {
             display: "grid",
             gridTemplateColumns: {
               xs: "1fr",
-              lg: "repeat(2, minmax(0, 1fr))",
+              md: "repeat(2, minmax(0, 1fr))",
+              xl: "repeat(3, minmax(0, 1fr))",
             },
             gap: 3,
           }}
@@ -393,6 +399,15 @@ function MyProjects() {
         </Box>
       )}
       </>)}
+
+      <CloseProjectDialog
+        open={Boolean(closeTarget)}
+        project={closeTarget}
+        isClosing={isClosing}
+        error={closeError}
+        onCancel={() => setCloseTarget(null)}
+        onConfirm={confirmClose}
+      />
     </Box>
   );
 }
