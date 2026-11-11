@@ -1,4 +1,5 @@
 
+import { Link as RouterLink } from "react-router";
 import {
   Box,
   Button,
@@ -53,8 +54,14 @@ function ProjectCard({ project, onEdit, onClose, onRequests }) {
             <Box sx={{ minWidth: 0, width: "100%" }}>
               <Typography
                 variant="h6"
+                component={RouterLink}
+                to={`/projects/${encodeURIComponent(project.id)}`}
                 sx={{
+                  display: "block",
                   mb: 1,
+                  color: "inherit",
+                  textDecoration: "none",
+                  "&:hover": { textDecoration: "underline" },
                   overflowWrap: "anywhere",
                   fontSize: { xs: 17, sm: 20 },
                 }}

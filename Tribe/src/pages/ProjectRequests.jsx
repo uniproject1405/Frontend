@@ -108,7 +108,7 @@ function ProjectRequests() {
     <Box
       sx={{
         width: "100%",
-        maxWidth: 1000,
+        maxWidth: 1200,
         mx: "auto",
         minWidth: 0,
         pb: 3,
