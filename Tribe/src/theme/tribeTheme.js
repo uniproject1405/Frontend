@@ -37,7 +37,7 @@ const tribeTheme = createTheme({
   },
 
   typography: {
-    fontFamily: '"Vazirmatn", "Segoe UI", Arial, sans-serif',
+    fontFamily: '"Inter", "Segoe UI", Arial, sans-serif',
 
     h4: {
       fontWeight: 700,
