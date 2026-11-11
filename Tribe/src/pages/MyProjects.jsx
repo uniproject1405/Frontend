@@ -139,7 +139,7 @@ function MyProjects() {
         open={Boolean(toast)}
         autoHideDuration={3000}
         onClose={() => setToast("")}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert
           onClose={() => setToast("")}

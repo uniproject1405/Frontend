@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
 
 import { createJoinRequest } from "../services/membershipService";
 
@@ -29,6 +29,7 @@ function JoinRequestDialog({ project, open, onClose, onSent }) {
     <Dialog open={open} onClose={sending ? undefined : onClose} fullWidth maxWidth="sm">
       <DialogTitle sx={{ fontWeight: 700 }}>Join {project.title}</DialogTitle>
       <DialogContent>
+        <DialogContentText sx={{ mb: 1 }}>The owner will review your request.</DialogContentText>
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
         <TextField
           autoFocus
@@ -36,10 +37,10 @@ function JoinRequestDialog({ project, open, onClose, onSent }) {
           multiline
           minRows={3}
           margin="dense"
-          label="Say hi to the owner (optional)"
+          placeholder="Add a short note (optional)"
           value={message}
           onChange={(e) => setMessage(e.target.value.slice(0, MAX))}
-          helperText={`${message.length}/${MAX}`}
+          helperText={message.length > 240 ? `${message.length}/${MAX}` : " "}
         />
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 2 }}>

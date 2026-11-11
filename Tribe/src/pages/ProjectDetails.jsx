@@ -90,8 +90,8 @@ function ProjectDetailsView({ projectId }) {
 
   return (
     <Box sx={{ maxWidth: 1000 }}>
-      <Snackbar open={sent} autoHideDuration={3000} onClose={() => setSent(false)} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
-        <Alert severity="success" variant="filled" onClose={() => setSent(false)}>Request sent</Alert>
+      <Snackbar open={sent} autoHideDuration={3000} onClose={() => setSent(false)} anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
+        <Alert severity="success" variant="filled" onClose={() => setSent(false)}>Request sent. Find replies in My Projects.</Alert>
       </Snackbar>
       {back}
       <Stack direction="row" sx={{ mb: 0.5, alignItems: "center", gap: 2, flexWrap: "wrap" }}>

@@ -8,13 +8,13 @@ import {
 import { getJoinedProjects, getMyRequests, withdrawRequest } from "../services/membershipService";
 
 const statusLabel = { pending: "Waiting", accepted: "Accepted", rejected: "Not accepted" };
-const statusColor = { pending: "default", accepted: "success", rejected: "error" };
+const statusColor = { pending: "default", accepted: "success", rejected: "default" };
 
 function Row({ to, title, meta, action }) {
   return (
-    <Card sx={{ p: 2, display: "flex", gap: 2, alignItems: "center", flexWrap: "wrap" }}>
+    <Card sx={{ position: "relative", p: 2, display: "flex", gap: 2, alignItems: "center", flexWrap: "wrap", transition: "transform .15s", "&:hover": { transform: "translateY(-2px)" } }}>
       <Box sx={{ flex: 1, minWidth: 180 }}>
-        <Typography component={RouterLink} to={to} sx={{ fontWeight: 600, color: "text.primary", textDecoration: "none", "&:hover": { textDecoration: "underline" } }}>
+        <Typography component={RouterLink} to={to} sx={{ fontWeight: 600, color: "text.primary", textDecoration: "none", "&:hover": { textDecoration: "underline" }, "&::after": { content: '""', position: "absolute", inset: 0 } }}>
           {title}
         </Typography>
         <Typography variant="body2" color="text.secondary">{meta}</Typography>
@@ -24,11 +24,10 @@ function Row({ to, title, meta, action }) {
   );
 }
 
-function Empty({ text, cta }) {
+function Empty({ text }) {
   return (
     <Card sx={{ p: 4, textAlign: "center" }}>
-      <Typography color="text.secondary" sx={{ mb: 2 }}>{text}</Typography>
-      <Button variant="outlined" component={RouterLink} to="/my-projects">{cta}</Button>
+      <Typography color="text.secondary">{text}</Typography>
     </Card>
   );
 }
@@ -64,7 +63,7 @@ function MembershipTabs({ tab, onToast }) {
   if (!items) return <Box sx={{ display: "grid", placeItems: "center", py: 8 }}><CircularProgress /></Box>;
 
   if (tab === "joined") {
-    if (items.length === 0) return <Empty text="You haven't joined a team yet." cta="Find a project" />;
+    if (items.length === 0) return <Empty text="Teams you join will show up here." />;
     return (
       <Stack spacing={1.5}>
         {items.map(({ project, owner }) => (
@@ -74,7 +73,7 @@ function MembershipTabs({ tab, onToast }) {
     );
   }
 
-  if (items.length === 0) return <Empty text="You haven't asked to join anything yet." cta="Find a project" />;
+  if (items.length === 0) return <Empty text="Requests you send will show up here." />;
   return (
     <>
       <Stack spacing={1.5}>
@@ -84,7 +83,7 @@ function MembershipTabs({ tab, onToast }) {
             to={`/projects/${x.project.id}`}
             title={x.project.title}
             meta={<Chip size="small" variant="outlined" label={statusLabel[x.request.status]} color={statusColor[x.request.status]} />}
-            action={x.request.status === "pending" && <Button onClick={() => setToWithdraw(x)}>Withdraw</Button>}
+            action={x.request.status === "pending" && <Button color="inherit" sx={{ position: "relative", zIndex: 1, color: "text.secondary" }} onClick={() => setToWithdraw(x)}>Withdraw</Button>}
           />
         ))}
       </Stack>
@@ -94,8 +93,8 @@ function MembershipTabs({ tab, onToast }) {
           <DialogContentText>The owner will no longer see your request to join {toWithdraw?.project.title}.</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setToWithdraw(null)}>Keep it</Button>
-          <Button color="error" onClick={confirmWithdraw}>Withdraw</Button>
+          <Button onClick={() => setToWithdraw(null)}>Keep request</Button>
+          <Button color="error" onClick={confirmWithdraw}>Yes, withdraw</Button>
         </DialogActions>
       </Dialog>
     </>
