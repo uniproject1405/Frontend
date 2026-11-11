@@ -33,7 +33,7 @@ function MyProjects() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const tab = ["joined", "requests"].includes(searchParams.get("tab")) ? searchParams.get("tab") : "created";
+  const tab = ["joined", "requests", "review"].includes(searchParams.get("tab")) ? searchParams.get("tab") : "created";
 
   const [projects, setProjects] = useState([]);
   const [status, setStatus] = useState("loading");
@@ -231,6 +231,7 @@ function MyProjects() {
         sx={{ mb: 3, borderBottom: 1, borderColor: "divider" }}
       >
         <Tab value="created" label="Created" />
+        <Tab value="review" label="To review" />
         <Tab value="joined" label="Joined" />
         <Tab value="requests" label="Sent requests" />
       </Tabs>

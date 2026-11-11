@@ -148,7 +148,7 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
       </Typography>
       <List dense sx={{ display: "grid", gap: 0.5 }}>
         {[
-          ["Requests to review", stats.toReview, "/my-projects"],
+          ["Requests to review", stats.toReview, "/my-projects?tab=review"],
           ["Waiting for a reply", stats.waiting, "/my-projects?tab=requests"],
           ["Teams you joined", stats.joined, "/my-projects?tab=joined"],
         ].map(([label, value, href]) => (
@@ -347,7 +347,7 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
         </Box>
         <Divider />
         <MenuItem onClick={() => { setUserAnchor(null); navigate("/profile"); }}>View profile</MenuItem>
-        <MenuItem onClick={() => { setUserAnchor(null); navigate("/my-projects"); }}>
+        <MenuItem onClick={() => { setUserAnchor(null); navigate(stats.toReview > 0 ? "/my-projects?tab=review" : "/my-projects"); }}>
           My Projects{stats.toReview > 0 ? ` · ${stats.toReview} to review` : ""}
         </MenuItem>
         <MenuItem onClick={() => { setUserAnchor(null); navigate("/my-projects?tab=requests"); }}>

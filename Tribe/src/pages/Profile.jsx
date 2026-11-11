@@ -90,7 +90,7 @@ function Profile() {
             <Stat label="Projects you created" value={stats.created} to="/my-projects" />
             <Stat label="Teams you joined" value={stats.joined} to="/my-projects?tab=joined" />
             <Stat label="Waiting for reply" value={stats.waiting} to="/my-projects?tab=requests" />
-            <Stat label="Requests to review" value={stats.toReview} to="/my-projects" />
+            <Stat label="Requests to review" value={stats.toReview} to="/my-projects?tab=review" />
           </Box>
 
           <Card sx={{ p: 3 }}>

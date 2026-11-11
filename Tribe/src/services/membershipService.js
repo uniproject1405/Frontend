@@ -1,5 +1,5 @@
-import currentUser from "./currentUser";
-import owners from "../mocks/owners";
+import currentUser, { getProfile } from "./currentUser";
+import owners, { directory } from "../mocks/owners";
 import { getProjectById, getMyProjects } from "./mockProjectService";
 import { emitChange, useStoredJson } from "./store";
 import { addNotification } from "./notificationService";
@@ -34,7 +34,12 @@ export async function getProjectDetails(projectId) {
   const forProject = readRequests().filter((r) => String(r.projectId) === String(project.id));
   const members = forProject
     .filter((r) => r.status === "accepted")
-    .map((r) => ({ id: r.userId || r.id, name: nameOf(r) }));
+    .map((r) => ({
+      id: r.userId || r.id,
+      name: nameOf(r),
+      headline: directory[r.userId]?.headline || (r.userId === currentUser.id ? getProfile().headline : ""),
+      joinedAt: r.createdAt,
+    }));
   const mine = forProject.filter((r) => r.userId === currentUser.id);
 
   let relation = "none";
@@ -52,14 +57,17 @@ export async function getProjectDetails(projectId) {
 }
 
 export async function getJoinedProjects() {
-  const accepted = readRequests().filter(
-    (r) => r.userId === currentUser.id && r.status === "accepted"
-  );
+  const all = readRequests();
+  const accepted = all.filter((r) => r.userId === currentUser.id && r.status === "accepted");
   const projects = await getMyProjects();
   return accepted
-    .map((r) => projects.find((p) => String(p.id) === String(r.projectId)))
-    .filter(Boolean)
-    .map((project) => ({ project, owner: getOwner(project.id) }));
+    .map((r) => {
+      const project = projects.find((p) => String(p.id) === String(r.projectId));
+      if (!project) return null;
+      const memberCount = all.filter((x) => String(x.projectId) === String(project.id) && x.status === "accepted").length;
+      return { project, owner: getOwner(project.id), memberCount, joinedAt: r.createdAt };
+    })
+    .filter(Boolean);
 }
 
 export async function getMyRequests() {

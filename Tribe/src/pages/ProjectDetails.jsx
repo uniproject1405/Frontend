@@ -113,18 +113,52 @@ function ProjectDetailsView({ projectId }) {
               </Stack>
             )}
           </Card>
+          {(project.commitment || project.lookingFor?.length > 0 || project.milestones?.length > 0) && (
+            <Card sx={{ p: { xs: 2, sm: 3 } }}>
+              <Stack spacing={2.5}>
+                {project.commitment && (
+                  <Box>
+                    <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 0.5 }}>How the team works</Typography>
+                    <Typography>{project.commitment}</Typography>
+                  </Box>
+                )}
+                {project.lookingFor?.length > 0 && (
+                  <Box>
+                    <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 0.5 }}>Who we're looking for</Typography>
+                    <Box component="ul" sx={{ m: 0, pl: 2.5 }}>
+                      {project.lookingFor.map((t) => <li key={t}><Typography>{t}</Typography></li>)}
+                    </Box>
+                  </Box>
+                )}
+                {project.milestones?.length > 0 && (
+                  <Box>
+                    <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 0.5 }}>Roadmap</Typography>
+                    <Box component="ul" sx={{ m: 0, pl: 2.5 }}>
+                      {project.milestones.map((t) => <li key={t}><Typography>{t}</Typography></li>)}
+                    </Box>
+                  </Box>
+                )}
+              </Stack>
+            </Card>
+          )}
           <Card sx={{ p: { xs: 2, sm: 3 } }}>
             <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 1.5 }}>Team</Typography>
             <Stack spacing={1.5}>
               <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
                 <Avatar sx={{ bgcolor: "primary.main", width: 36, height: 36 }}>{owner.name[0]}</Avatar>
-                <Typography>{owner.name}</Typography>
-                <Chip size="small" label="Owner" sx={{ bgcolor: "#E3C39D", color: "#071739" }} />
+                <Box sx={{ minWidth: 0 }}>
+                  <Typography component="div">{owner.name} <Chip size="small" label="Owner" sx={{ bgcolor: "#E3C39D", color: "#071739", ml: 0.5 }} /></Typography>
+                  {owner.headline && <Typography variant="body2" color="text.secondary">{owner.headline}</Typography>}
+                </Box>
               </Stack>
+              {owner.bio && <Typography variant="body2" sx={{ color: "text.secondary", pl: 6.5, mt: -0.5 }}>{owner.bio}</Typography>}
               {members.map((m) => (
                 <Stack key={m.id} direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
                   <Avatar sx={{ bgcolor: "#4B6382", width: 36, height: 36 }}>{m.name[0]}</Avatar>
-                  <Typography>{m.name}</Typography>
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography>{m.name}</Typography>
+                    {m.headline && <Typography variant="body2" color="text.secondary">{m.headline}</Typography>}
+                  </Box>
                 </Stack>
               ))}
               {members.length === 0 && project.status === "open" && details.relation === "none" && (
