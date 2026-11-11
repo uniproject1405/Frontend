@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link as RouterLink, useParams } from "react-router";
 import {
-  Avatar, Box, Button, Card, Chip, CircularProgress, Stack, Typography,
+  Alert, Snackbar, Avatar, Box, Button, Card, Chip, CircularProgress, Stack, Typography,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import { getProjectDetails } from "../services/membershipService";
+import JoinRequestDialog from "../components/JoinRequestDialog";
 
 const skillChipSx = { bgcolor: "#F0F3F8", color: "#4B6382", fontWeight: 500 };
 
-function JoinArea({ details }) {
+function JoinArea({ details, onJoin }) {
   const { project, relation, spotsLeft } = details;
   const closed = project.status !== "open";
   const full = spotsLeft === 0;
@@ -40,7 +41,7 @@ function JoinArea({ details }) {
 
   return (
     <>
-      <Button fullWidth variant="contained" disabled={disabled}>{label}</Button>
+      <Button fullWidth variant="contained" disabled={disabled} onClick={onJoin}>{label}</Button>
       {hint && (
         <Typography variant="body2" color="text.secondary" align="center" sx={{ mt: 1 }}>{hint}</Typography>
       )}
@@ -51,6 +52,9 @@ function JoinArea({ details }) {
 function ProjectDetailsView({ projectId }) {
   const [details, setDetails] = useState(null);
   const [error, setError] = useState("");
+  const [joining, setJoining] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [reload, setReload] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -58,7 +62,7 @@ function ProjectDetailsView({ projectId }) {
       .then((d) => !cancelled && setDetails(d))
       .catch((e) => !cancelled && setError(e.message || "Unable to load this project."));
     return () => { cancelled = true; };
-  }, [projectId]);
+  }, [projectId, reload]);
 
   const back = (
     <Button component={RouterLink} to="/my-projects" startIcon={<ArrowBackIcon />} sx={{ mb: 2 }}>
@@ -86,6 +90,9 @@ function ProjectDetailsView({ projectId }) {
 
   return (
     <Box sx={{ maxWidth: 1000 }}>
+      <Snackbar open={sent} autoHideDuration={3000} onClose={() => setSent(false)} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
+        <Alert severity="success" variant="filled" onClose={() => setSent(false)}>Request sent</Alert>
+      </Snackbar>
       {back}
       <Stack direction="row" sx={{ mb: 0.5, alignItems: "center", gap: 2, flexWrap: "wrap" }}>
         <Typography variant="h4" component="h1" sx={{ fontWeight: 700, wordBreak: "break-word" }}>
@@ -133,7 +140,13 @@ function ProjectDetailsView({ projectId }) {
               {spotsLeft === 0 ? "No spots left" : `${spotsLeft} of ${project.capacity} spots left`}
             </Typography>
           )}
-          <JoinArea details={details} />
+          <JoinArea details={details} onJoin={() => setJoining(true)} />
+          <JoinRequestDialog
+            project={project}
+            open={joining}
+            onClose={() => setJoining(false)}
+            onSent={() => { setJoining(false); setSent(true); setReload((n) => n + 1); }}
+          />
         </Card>
       </Box>
     </Box>

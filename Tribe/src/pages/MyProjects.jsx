@@ -10,6 +10,8 @@ import {
   Chip,
   Stack,
   Snackbar,
+  Tab,
+  Tabs,
   Typography,
 } from "@mui/material";
 
@@ -18,16 +20,19 @@ import FolderOpenRoundedIcon from "@mui/icons-material/FolderOpenRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import CloudOffRoundedIcon from "@mui/icons-material/CloudOffRounded";
 
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router";
 import {
   closeProject,
   getMyProjects,
 } from "../services/mockProjectService";
 import ProjectCard from "../components/ProjectCard";
+import MembershipTabs from "../components/MembershipTabs";
 
 function MyProjects() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tab = ["joined", "requests"].includes(searchParams.get("tab")) ? searchParams.get("tab") : "created";
 
   const [projects, setProjects] = useState([]);
   const [status, setStatus] = useState("loading");
@@ -215,6 +220,19 @@ function MyProjects() {
         </Stack>
       </Box>
 
+      <Tabs
+        value={tab}
+        onChange={(_, v) => setSearchParams(v === "created" ? {} : { tab: v })}
+        sx={{ mb: 3, borderBottom: 1, borderColor: "divider" }}
+      >
+        <Tab value="created" label="Created" />
+        <Tab value="joined" label="Joined" />
+        <Tab value="requests" label="Sent requests" />
+      </Tabs>
+
+      {tab !== "created" && <MembershipTabs key={tab} tab={tab} onToast={setToast} />}
+
+      {tab === "created" && (<>
       {/* SECTION HEADING */}
       <Stack
         direction={{ xs: "column", sm: "row" }}
@@ -374,6 +392,7 @@ function MyProjects() {
           ))}
         </Box>
       )}
+      </>)}
     </Box>
   );
 }
