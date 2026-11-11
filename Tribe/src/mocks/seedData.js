@@ -2,7 +2,7 @@
 // pending / accepted / rejected requests and 40+ notifications.
 import currentUser from "../services/currentUser";
 
-export const SEED_VERSION = "5";
+export const SEED_VERSION = "6";
 
 const HOUR = 3600 * 1000;
 const ago = (hours) => new Date(Date.now() - hours * HOUR).toISOString();
@@ -110,6 +110,14 @@ export const seedProjects = [
     "A shared atlas where local photographers pin sightings with species info, season and a short story. Over time it becomes a living guide to what lives where and when.\n\nThe project is closed while we review the first batch of 600 photos and fix the species database.",
     ["Photography", "Maps", "Python"], 4, "closed", 600,
     { commitment: "Paused while reviewing the first batch.", lookingFor: ["Closed for now"], milestones: ["Done: photo upload and map", "In progress: species database review"] }),
+  p("mine-6", "Stress Test: Many Requests, Two Spots", "Test data: far more people want in than there are spots.",
+    "This project exists so that testers can try the overflow case: 30 people are waiting, only 2 spots exist and 1 is already taken. Accepting one request fills the team, and every other Accept must then be blocked.",
+    ["React", "Testing"], 2, "open", 30,
+    { commitment: "Test data only.", lookingFor: ["Anyone, this is a stress test"], milestones: ["Accept one request and watch the rest lock"] }),
+  p("mine-7", "Stress Test: Large Team", "Test data: a team with 24 members and one spot left.",
+    "This project exists so that testers can see a long member list on the details page and in My Projects, with exactly one spot left.",
+    ["Teamwork"], 25, "open", 500,
+    { commitment: "Test data only.", lookingFor: ["One more teammate"], milestones: ["Check the member list scrolls and wraps well"] }),
 ];
 
 let rid = 0;
@@ -164,6 +172,10 @@ export const seedRequests = [
   // other people's full project
   r("other-9", people.arman, "accepted", "", 450),
   r("other-9", people.yasaman, "accepted", "", 440),
+  // stress data: overflow (30 pending, 2 spots, 1 taken) and a large team (24 of 25)
+  r("mine-6", people.sara, "accepted", "First in.", 28),
+  ...Array.from({ length: 30 }, (_, i) => r("mine-6", { id: `bulk-a${i + 1}`, name: `Applicant ${String(i + 1).padStart(2, "0")}` }, "pending", i % 3 === 0 ? "" : `Hi, applicant number ${i + 1} here. I would like to join.`, 1 + i)),
+  ...Array.from({ length: 24 }, (_, i) => r("mine-7", { id: `bulk-m${i + 1}`, name: `Member ${String(i + 1).padStart(2, "0")}` }, "accepted", "", 400 - i)),
 ];
 
 const n = (type, title, body, link, hoursAgo, read) => ({

@@ -207,7 +207,7 @@ function EditProject() {
   }
 
   return (
-    <Box sx={{ width: "100%", maxWidth: 1000, mx: "auto", minWidth: 0, px: { xs: 0, sm: 1 } }}>
+    <Box sx={{ width: "100%", maxWidth: 1200, mx: "auto", minWidth: 0, px: { xs: 0, sm: 1 } }}>
       <Button
         component={Link}
         to="/my-projects"

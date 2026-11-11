@@ -108,7 +108,7 @@ function ProjectRequests() {
     <Box
       sx={{
         width: "100%",
-        maxWidth: 1000,
+        maxWidth: 1200,
         mx: "auto",
         minWidth: 0,
         pb: 3,
@@ -232,6 +232,7 @@ function ProjectRequests() {
                 "Applicant name unavailable";
               const isPending = status === "pending";
               const isUpdating = updatingId !== null;
+              const full = project && requests.filter((x) => x.status === "accepted").length >= project.capacity;
 
               return (
                 <Card key={request.id}>
@@ -275,10 +276,10 @@ function ProjectRequests() {
                         <Button
                           variant="contained"
                           color="success"
-                          disabled={isUpdating}
+                          disabled={isUpdating || full}
                           onClick={() => handleRequestAction(request.id, "accepted")}
                         >
-                          {updatingId === request.id ? "Updating..." : "Accept"}
+                          {full ? "Team full" : updatingId === request.id ? "Updating..." : "Accept"}
                         </Button>
                         <Button
                           variant="outlined"
