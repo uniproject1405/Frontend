@@ -79,7 +79,6 @@ function Profile() {
               {profile.skills.map((s) => <Chip key={s} label={s} sx={{ bgcolor: "#F0F3F8", color: "#4B6382" }} />)}
               {profile.skills.length === 0 && <Typography variant="body2" color="text.secondary">مهارت‌هایتان را اضافه کنید تا مالکان پروژه بدانند چه کمکی از شما برمی‌آید.</Typography>}
             </Stack>
-            <Typography variant="body2" color="text.secondary">مالکان پروژه هنگام درخواست عضویت شما این را می‌بینند.</Typography>
             <Button variant="outlined" onClick={() => setEditing(true)}>ویرایش پروفایل</Button>
           </Stack>
           {editing && <EditDialog open onClose={() => setEditing(false)} />}
@@ -113,7 +112,6 @@ function Profile() {
 
           <Card sx={{ p: 3 }}>
             <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 0.5 }}>داده‌های آزمایشی</Typography>
-            <Typography color="text.secondary" sx={{ mb: 2 }}>پروژه‌ها، درخواست‌ها و اعلان‌های نمونه را بازگردانی کنید.</Typography>
             <Button color="inherit" variant="outlined" onClick={async () => { await resetMockData(); setDone("داده‌های آزمایشی بازگردانی شد."); }}>بازنشانی داده‌های آزمایشی</Button>
             {done && <Alert severity="success" sx={{ mt: 2 }} onClose={() => setDone("")}>{done}</Alert>}
           </Card>

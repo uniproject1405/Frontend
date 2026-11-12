@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link as RouterLink, useParams } from "react-router";
+import { Link as RouterLink, useLocation, useNavigate, useParams } from "react-router";
 import {
   Alert, Snackbar, Avatar, Box, Button, Card, Chip, CircularProgress, Stack, Typography,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
+import { isLoggedIn, LOGIN_PATH } from "../services/currentUser";
 import { getProjectDetails } from "../services/membershipService";
 import JoinRequestDialog from "../components/JoinRequestDialog";
 
@@ -51,6 +52,8 @@ function JoinArea({ details, onJoin }) {
 }
 
 function ProjectDetailsView({ projectId }) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [details, setDetails] = useState(null);
   const [error, setError] = useState("");
   const [joining, setJoining] = useState(false);
@@ -153,7 +156,7 @@ function ProjectDetailsView({ projectId }) {
                 {spotsLeft === 0 ? "جای خالی نیست" : `${spotsLeft} جای خالی از ${project.capacity}`}
               </Typography>
             )}
-            <JoinArea details={details} onJoin={() => setJoining(true)} />
+            <JoinArea details={details} onJoin={() => (isLoggedIn() ? setJoining(true) : navigate(`${LOGIN_PATH}?next=${encodeURIComponent(location.pathname)}`))} />
             <JoinRequestDialog
               project={project}
               open={joining}

@@ -93,13 +93,6 @@ function DashboardLayout({ children, pageTitle = "داشبورد" }) {
         >
           Tribe.
         </Typography>
-
-        <Typography
-          variant="caption"
-          sx={{ color: "#A4B5C4" }}
-        >
-          بساز · وصل شو · رشد کن
-        </Typography>
       </Box>
 
       <Divider sx={{ borderColor: "rgba(255,255,255,0.12)", mb: 2 }} />

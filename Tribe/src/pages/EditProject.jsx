@@ -253,9 +253,6 @@ function EditProject() {
                 <Typography variant="h6" sx={{ fontWeight: 700, color: "#071739" }}>
                   جزئیات پروژه
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  اطلاعات پروژه و نیازهای تیم را به‌روزرسانی کنید.
-                </Typography>
               </Stack>
 
               <TextField

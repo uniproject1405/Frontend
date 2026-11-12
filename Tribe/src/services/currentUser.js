@@ -1,6 +1,10 @@
-// Mock signed-in user. Replace with real auth when the backend is ready.
+// Mock signed-in user. When the auth feature lands, replace this file's
+// `isLoggedIn`, `LOGIN_PATH` and default export; nothing else needs to change.
 // The editable profile lives in localStorage so owners can "see" who is applying.
 import { emitChange } from "./store";
+
+export const LOGIN_PATH = "/login";
+export const isLoggedIn = () => true;
 
 export const PROFILE_KEY = "tribe_profile";
 export const defaultProfile = {

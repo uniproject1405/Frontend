@@ -247,16 +247,6 @@ function MyProjects() {
         spacing={1}
         sx={{ mb: 2.5 }}
       >
-        <Box>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
-            مجموعه پروژه‌های شما
-          </Typography>
-
-          <Typography variant="body2" color="text.secondary">
-            همه پروژه‌هایی که ساخته‌اید، در یک جا.
-          </Typography>
-        </Box>
-
         {isConnected && (
           <Chip
             label={`${projects.length} پروژه`}

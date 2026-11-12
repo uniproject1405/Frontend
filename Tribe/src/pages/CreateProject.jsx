@@ -340,9 +340,6 @@ async function handleSubmit(event) {
                       <Typography variant="h6" sx={{ mb: 0.5 }}>
                         جزئیات پروژه
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        درباره پروژه و هدفی که دارید برایمان بنویسید.
-                      </Typography>
                     </Box>
                     <Divider />
 
@@ -398,9 +395,6 @@ async function handleSubmit(event) {
                     <Box>
                       <Typography variant="h6" sx={{ mb: 0.5 }}>
                         نیازهای تیم
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        مهارت‌ها و اندازه تیم مورد نیازتان را مشخص کنید.
                       </Typography>
                     </Box>
                     <Divider />
@@ -469,9 +463,6 @@ async function handleSubmit(event) {
                   <Stack spacing={3}>
                     <Box>
                       <Typography variant="h6">بازبینی پروژه</Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        لطفاً پیش از ثبت، اطلاعات پروژه را بررسی کنید.
-                      </Typography>
                     </Box>
                     <Divider />
 
@@ -594,9 +585,6 @@ async function handleSubmit(event) {
             </Stack>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
               ظرفیت تیم: {formData.capacity || "–"}
-            </Typography>
-            <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 2 }}>
-              دیگران پروژه شما را این‌گونه می‌بینند.
             </Typography>
           </CardContent>
         </Card>
