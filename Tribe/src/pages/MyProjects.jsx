@@ -24,6 +24,7 @@ import {
   getMyProjects,
 } from "../services/mockProjectService";
 import ProjectCard from "../components/ProjectCard";
+import CloseProjectDialog from "../components/CloseProjectDialog";
 
 function MyProjects() {
   const navigate = useNavigate();
@@ -31,6 +32,9 @@ function MyProjects() {
 
   const [projects, setProjects] = useState([]);
   const [status, setStatus] = useState("loading");
+  const [closeTarget, setCloseTarget] = useState(null);
+  const [isClosing, setIsClosing] = useState(false);
+  const [closeError, setCloseError] = useState("");
   const [toast, setToast] = useState(location.state?.message || "");
 
   const loadProjects = useCallback(async () => {
@@ -73,14 +77,15 @@ function MyProjects() {
     return () => window.clearTimeout(timer);
   }, [toast]);
 
-  async function handleClose(project) {
+  function handleClose(project) {
     if (!project?.id) return;
+    setCloseError("");
+    setCloseTarget(project);
+  }
 
-    const confirmed = window.confirm(
-      `Are you sure you want to close "${project.title}"?`
-    );
-
-    if (!confirmed) return;
+  async function confirmClose(project) {
+    setIsClosing(true);
+    setCloseError("");
 
     try {
       const updatedProject = await closeProject(project.id);
@@ -93,10 +98,13 @@ function MyProjects() {
         )
       );
 
-      setToast("Project closed successfully.");
+      setCloseTarget(null);
+      setToast("پروژه با موفقیت بسته شد.");
     } catch (error) {
       console.error("Failed to close project:", error);
-      setToast(error.message || "Could not close the project.");
+      setCloseError(error.message || "بستن پروژه انجام نشد.");
+    } finally {
+      setIsClosing(false);
     }
   }
 
@@ -121,12 +129,9 @@ function MyProjects() {
   return (
     <Box
     sx={{
-      width: {
-        xs: "100%",
-        lg: "calc(100% - 90px)",
-      },
-      maxWidth: "1180px",
-      mx: { xs: "auto", lg: 0 },
+      width: "100%",
+      maxWidth: "1500px",
+      mx: "auto",
       boxSizing: "border-box",
     }}
   >
@@ -134,13 +139,13 @@ function MyProjects() {
         open={Boolean(toast)}
         autoHideDuration={3000}
         onClose={() => setToast("")}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert
           onClose={() => setToast("")}
           severity={
-            toast.toLowerCase().includes("could not") ||
-            toast.toLowerCase().includes("failed")
+            toast.includes("انجام نشد") ||
+            toast.includes("ناموفق")
               ? "error"
               : "success"
           }
@@ -194,7 +199,7 @@ function MyProjects() {
               lineHeight: 1.2,
             }}
           >
-            My Projects
+            پروژه‌های من
           </Typography>
 
           <Button
@@ -210,11 +215,13 @@ function MyProjects() {
               "&:hover": { bgcolor: "#D6B184" },
             }}
           >
-            New Project
+            پروژه جدید
           </Button>
         </Stack>
       </Box>
 
+
+      <>
       {/* SECTION HEADING */}
       <Stack
         direction={{ xs: "column", sm: "row" }}
@@ -223,19 +230,9 @@ function MyProjects() {
         spacing={1}
         sx={{ mb: 2.5 }}
       >
-        <Box>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Your Project Collection
-          </Typography>
-
-          <Typography variant="body2" color="text.secondary">
-            All the projects you own, in one organized space.
-          </Typography>
-        </Box>
-
         {isConnected && (
           <Chip
-            label={`${projects.length} Projects`}
+            label={`${projects.length} پروژه`}
             size="small"
             sx={{
               bgcolor: "#E8EEF3",
@@ -261,7 +258,7 @@ function MyProjects() {
           >
             <CircularProgress size={36} />
             <Typography color="text.secondary">
-              Loading your projects...
+              در حال بارگذاری پروژه‌ها...
             </Typography>
           </CardContent>
         </Card>
@@ -287,15 +284,14 @@ function MyProjects() {
             />
 
             <Typography variant="h6">
-              Unable to load projects
+              بارگذاری پروژه‌ها ممکن نشد
             </Typography>
 
             <Typography
               color="text.secondary"
               sx={{ maxWidth: 400 }}
             >
-              Something went wrong while loading
-              your projects. Please try again.
+              هنگام بارگذاری پروژه‌ها مشکلی پیش آمد. لطفاً دوباره تلاش کنید.
             </Typography>
 
             <Button
@@ -303,7 +299,7 @@ function MyProjects() {
               startIcon={<RefreshRoundedIcon />}
               onClick={loadProjects}
             >
-              Try Again
+              تلاش دوباره
             </Button>
           </CardContent>
         </Card>
@@ -328,15 +324,14 @@ function MyProjects() {
             />
 
             <Typography variant="h6" sx={{ mb: 1 }}>
-              No projects yet
+              هنوز پروژه‌ای ندارید
             </Typography>
 
             <Typography
               color="text.secondary"
               sx={{ maxWidth: 420, mb: 3 }}
             >
-              You haven't created any projects yet.
-              Create your first project to get started.
+              هنوز پروژه‌ای نساخته‌اید. اولین پروژه‌تان را بسازید.
             </Typography>
 
             <Button
@@ -345,7 +340,7 @@ function MyProjects() {
               variant="outlined"
               startIcon={<AddRoundedIcon />}
             >
-              Create Your First Project
+              ساخت اولین پروژه
             </Button>
           </CardContent>
         </Card>
@@ -358,7 +353,8 @@ function MyProjects() {
             display: "grid",
             gridTemplateColumns: {
               xs: "1fr",
-              lg: "repeat(2, minmax(0, 1fr))",
+              md: "repeat(2, minmax(0, 1fr))",
+              xl: "repeat(3, minmax(0, 1fr))",
             },
             gap: 3,
           }}
@@ -374,6 +370,16 @@ function MyProjects() {
           ))}
         </Box>
       )}
+      </>
+
+      <CloseProjectDialog
+        open={Boolean(closeTarget)}
+        project={closeTarget}
+        isClosing={isClosing}
+        error={closeError}
+        onCancel={() => setCloseTarget(null)}
+        onConfirm={confirmClose}
+      />
     </Box>
   );
 }

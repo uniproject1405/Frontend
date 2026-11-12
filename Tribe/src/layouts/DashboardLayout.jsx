@@ -1,6 +1,11 @@
 
 import { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router";
+import { useNotifications, markAllRead, markRead } from "../services/notificationService";
+import NotificationRow from "../components/NotificationRow";
+import { getProfile, PROFILE_KEY } from "../services/currentUser";
+import { useMyStats } from "../services/membershipService";
+import { useStoredJson } from "../services/store";
 import {
   AppBar,
   Avatar,
@@ -19,34 +24,52 @@ import {
   Typography,
 } from "@mui/material";
 
-import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import FolderRoundedIcon from "@mui/icons-material/FolderRounded";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
+import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 
 const drawerWidth = 260;
 
 const menuItems = [
   {
-    title: "My Projects",
+    title: "پروژه‌های من",
     icon: <FolderRoundedIcon />,
     href: "/my-projects",
   },
   {
-    title: "Create Project",
+    title: "ساخت پروژه",
     icon: <AddCircleOutlineRoundedIcon />,
     href: "/create-project",
   },
+  {
+    title: "اعلان‌ها",
+    icon: <NotificationsNoneRoundedIcon />,
+    href: "/notifications",
+    badge: true,
+  },
+  {
+    title: "پروفایل",
+    icon: <PersonRoundedIcon />,
+    href: "/profile",
+  },
 ];
 
-function DashboardLayout({ children, pageTitle = "Dashboard" }) {
+const EMPTY = {};
+
+function DashboardLayout({ children, pageTitle = "داشبورد" }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [bellAnchor, setBellAnchor] = useState(null);
   const [userAnchor, setUserAnchor] = useState(null);
   const navigate = useNavigate();
+  useStoredJson(PROFILE_KEY, EMPTY);
+  const profile = getProfile();
+  const { items: notes, unread } = useNotifications();
+  const stats = useMyStats();
+  const unreadLabel = unread > 99 ? "99+" : unread;
   const location = useLocation();
 
   const sidebar = (
@@ -69,13 +92,6 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
           }}
         >
           Tribe.
-        </Typography>
-
-        <Typography
-          variant="caption"
-          sx={{ color: "#A4B5C4" }}
-        >
-          CREATE · CONNECT · GROW
         </Typography>
       </Box>
 
@@ -110,34 +126,39 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
   </ListItemIcon>
 
   <ListItemText primary={item.title} />
+  {item.badge && unread > 0 && (
+    <Box component="span" sx={{ bgcolor: "#E3C39D", color: "#071739", borderRadius: 10, px: 0.9, fontSize: 11, fontWeight: 700, lineHeight: "18px" }}>
+      {unreadLabel}
+    </Box>
+  )}
 </ListItemButton>
 
         ))}
       </List>
 
-      <Box
-        sx={{
-          mt: 6,
-          mx: 1,
-          p: 2.5,
-          borderRadius: 3,
-          bgcolor: "rgba(255,255,255,0.07)",
-          border: "1px solid rgba(255,255,255,0.1)",
-        }}
-      >
-        <DashboardRoundedIcon sx={{ color: "#E3C39D", mb: 1 }} />
-
-        <Typography variant="subtitle2" sx={{ color: "#FFFFFF" }}>
-          Your creative space
-        </Typography>
-
-        <Typography
-          variant="caption"
-          sx={{ color: "#A4B5C4", display: "block", mt: 1 }}
-        >
-          Build projects and collaborate with talented people.
-        </Typography>
-      </Box>
+      <Typography variant="overline" sx={{ display: "block", color: "#A4B5C4", px: 2, mt: 4, mb: 0.5 }}>
+        فعالیت شما
+      </Typography>
+      <List dense sx={{ display: "grid", gap: 0.5 }}>
+        {[
+          ["درخواست‌های در انتظار بررسی", stats.toReview, "/my-projects?tab=review"],
+          ["در انتظار پاسخ", stats.waiting, "/my-projects?tab=requests"],
+          ["تیم‌هایی که عضو شده‌اید", stats.joined, "/my-projects?tab=joined"],
+        ].map(([label, value, href]) => (
+          <ListItemButton
+            key={label}
+            component={NavLink}
+            to={href}
+            onClick={() => setMobileOpen(false)}
+            sx={{ borderRadius: "10px", color: "#CDD5DB", "&:hover": { bgcolor: "rgba(255,255,255,0.09)", color: "#FFFFFF" } }}
+          >
+            <ListItemText primary={label} slotProps={{ primary: { sx: { fontSize: 14 } } }} />
+            <Box component="span" sx={{ fontWeight: 700, fontVariantNumeric: "tabular-nums", color: label === "درخواست‌های در انتظار بررسی" && value > 0 ? "#E3C39D" : "#FFFFFF" }}>
+              {value}
+            </Box>
+          </ListItemButton>
+        ))}
+      </List>
     </Box>
   );
 
@@ -158,7 +179,7 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
           <IconButton
             onClick={() => setMobileOpen(true)}
             sx={{ display: { md: "none" } }}
-            aria-label="Open navigation"
+            aria-label="باز کردن منو"
           >
             <MenuRoundedIcon />
           </IconButton>
@@ -179,7 +200,7 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
             <Box
               component="button"
               type="button"
-              aria-label="Notifications"
+              aria-label="اعلان‌ها"
               onClick={(event) => setBellAnchor(event.currentTarget)}
               sx={{
                 cursor: "pointer",
@@ -198,20 +219,11 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
               }}
             >
               <Badge
-                variant="dot"
-                invisible
+                badgeContent={unread}
+                max={99}
                 color="error"
                 overlap="circular"
-                sx={{
-                  "& .MuiBadge-badge": {
-                    top: 4,
-                    right: 4,
-                    width: 7,
-                    height: 7,
-                    minWidth: 7,
-                    border: "1.5px solid #F5F8FA",
-                  },
-                }}
+                sx={{ "& .MuiBadge-badge": { fontSize: 10, minWidth: 16, height: 16, px: 0.5 } }}
               >
                 <NotificationsNoneRoundedIcon sx={{ fontSize: 18 }} />
               </Badge>
@@ -226,7 +238,7 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
             <Box
               component="button"
               type="button"
-              aria-label="Account menu"
+              aria-label="منوی حساب"
               onClick={(event) => setUserAnchor(event.currentTarget)}
               sx={{
                 cursor: "pointer",
@@ -256,7 +268,7 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
                   fontWeight: 700,
                 }}
               >
-                Be
+                {profile.name[0]}
               </Avatar>
 
               <Box sx={{ display: { xs: "none", sm: "block" }, minWidth: 0 }}>
@@ -264,14 +276,14 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
                   variant="body2"
                   sx={{ fontWeight: 600, color: "#071739", lineHeight: 1.2, fontSize: 11.5 }}
                 >
-                  Be Confidency
+                  {profile.name}
                 </Typography>
                 <Typography
                   variant="caption"
                   color="text.secondary"
                   sx={{ display: "block", lineHeight: 1.2, fontSize: 9.5 }}
                 >
-                  Account
+                  {stats.toReview > 0 ? `${stats.toReview} درخواست برای بررسی` : profile.headline || "حساب کاربری"}
                 </Typography>
               </Box>
 
@@ -287,9 +299,29 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
         anchorEl={bellAnchor}
         open={Boolean(bellAnchor)}
         onClose={() => setBellAnchor(null)}
+        slotProps={{ paper: { sx: { width: 360, maxWidth: "calc(100vw - 24px)" } } }}
       >
-        <MenuItem disabled sx={{ opacity: 1, color: "text.secondary" }}>
-          You're all caught up
+        <Box sx={{ px: 2, py: 1, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Typography sx={{ fontWeight: 700 }}>اعلان‌ها</Typography>
+          <Box component="button" type="button" disabled={unread === 0} onClick={markAllRead} sx={{ all: "unset", cursor: "pointer", fontSize: 13, color: "#071739", textDecoration: "underline", "&[disabled]": { opacity: 0.4, cursor: "default" } }}>
+            خواندن همه
+          </Box>
+        </Box>
+        <Divider />
+        {notes.length === 0 && (
+          <Typography color="text.secondary" sx={{ p: 2 }}>اعلان تازه‌ای ندارید</Typography>
+        )}
+        {notes.slice(0, 5).map((item) => (
+          <NotificationRow
+            key={item.id}
+            item={item}
+            dense
+            onOpen={(x) => { markRead(x.id); setBellAnchor(null); navigate(x.link || "/my-projects"); }}
+          />
+        ))}
+        <Divider />
+        <MenuItem onClick={() => { setBellAnchor(null); navigate("/notifications"); }} sx={{ justifyContent: "center", fontWeight: 600 }}>
+          مشاهده همه {notes.length > 0 ? `(${notes.length})` : ""}
         </MenuItem>
       </Menu>
 
@@ -297,23 +329,24 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
         anchorEl={userAnchor}
         open={Boolean(userAnchor)}
         onClose={() => setUserAnchor(null)}
+        slotProps={{ paper: { sx: { width: 280, maxWidth: "calc(100vw - 24px)" } } }}
       >
-        <MenuItem
-          onClick={() => {
-            setUserAnchor(null);
-            navigate("/my-projects");
-          }}
-        >
-          My Projects
+        <Box sx={{ px: 2, py: 1.5 }}>
+          <Typography sx={{ fontWeight: 700, wordBreak: "break-word" }}>{profile.name}</Typography>
+          {profile.headline && <Typography variant="body2" color="text.secondary">{profile.headline}</Typography>}
+          <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+            {stats.created} created · {stats.joined} joined · {stats.waiting} waiting
+          </Typography>
+        </Box>
+        <Divider />
+        <MenuItem onClick={() => { setUserAnchor(null); navigate("/profile"); }}>مشاهده پروفایل</MenuItem>
+        <MenuItem onClick={() => { setUserAnchor(null); navigate(stats.toReview > 0 ? "/my-projects?tab=review" : "/my-projects"); }}>
+          پروژه‌های من{stats.toReview > 0 ? ` · ${stats.toReview} درخواست برای بررسی` : ""}
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            setUserAnchor(null);
-            navigate("/my-projects?tab=requests");
-          }}
-        >
-          Sent requests
+        <MenuItem onClick={() => { setUserAnchor(null); navigate("/my-projects?tab=requests"); }}>
+          درخواست‌های ارسالی{stats.waiting > 0 ? ` · ${stats.waiting} در انتظار` : ""}
         </MenuItem>
+        <MenuItem onClick={() => { setUserAnchor(null); navigate("/notifications"); }}>اعلان‌ها</MenuItem>
       </Menu>
 
       <Drawer
@@ -332,7 +365,7 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
         <Box sx={{ position: "absolute", top: 12, right: 12, zIndex: 1 }}>
           <IconButton
             onClick={() => setMobileOpen(false)}
-            aria-label="Close navigation"
+            aria-label="بستن منو"
             sx={{ color: "white" }}
           >
             <CloseRoundedIcon />

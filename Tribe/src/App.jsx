@@ -7,13 +7,15 @@ import ProjectRequests from "./pages/ProjectRequests";
 import CreateProject from "./pages/CreateProject";
 import EditProject from "./pages/EditProject";
 import ProjectDetails from "./pages/ProjectDetails";
+import Notifications from "./pages/Notifications";
+import Profile from "./pages/Profile";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/my-projects" replace /> },
   {
     path: "/my-projects",
     element: (
-      <DashboardLayout pageTitle="My Projects">
+      <DashboardLayout pageTitle="پروژه‌های من">
         <MyProjects />
       </DashboardLayout>
     ),
@@ -21,7 +23,7 @@ const router = createBrowserRouter([
   {
     path: "/my-projects/:projectId/requests",
     element: (
-      <DashboardLayout pageTitle="Project Requests">
+      <DashboardLayout pageTitle="درخواست‌های پروژه">
         <ProjectRequests />
       </DashboardLayout>
     ),
@@ -29,7 +31,7 @@ const router = createBrowserRouter([
   {
     path: "/create-project",
     element: (
-      <DashboardLayout pageTitle="Create Project">
+      <DashboardLayout pageTitle="ساخت پروژه">
         <CreateProject />
       </DashboardLayout>
     ),
@@ -37,7 +39,7 @@ const router = createBrowserRouter([
   {
     path: "/my-projects/:projectId/edit",
     element: (
-      <DashboardLayout pageTitle="Edit Project">
+      <DashboardLayout pageTitle="ویرایش پروژه">
         <EditProject />
       </DashboardLayout>
     ),
@@ -45,8 +47,24 @@ const router = createBrowserRouter([
   {
     path: "/projects/:projectId",
     element: (
-      <DashboardLayout pageTitle="Project">
+      <DashboardLayout pageTitle="پروژه">
         <ProjectDetails />
+      </DashboardLayout>
+    ),
+  },
+  {
+    path: "/notifications",
+    element: (
+      <DashboardLayout pageTitle="اعلان‌ها">
+        <Notifications />
+      </DashboardLayout>
+    ),
+  },
+  {
+    path: "/profile",
+    element: (
+      <DashboardLayout pageTitle="پروفایل">
+        <Profile />
       </DashboardLayout>
     ),
   },

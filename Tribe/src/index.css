@@ -11,7 +11,7 @@
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
-  --sans: 'Inter Variable', Inter, system-ui, sans-serif;
+  --sans: 'Vazirmatn', system-ui, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
@@ -52,5 +52,11 @@ code {
 #root {
   width: 100%;
   min-height: 100svh;
-  text-align: left;
+  text-align: start;
+}
+/* RTL: directional icons (back arrow, send) must point the reading way */
+[data-testid="ArrowBackIcon"],
+[data-testid="ArrowBackRoundedIcon"],
+[data-testid="SendRoundedIcon"] {
+  transform: scaleX(-1);
 }

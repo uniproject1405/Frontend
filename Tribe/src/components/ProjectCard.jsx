@@ -79,7 +79,7 @@ function ProjectCard({ project, onEdit, onClose, onRequests }) {
             </Box>
 
             <Chip
-              label={project.status === "closed" ? "Closed" : "Open"}
+              label={project.status === "closed" ? "بسته" : "باز"}
               color={project.status === "closed" ? "default" : "success"}
               size="small"
               variant="outlined"
@@ -147,7 +147,7 @@ function ProjectCard({ project, onEdit, onClose, onRequests }) {
               variant="body2"
               sx={{ overflowWrap: "anywhere" }}
             >
-              Team capacity: {project.capacity}
+              ظرفیت تیم: {project.capacity}
             </Typography>
           </Stack>
 
@@ -170,7 +170,7 @@ function ProjectCard({ project, onEdit, onClose, onRequests }) {
                 width: { xs: "100%", sm: "auto" },
               }}
             >
-              Edit
+              ویرایش
             </Button>
 
             <Button
@@ -185,7 +185,7 @@ function ProjectCard({ project, onEdit, onClose, onRequests }) {
                 width: { xs: "100%", sm: "auto" },
               }}
             >
-              Requests
+              درخواست‌ها
             </Button>
 
             <Button
@@ -203,7 +203,7 @@ function ProjectCard({ project, onEdit, onClose, onRequests }) {
                 width: { xs: "100%", sm: "auto" },
               }}
             >
-              Close
+              بستن
             </Button>
           </Stack>
         </Stack>

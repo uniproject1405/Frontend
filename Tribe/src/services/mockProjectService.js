@@ -1,5 +1,7 @@
 
 import initialProjects from "../mocks/projects";
+import { applySeed } from "../mocks/seedData";
+import { emitChange } from "./store";
 
 const PROJECTS_KEY = "tribe_projects";
 const REQUESTS_KEY = "tribe_project_requests";
@@ -17,6 +19,7 @@ function readStorage(key, fallback) {
 // Save data to LocalStorage
 function writeStorage(key, data) {
   localStorage.setItem(key, JSON.stringify(data));
+  emitChange();
 }
 
 // Initialize projects
@@ -51,7 +54,7 @@ export async function getProjectById(projectId) {
   );
 
   if (!project) {
-    throw new Error("Project not found.");
+    throw new Error("پروژه پیدا نشد.");
   }
 
   return project;
@@ -82,7 +85,7 @@ export async function updateProject(projectId, updates) {
   );
 
   if (index === -1) {
-    throw new Error("Project not found.");
+    throw new Error("پروژه پیدا نشد.");
   }
 
   const updatedProject = {
@@ -119,7 +122,7 @@ export async function updateRequestStatus(requestId, status) {
   const allowedStatuses = ["pending", "accepted", "rejected"];
 
   if (!allowedStatuses.includes(status)) {
-    throw new Error("Invalid request status.");
+    throw new Error("وضعیت درخواست نامعتبر است.");
   }
 
   const requests = getRequests();
@@ -129,7 +132,21 @@ export async function updateRequestStatus(requestId, status) {
   );
 
   if (index === -1) {
-    throw new Error("Request not found.");
+    throw new Error("درخواست پیدا نشد.");
+  }
+
+  if (status === "accepted" && requests[index].status !== "accepted") {
+    const project = getProjects().find(
+      (item) => String(item.id) === String(requests[index].projectId)
+    );
+    const taken = requests.filter(
+      (request) =>
+        String(request.projectId) === String(requests[index].projectId) &&
+        request.status === "accepted"
+    ).length;
+    if (project && taken >= project.capacity) {
+      throw new Error("ظرفیت این پروژه تکمیل است. جای خالی وجود ندارد.");
+    }
   }
 
   const updatedRequest = {
@@ -147,6 +164,6 @@ export async function updateRequestStatus(requestId, status) {
 
 // Reset mock data for development
 export async function resetMockData() {
-  writeStorage(PROJECTS_KEY, initialProjects);
-  writeStorage(REQUESTS_KEY, []);
+  applySeed();
+  emitChange();
 }

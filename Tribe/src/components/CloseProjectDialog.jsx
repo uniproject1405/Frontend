@@ -55,15 +55,14 @@ function CloseProjectDialog({
           </Box>
 
           <Typography variant="h6" component="span">
-            Close Project?
+            بستن پروژه؟
           </Typography>
         </Stack>
       </DialogTitle>
 
       <DialogContent>
         <Typography color="text.secondary">
-          Are you sure you want to close
-          {project?.title ? ` "${project.title}"` : " this project"}?
+          مطمئن هستید که می‌خواهید {project?.title ? `«${project.title}»` : "این پروژه"} را ببندید؟
         </Typography>
 
         <Typography
@@ -71,13 +70,12 @@ function CloseProjectDialog({
           color="text.secondary"
           sx={{ mt: 2 }}
         >
-          This will change the project status to Closed.
+          وضعیت پروژه به «بسته» تغییر می‌کند.
         </Typography>
         
         {typeof onConfirm !== "function" && (
   <Alert severity="info" sx={{ mt: 2 }}>
-    Closing projects will be available after
-    the backend API is connected.
+    بستن پروژه پس از اتصال به سرور فعال می‌شود.
   </Alert>
 )}
         {error && (
@@ -93,7 +91,7 @@ function CloseProjectDialog({
           disabled={isClosing}
           variant="outlined"
         >
-          Cancel
+          انصراف
         </Button>
 
         <Button
@@ -113,7 +111,7 @@ function CloseProjectDialog({
             )
           }
         >
-          {isClosing ? "Closing..." : "Close Project"}
+          {isClosing ? "در حال بستن..." : "بستن پروژه"}
         </Button>
       </DialogActions>
     </Dialog>

@@ -4,29 +4,29 @@ export function validateProjectStep(formData, step) {
 
   if (step === 0) {
     if (!formData.title.trim()) {
-      errors.title = "Project title is required.";
+      errors.title = "عنوان پروژه الزامی است.";
     }
 
     if (!formData.goal.trim()) {
-      errors.goal = "Project goal is required.";
+      errors.goal = "هدف پروژه الزامی است.";
     }
 
     if (!formData.description.trim()) {
-      errors.description = "Project description is required.";
+      errors.description = "توضیحات پروژه الزامی است.";
     }
   }
 
   if (step === 1) {
     if (!formData.requiredSkills.trim()) {
-      errors.requiredSkills = "At least one skill is required.";
+      errors.requiredSkills = "حداقل یک مهارت لازم است.";
     }
 
     const capacity = Number(formData.capacity);
 
     if (formData.capacity === "") {
-      errors.capacity = "Team capacity is required.";
+      errors.capacity = "ظرفیت تیم الزامی است.";
     } else if (!Number.isInteger(capacity) || capacity <= 0) {
-      errors.capacity = "Capacity must be a positive whole number.";
+      errors.capacity = "ظرفیت باید یک عدد صحیح مثبت باشد.";
     }
   }
 

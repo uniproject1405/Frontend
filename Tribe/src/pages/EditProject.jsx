@@ -64,7 +64,7 @@ function EditProject() {
         );
       } catch (error) {
         if (active) {
-          setMessage(error.message || "Could not load project.");
+          setMessage(error.message || "بارگذاری پروژه انجام نشد.");
         }
       } finally {
         if (active) setLoading(false);
@@ -138,19 +138,19 @@ function EditProject() {
     const nextErrors = {};
 
     if (!formData.title.trim()) {
-      nextErrors.title = "Project title is required.";
+      nextErrors.title = "عنوان پروژه الزامی است.";
     }
 
     if (!formData.goal.trim()) {
-      nextErrors.goal = "Project goal is required.";
+      nextErrors.goal = "هدف پروژه الزامی است.";
     }
 
     if (!formData.description.trim()) {
-      nextErrors.description = "Description is required.";
+      nextErrors.description = "توضیحات الزامی است.";
     }
 
     if (finalSkills.length === 0) {
-      nextErrors.requiredSkills = "Add at least one skill.";
+      nextErrors.requiredSkills = "حداقل یک مهارت اضافه کنید.";
     }
 
     const capacity = Number(formData.capacity);
@@ -160,7 +160,7 @@ function EditProject() {
       !Number.isInteger(capacity) ||
       capacity < 1
     ) {
-      nextErrors.capacity = "Enter a positive whole number.";
+      nextErrors.capacity = "یک عدد صحیح مثبت وارد کنید.";
     }
 
     setErrors(nextErrors);
@@ -178,10 +178,10 @@ function EditProject() {
       });
 
       navigate("/my-projects", {
-        state: { message: "Project updated successfully." },
+        state: { message: "پروژه با موفقیت به‌روزرسانی شد." },
       });
     } catch (error) {
-      setMessage(error.message || "Could not update project.");
+      setMessage(error.message || "به‌روزرسانی پروژه انجام نشد.");
     } finally {
       setSaving(false);
     }
@@ -200,7 +200,7 @@ function EditProject() {
       <Stack spacing={2}>
         <Alert severity="error">{message}</Alert>
         <Button component={Link} to="/my-projects">
-          Back to My Projects
+          بازگشت به پروژه‌های من
         </Button>
       </Stack>
     );
@@ -214,7 +214,7 @@ function EditProject() {
         startIcon={<ArrowBackRoundedIcon />}
         sx={{ mb: 2.5, borderRadius: "8px", fontWeight: 600 }}
       >
-        Back to My Projects
+        بازگشت به پروژه‌های من
       </Button>
 
       <Stack spacing={1} sx={{ mb: 3 }}>
@@ -228,7 +228,7 @@ function EditProject() {
             color: "#071739",
           }}
         >
-          Edit Project
+          ویرایش پروژه
         </Typography>
       </Stack>
 
@@ -251,15 +251,12 @@ function EditProject() {
             >
               <Stack spacing={0.5}>
                 <Typography variant="h6" sx={{ fontWeight: 700, color: "#071739" }}>
-                  Project Details
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Update your project information and team requirements.
+                  جزئیات پروژه
                 </Typography>
               </Stack>
 
               <TextField
-                label="Project Title"
+                label="عنوان پروژه"
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
@@ -270,7 +267,7 @@ function EditProject() {
               />
 
               <TextField
-                label="Project Goal"
+                label="هدف پروژه"
                 name="goal"
                 value={formData.goal}
                 onChange={handleChange}
@@ -281,7 +278,7 @@ function EditProject() {
               />
 
               <TextField
-                label="Description"
+                label="توضیحات"
                 name="description"
                 multiline
                 minRows={4}
@@ -295,7 +292,7 @@ function EditProject() {
 
               <Box>
                 <TextField
-                  label="Required Skills"
+                  label="مهارت‌های لازم"
                   value={skillInput}
                   onChange={(event) => setSkillInput(event.target.value)}
                   onKeyDown={handleSkillKeyDown}
@@ -303,7 +300,7 @@ function EditProject() {
                   error={Boolean(errors.requiredSkills)}
                   helperText={
                     errors.requiredSkills ||
-                    "Press Enter or comma to add a skill."
+                    "برای افزودن مهارت، Enter یا ویرگول بزنید."
                   }
                 />
 
@@ -331,7 +328,7 @@ function EditProject() {
               </Box>
 
               <TextField
-                label="Team Capacity"
+                label="ظرفیت تیم"
                 name="capacity"
                 type="number"
                 value={formData.capacity}
@@ -359,7 +356,7 @@ function EditProject() {
                   disabled={saving}
                   sx={{ borderRadius: "8px", px: 3, minHeight: 42 }}
                 >
-                  Cancel
+                  انصراف
                 </Button>
 
                 <Button
@@ -375,7 +372,7 @@ function EditProject() {
                     "&:hover": { bgcolor: "#142A50" },
                   }}
                 >
-                  {saving ? "Saving..." : "Save Changes"}
+                  {saving ? "در حال ذخیره..." : "ذخیره تغییرات"}
                 </Button>
               </Stack>
             </Stack>
