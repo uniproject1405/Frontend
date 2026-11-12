@@ -184,10 +184,8 @@ function MyProjects() {
 
         <Stack
           direction={{ xs: "column", sm: "row" }}
-          justifyContent="space-between"
-          alignItems={{ xs: "flex-start", sm: "center" }}
           spacing={2}
-          sx={{ position: "relative", zIndex: 1 }}
+          sx={{ alignItems: { xs: "flex-start", sm: "center" }, justifyContent: "space-between", position: "relative", zIndex: 1 }}
         >
           <Typography
             component="h1"
@@ -225,10 +223,8 @@ function MyProjects() {
       {/* SECTION HEADING */}
       <Stack
         direction={{ xs: "column", sm: "row" }}
-        justifyContent="space-between"
-        alignItems={{ xs: "flex-start", sm: "center" }}
         spacing={1}
-        sx={{ mb: 2.5 }}
+        sx={{ alignItems: { xs: "flex-start", sm: "center" }, justifyContent: "space-between", mb: 2.5 }}
       >
         {isConnected && (
           <Chip

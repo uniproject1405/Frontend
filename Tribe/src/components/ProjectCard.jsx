@@ -47,10 +47,7 @@ function ProjectCard({ project, onEdit, onClose, onRequests }) {
           {/* PROJECT HEADER */}
           <Stack
             direction={{ xs: "column", sm: "row" }}
-            justifyContent="space-between"
-            alignItems={{ xs: "flex-start", sm: "flex-start" }}
-            spacing={1.5}
-          >
+            spacing={1.5} sx={{ alignItems: { xs: "flex-start", sm: "flex-start" }, justifyContent: "space-between" }}>
             <Box sx={{ minWidth: 0, width: "100%" }}>
               <Typography
                 variant="h6"
@@ -109,8 +106,7 @@ function ProjectCard({ project, onEdit, onClose, onRequests }) {
             direction="row"
             spacing={1}
             useFlexGap
-            flexWrap="wrap"
-            sx={{
+            sx={{ flexWrap: "wrap",
               width: "100%",
               minWidth: 0,
             }}
@@ -137,9 +133,8 @@ function ProjectCard({ project, onEdit, onClose, onRequests }) {
           {/* TEAM CAPACITY */}
           <Stack
             direction="row"
-            alignItems="center"
             spacing={1}
-            sx={{ color: "text.secondary", minWidth: 0 }}
+            sx={{ alignItems: "center", color: "text.secondary", minWidth: 0 }}
           >
             <PeopleOutlineRoundedIcon fontSize="small" />
 
@@ -156,8 +151,7 @@ function ProjectCard({ project, onEdit, onClose, onRequests }) {
             direction={{ xs: "column", sm: "row" }}
             spacing={1}
             useFlexGap
-            flexWrap="wrap"
-            sx={{ width: "100%" }}
+            sx={{ flexWrap: "wrap", width: "100%" }}
           >
             <Button
               variant="outlined"

@@ -197,7 +197,7 @@ function ProjectRequests() {
           {requests.length === 0 ? (
             <Card>
               <CardContent sx={{ p: { xs: 3, md: 5 }, minHeight: 280, display: "grid", placeItems: "center" }}>
-                <Stack spacing={2} alignItems="center" textAlign="center" sx={{ py: 3, maxWidth: 490 }}>
+                <Stack spacing={2} textAlign="center" sx={{ alignItems: "center", py: 3, maxWidth: 490 }}>
                   <Box
                     sx={{
                       width: 56,

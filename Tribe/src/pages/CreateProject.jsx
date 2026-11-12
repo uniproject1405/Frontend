@@ -291,10 +291,10 @@ async function handleSubmit(event) {
 
         {/* Step progress */}
         <Box sx={{ mb: 3 }}>
-          <Stack direction="row" spacing={1} justifyContent="space-between" sx={{ mb: 1 }}>
+          <Stack direction="row" spacing={1} sx={{ justifyContent: "space-between", mb: 1 }}>
             {STEPS.map((step, index) => (
               <Box key={step} sx={{ flex: 1, minWidth: 0 }}>
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
                   <Chip
                     size="small"
                     label={index + 1}
@@ -352,7 +352,7 @@ async function handleSubmit(event) {
                       error={Boolean(errors.title)}
                       required
                       inputRef={(element) => { fieldRefs.current.title = element; }}
-                      inputProps={{ maxLength: 80 }}
+                      slotProps={{ htmlInput: { maxLength: 80 } }}
                       helperText={errors.title || `${formData.title.length}/80 کاراکتر`}
                     />
 
@@ -365,7 +365,7 @@ async function handleSubmit(event) {
                       error={Boolean(errors.goal)}
                       required
                       inputRef={(element) => { fieldRefs.current.goal = element; }}
-                      inputProps={{ maxLength: 160 }}
+                      slotProps={{ htmlInput: { maxLength: 160 } }}
                       helperText={errors.goal || `${formData.goal.length}/160 کاراکتر`}
                     />
 
@@ -380,7 +380,7 @@ async function handleSubmit(event) {
                       error={Boolean(errors.description)}
                       required
                       inputRef={(element) => { fieldRefs.current.description = element; }}
-                      inputProps={{ maxLength: 1000 }}
+                      slotProps={{ htmlInput: { maxLength: 1000 } }}
                       helperText={errors.description || `${formData.description.length}/1000 کاراکتر`}
                     />
                   </Stack>
@@ -421,8 +421,7 @@ async function handleSubmit(event) {
                           direction="row"
                           spacing={1}
                           useFlexGap
-                          flexWrap="wrap"
-                          sx={{ mt: 2, maxWidth: "100%", overflowWrap: "anywhere" }}
+                          sx={{ flexWrap: "wrap", mt: 2, maxWidth: "100%", overflowWrap: "anywhere" }}
                         >
                           {skills.map((skill) => (
                             <Chip
@@ -440,7 +439,7 @@ async function handleSubmit(event) {
                       label="ظرفیت تیم"
                       name="capacity"
                       type="text"
-                      inputProps={{ inputMode: "numeric", pattern: "[0-9]*", maxLength: 5 }}
+                      slotProps={{ htmlInput: { inputMode: "numeric", pattern: "[0-9]*", maxLength: 5 } }}
                       value={formData.capacity}
                       onChange={(event) => {
                         const numericValue = event.target.value.replace(/\D/g, "");
@@ -481,7 +480,7 @@ async function handleSubmit(event) {
                     <Divider />
                     <Box>
                       <Typography variant="subtitle2" color="text.secondary">مهارت‌های لازم</Typography>
-                      <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" sx={{ mt: 1 }}>
+                      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap", mt: 1 }}>
                         {skills.map((skill) => <Chip key={skill} label={skill} size="small" />)}
                       </Stack>
                     </Box>
@@ -670,7 +669,7 @@ async function handleSubmit(event) {
         }}
       >
         <DialogTitle id="unsaved-changes-title">
-          <Stack direction="row" spacing={2} alignItems="center">
+          <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
             <Box sx={{ width: 48, height: 48, borderRadius: 3, bgcolor: "rgba(227, 195, 157, 0.30)", display: "grid", placeItems: "center", flexShrink: 0 }}>
               <WarningAmberRoundedIcon sx={{ color: "#A68868", fontSize: 27 }} />
             </Box>
