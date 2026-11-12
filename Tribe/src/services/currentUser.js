@@ -4,10 +4,10 @@ import { emitChange } from "./store";
 
 export const PROFILE_KEY = "tribe_profile";
 export const defaultProfile = {
-  name: "Niusha G.",
-  headline: "Frontend developer",
-  bio: "I like building calm, simple interfaces and learning from teammates.",
-  skills: ["React", "UI/UX", "Figma"],
+  name: "نیوشا گیلانی",
+  headline: "توسعه‌دهنده فرانت‌اند",
+  bio: "عاشق ساخت رابط‌های ساده و آرام و یادگرفتن از هم‌تیمی‌هایم هستم.",
+  skills: ["React", "طراحی رابط کاربری", "Figma"],
 };
 
 export function getProfile() {

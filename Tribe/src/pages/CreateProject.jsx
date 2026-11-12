@@ -34,7 +34,7 @@ const INITIAL_FORM_DATA = {
   capacity: "",
 };
 
-const STEPS = ["Project Details", "Team Requirements", "Review & Submit"];
+const STEPS = ["جزئیات پروژه", "نیازهای تیم", "بازبینی و ثبت"];
 
 function CreateProject() {
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
@@ -236,7 +236,7 @@ async function handleSubmit(event) {
 
   } catch (error) {
     setMessage(
-      error.message || "Something went wrong while creating the project."
+      error.message || "هنگام ساخت پروژه مشکلی پیش آمد."
     );
   }
 }
@@ -259,13 +259,13 @@ async function handleSubmit(event) {
           color="primary"
           sx={{ mb: 3 }}
         >
-          Back to My Projects
+          بازگشت به پروژه‌های من
         </Button>
 
         <Stack spacing={1} sx={{ mb: 3 }}>
           <Chip
             icon={<AutoAwesomeRoundedIcon />}
-            label="CREATE SOMETHING GREAT"
+            label="چیز بزرگی بساز"
             sx={{
               alignSelf: "flex-start",
               bgcolor: "#E3C39D33",
@@ -285,7 +285,7 @@ async function handleSubmit(event) {
               color: "#071739",
             }}
           >
-            Create a New Project
+            ساخت پروژه جدید
           </Typography>
         </Stack>
 
@@ -338,53 +338,53 @@ async function handleSubmit(event) {
                   <Stack spacing={3}>
                     <Box>
                       <Typography variant="h6" sx={{ mb: 0.5 }}>
-                        Project Details
+                        جزئیات پروژه
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Tell us about your project and what you want to achieve.
+                        درباره پروژه و هدفی که دارید برایمان بنویسید.
                       </Typography>
                     </Box>
                     <Divider />
 
                     <TextField
-                      label="Project Title"
+                      label="عنوان پروژه"
                       name="title"
-                      placeholder="e.g. AI Study Assistant"
+                      placeholder="مثلاً دستیار هوشمند مطالعه"
                       value={formData.title}
                       onChange={handleChange}
                       error={Boolean(errors.title)}
                       required
                       inputRef={(element) => { fieldRefs.current.title = element; }}
                       inputProps={{ maxLength: 80 }}
-                      helperText={errors.title || `${formData.title.length}/80 characters`}
+                      helperText={errors.title || `${formData.title.length}/80 کاراکتر`}
                     />
 
                     <TextField
-                      label="Project Goal"
+                      label="هدف پروژه"
                       name="goal"
-                      placeholder="What is the main goal?"
+                      placeholder="هدف اصلی چیست؟"
                       value={formData.goal}
                       onChange={handleChange}
                       error={Boolean(errors.goal)}
                       required
                       inputRef={(element) => { fieldRefs.current.goal = element; }}
                       inputProps={{ maxLength: 160 }}
-                      helperText={errors.goal || `${formData.goal.length}/160 characters`}
+                      helperText={errors.goal || `${formData.goal.length}/160 کاراکتر`}
                     />
 
                     <TextField
-                      label="Description"
+                      label="توضیحات"
                       name="description"
                       multiline
                       minRows={4}
-                      placeholder="Describe your idea..."
+                      placeholder="ایده‌تان را شرح دهید..."
                       value={formData.description}
                       onChange={handleChange}
                       error={Boolean(errors.description)}
                       required
                       inputRef={(element) => { fieldRefs.current.description = element; }}
                       inputProps={{ maxLength: 1000 }}
-                      helperText={errors.description || `${formData.description.length}/1000 characters`}
+                      helperText={errors.description || `${formData.description.length}/1000 کاراکتر`}
                     />
                   </Stack>
                 </CardContent>
@@ -397,18 +397,18 @@ async function handleSubmit(event) {
                   <Stack spacing={3}>
                     <Box>
                       <Typography variant="h6" sx={{ mb: 0.5 }}>
-                        Team Requirements
+                        نیازهای تیم
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Define the skills and team size you need.
+                        مهارت‌ها و اندازه تیم مورد نیازتان را مشخص کنید.
                       </Typography>
                     </Box>
                     <Divider />
 
                     <Box>
                       <TextField
-                        label="Required Skills"
-                        placeholder="Type a skill and press Enter"
+                        label="مهارت‌های لازم"
+                        placeholder="یک مهارت بنویسید و Enter بزنید"
                         value={skillInput}
                         onChange={(event) => {
                           setSkillInput(event.target.value);
@@ -417,7 +417,7 @@ async function handleSubmit(event) {
                         onKeyDown={handleSkillKeyDown}
                         onBlur={() => addSkill()}
                         error={Boolean(errors.requiredSkills)}
-                        helperText={errors.requiredSkills || "Press Enter or comma to add a skill."}
+                        helperText={errors.requiredSkills || "برای افزودن مهارت، Enter یا ویرگول بزنید."}
                         inputRef={(element) => { fieldRefs.current.requiredSkills = element; }}
                         required
                       />
@@ -443,7 +443,7 @@ async function handleSubmit(event) {
                     </Box>
 
                     <TextField
-                      label="Team Capacity"
+                      label="ظرفیت تیم"
                       name="capacity"
                       type="text"
                       inputProps={{ inputMode: "numeric", pattern: "[0-9]*", maxLength: 5 }}
@@ -454,7 +454,7 @@ async function handleSubmit(event) {
                         clearFieldError("capacity");
                       }}
                       error={Boolean(errors.capacity)}
-                      helperText={errors.capacity || "Enter a positive whole number of team members."}
+                      helperText={errors.capacity || "تعداد اعضای تیم را به صورت عدد صحیح مثبت وارد کنید."}
                       inputRef={(element) => { fieldRefs.current.capacity = element; }}
                       required
                     />
@@ -468,34 +468,34 @@ async function handleSubmit(event) {
                 <CardContent sx={{ p: { xs: 3, md: 5 } }}>
                   <Stack spacing={3}>
                     <Box>
-                      <Typography variant="h6">Review Your Project</Typography>
+                      <Typography variant="h6">بازبینی پروژه</Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Please review your project information before submission.
+                        لطفاً پیش از ثبت، اطلاعات پروژه را بررسی کنید.
                       </Typography>
                     </Box>
                     <Divider />
 
                     <Box>
-                      <Typography variant="subtitle2" color="text.secondary">Project Title</Typography>
+                      <Typography variant="subtitle2" color="text.secondary">عنوان پروژه</Typography>
                       <Typography sx={{ overflowWrap: "anywhere" }}>{formData.title}</Typography>
                     </Box>
                     <Box>
-                      <Typography variant="subtitle2" color="text.secondary">Project Goal</Typography>
+                      <Typography variant="subtitle2" color="text.secondary">هدف پروژه</Typography>
                       <Typography sx={{ overflowWrap: "anywhere" }}>{formData.goal}</Typography>
                     </Box>
                     <Box>
-                      <Typography variant="subtitle2" color="text.secondary">Description</Typography>
+                      <Typography variant="subtitle2" color="text.secondary">توضیحات</Typography>
                       <Typography sx={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>{formData.description}</Typography>
                     </Box>
                     <Divider />
                     <Box>
-                      <Typography variant="subtitle2" color="text.secondary">Required Skills</Typography>
+                      <Typography variant="subtitle2" color="text.secondary">مهارت‌های لازم</Typography>
                       <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" sx={{ mt: 1 }}>
                         {skills.map((skill) => <Chip key={skill} label={skill} size="small" />)}
                       </Stack>
                     </Box>
                     <Box>
-                      <Typography variant="subtitle2" color="text.secondary">Team Capacity</Typography>
+                      <Typography variant="subtitle2" color="text.secondary">ظرفیت تیم</Typography>
                       <Typography>{formData.capacity} members</Typography>
                     </Box>
                   </Stack>
@@ -521,7 +521,7 @@ async function handleSubmit(event) {
                   disabled={activeStep === 0}
                   sx={{ whiteSpace: "nowrap", flex: { xs: 1, sm: "none" } }}
                 >
-                  Back
+                  قبلی
                 </Button>
                 <Button
                   type="button"
@@ -530,7 +530,7 @@ async function handleSubmit(event) {
                   onClick={handleOpenResetDialog}
                   sx={{ whiteSpace: "nowrap", flex: { xs: 1, sm: "none" } }}
                 >
-                  Reset
+                  بازنشانی
                 </Button>
                 <Button
                   component={Link}
@@ -538,7 +538,7 @@ async function handleSubmit(event) {
                   variant="text"
                   sx={{ whiteSpace: "nowrap", flex: { xs: 1, sm: "none" } }}
                 >
-                  Cancel
+                  انصراف
                 </Button>
               </Box>
 
@@ -549,7 +549,7 @@ async function handleSubmit(event) {
                 startIcon={activeStep === 2 ? <AddRoundedIcon /> : undefined}
                 sx={{ px: 4, whiteSpace: "nowrap" }}
               >
-                {isSubmitted ? "Submitting..." : activeStep === 2 ? "Submit Project" : "Next"}
+                {isSubmitted ? "در حال ثبت..." : activeStep === 2 ? "ثبت پروژه" : "بعدی"}
               </Button>
             </Box>
 
@@ -567,7 +567,7 @@ async function handleSubmit(event) {
               >
                 <Stack spacing={0.5}>
                   <Typography sx={{ color: "#17603D", fontWeight: 700, fontSize: 15 }}>
-                    Could not create project
+                    ساخت پروژه انجام نشد
                   </Typography>
                   <Typography variant="body2" sx={{ color: "#397354", lineHeight: 1.7 }}>
                     {message}
@@ -578,14 +578,14 @@ async function handleSubmit(event) {
           </Stack>
         </Box>
 
-        <Card sx={{ display: { xs: "none", lg: "block" }, position: "sticky", top: 88, borderRadius: "16px" }} aria-label="Project preview">
+        <Card sx={{ display: { xs: "none", lg: "block" }, position: "sticky", top: 88, borderRadius: "16px" }} aria-label="پیش‌نمایش پروژه">
           <CardContent sx={{ p: 3 }}>
-            <Typography variant="overline" color="text.secondary">Preview</Typography>
+            <Typography variant="overline" color="text.secondary">پیش‌نمایش</Typography>
             <Typography variant="h6" sx={{ fontWeight: 700, mt: 0.5, wordBreak: "break-word", color: formData.title ? "text.primary" : "text.disabled" }}>
-              {formData.title || "Your project title"}
+              {formData.title || "عنوان پروژه شما"}
             </Typography>
             <Typography color="text.secondary" sx={{ mt: 0.5, wordBreak: "break-word" }}>
-              {formData.goal || "Your goal appears here"}
+              {formData.goal || "هدف شما اینجا نمایش داده می‌شود"}
             </Typography>
             <Stack direction="row" sx={{ gap: 0.75, flexWrap: "wrap", mt: 2 }}>
               {String(formData.requiredSkills).split(",").map((x) => x.trim()).filter(Boolean).slice(0, 8).map((x) => (
@@ -593,10 +593,10 @@ async function handleSubmit(event) {
               ))}
             </Stack>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-              Team capacity: {formData.capacity || "–"}
+              ظرفیت تیم: {formData.capacity || "–"}
             </Typography>
             <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 2 }}>
-              This is how people will see your project.
+              دیگران پروژه شما را این‌گونه می‌بینند.
             </Typography>
           </CardContent>
         </Card>
@@ -627,10 +627,10 @@ async function handleSubmit(event) {
         >
           <Stack spacing={0.35}>
             <Typography sx={{ fontWeight: 700, fontSize: 14 }}>
-              Project created successfully!
+              پروژه با موفقیت ساخته شد!
             </Typography>
             <Typography sx={{ fontSize: 12, opacity: 0.9 }}>
-              Taking you to My Projects...
+              در حال انتقال به پروژه‌های من...
             </Typography>
           </Stack>
           <Box
@@ -647,7 +647,7 @@ async function handleSubmit(event) {
                 height: "100%",
                 width: "100%",
                 bgcolor: "#FFFFFF",
-                transformOrigin: "left center",
+                transformOrigin: "right center",
                 animation: "toast-countdown 2s linear forwards",
               },
               "@keyframes toast-countdown": {
@@ -687,19 +687,19 @@ async function handleSubmit(event) {
               <WarningAmberRoundedIcon sx={{ color: "#A68868", fontSize: 27 }} />
             </Box>
             <Typography component="span" sx={{ fontSize: 21, fontWeight: 800, color: "#071739" }}>
-              Leave this page?
+              این صفحه را ترک می‌کنید؟
             </Typography>
           </Stack>
         </DialogTitle>
         <DialogContent>
           <Typography sx={{ fontSize: 14, lineHeight: 1.8, color: "#4B6382" }}>
-            You have unsaved changes in your project form. If you leave this page, your information will be lost.
+            تغییرات فرم ذخیره نشده‌اند. اگر صفحه را ترک کنید، اطلاعات شما از بین می‌رود.
           </Typography>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 3, pt: 1, flexWrap: "wrap", gap: 1 }}>
-          <Button variant="outlined" onClick={handleStayOnPage}>Stay Here</Button>
+          <Button variant="outlined" onClick={handleStayOnPage}>ماندن</Button>
           <Button variant="contained" onClick={handleLeavePage} sx={{ bgcolor: "#071739", "&:hover": { bgcolor: "#4B6382" } }}>
-            Leave Page
+            ترک صفحه
           </Button>
         </DialogActions>
       </Dialog>
@@ -727,16 +727,16 @@ async function handleSubmit(event) {
         }}
       >
         <DialogTitle id="reset-form-dialog-title" sx={{ fontWeight: 800, color: "#071739" }}>
-          Reset Project Form?
+          فرم پروژه بازنشانی شود؟
         </DialogTitle>
         <DialogContent>
           <Typography sx={{ color: "#4B6382", fontSize: 14, lineHeight: 1.8 }}>
-            All entered project details and selected skills will be cleared. This action cannot be undone.
+            همه اطلاعات واردشده و مهارت‌های انتخاب‌شده پاک می‌شوند. این کار قابل بازگشت نیست.
           </Typography>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 3, pt: 1, gap: 1, flexWrap: "wrap" }}>
-          <Button variant="outlined" onClick={handleCancelReset}>Keep Editing</Button>
-          <Button variant="contained" color="error" onClick={handleConfirmReset}>Reset Form</Button>
+          <Button variant="outlined" onClick={handleCancelReset}>ادامه ویرایش</Button>
+          <Button variant="contained" color="error" onClick={handleConfirmReset}>بازنشانی فرم</Button>
         </DialogActions>
       </Dialog>
     </Box>

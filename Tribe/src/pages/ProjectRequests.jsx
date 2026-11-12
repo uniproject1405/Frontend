@@ -40,11 +40,11 @@ function ProjectRequests() {
       ]);
       setProject(projectData);
       if (!Array.isArray(requestData)) {
-        throw new Error("Invalid requests data received.");
+        throw new Error("داده‌های درخواست‌ها نامعتبر است.");
       }
       setRequests(requestData);
     } catch (error) {
-      setLoadError(error.message || "Unable to load project requests.");
+      setLoadError(error.message || "بارگذاری درخواست‌های پروژه ممکن نشد.");
       setProject(null);
       setRequests([]);
     } finally {
@@ -59,14 +59,14 @@ function ProjectRequests() {
       .then(([projectData, requestData]) => {
         if (cancelled) return;
         if (!Array.isArray(requestData)) {
-          throw new Error("Invalid requests data received.");
+          throw new Error("داده‌های درخواست‌ها نامعتبر است.");
         }
         setProject(projectData);
         setRequests(requestData);
       })
       .catch((error) => {
         if (cancelled) return;
-        setLoadError(error.message || "Unable to load project requests.");
+        setLoadError(error.message || "بارگذاری درخواست‌های پروژه ممکن نشد.");
         setProject(null);
         setRequests([]);
       })
@@ -94,11 +94,11 @@ function ProjectRequests() {
       );
       setActionMessage(
         nextStatus === "accepted"
-          ? "Membership request accepted."
-          : "Membership request rejected."
+          ? "درخواست عضویت پذیرفته شد."
+          : "درخواست عضویت رد شد."
       );
     } catch (error) {
-      setActionError(error.message || "Unable to update request.");
+      setActionError(error.message || "به‌روزرسانی درخواست انجام نشد.");
     } finally {
       setUpdatingId(null);
     }
@@ -124,7 +124,7 @@ function ProjectRequests() {
         startIcon={<ArrowBackRoundedIcon />}
         sx={{ mb: 2.5, px: 1.5 }}
       >
-        Back to My Projects
+        بازگشت به پروژه‌های من
       </Button>
 
       <Stack spacing={1.5} sx={{ mb: 3 }}>
@@ -138,7 +138,7 @@ function ProjectRequests() {
             color: "#071739",
           }}
         >
-          Project Requests
+          درخواست‌های پروژه
         </Typography>
         {project?.title && (
           <Chip
@@ -170,8 +170,8 @@ function ProjectRequests() {
               gap: 2,
             }}
           >
-            <CircularProgress aria-label="Loading project requests" />
-            <Typography color="text.secondary">Loading requests...</Typography>
+            <CircularProgress aria-label="در حال بارگذاری درخواست‌ها" />
+            <Typography color="text.secondary">در حال بارگذاری درخواست‌ها...</Typography>
           </CardContent>
         </Card>
       )}
@@ -184,7 +184,7 @@ function ProjectRequests() {
             variant="outlined"
             sx={{ alignSelf: "flex-start", borderColor: "#4B6382", color: "#071739" }}
           >
-            Try Again
+            تلاش دوباره
           </Button>
         </Stack>
       )}
@@ -212,12 +212,12 @@ function ProjectRequests() {
                       sx={{ fontSize: 28, color: "#4B6382" }}
                     />
                   </Box>
-                  <Typography variant="h6">No membership requests yet</Typography>
+                  <Typography variant="h6">هنوز درخواست عضویتی نیست</Typography>
                   <Typography color="text.secondary">
-                    Requests for this project will appear here when they are available.
+                    درخواست‌های این پروژه اینجا نمایش داده می‌شوند.
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    Membership requests will appear here when someone applies to join.
+                    وقتی کسی درخواست عضویت بدهد، اینجا می‌بینید.
                   </Typography>
                 </Stack>
               </CardContent>
@@ -229,7 +229,7 @@ function ProjectRequests() {
                 request.applicantName ||
                 request.userName ||
                 request.applicant?.name ||
-                "Applicant name unavailable";
+                "نام متقاضی نامشخص";
               const isPending = status === "pending";
               const isUpdating = updatingId !== null;
               const full = project && requests.filter((x) => x.status === "accepted").length >= project.capacity;
@@ -255,7 +255,7 @@ function ProjectRequests() {
                             {applicantName}
                           </Typography>
                           <Chip
-                            label={status.charAt(0).toUpperCase() + status.slice(1)}
+                            label={({ pending: "در انتظار", accepted: "پذیرفته شد", rejected: "رد شد" })[status] || status}
                             size="small"
                             color={status === "accepted" ? "success" : status === "rejected" ? "error" : "default"}
                             variant="outlined"
@@ -266,7 +266,7 @@ function ProjectRequests() {
                           color="text.secondary"
                           sx={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere", mt: 0.5, fontStyle: request.message ? "normal" : "italic" }}
                         >
-                          {request.message || "No message"}
+                          {request.message || "بدون پیام"}
                         </Typography>
                       </Box>
                     </Box>
@@ -279,7 +279,7 @@ function ProjectRequests() {
                           disabled={isUpdating || full}
                           onClick={() => handleRequestAction(request.id, "accepted")}
                         >
-                          {full ? "Team full" : updatingId === request.id ? "Updating..." : "Accept"}
+                          {full ? "ظرفیت تکمیل" : updatingId === request.id ? "در حال ثبت..." : "پذیرش"}
                         </Button>
                         <Button
                           variant="outlined"
@@ -287,7 +287,7 @@ function ProjectRequests() {
                           disabled={isUpdating}
                           onClick={() => handleRequestAction(request.id, "rejected")}
                         >
-                          Reject
+                          رد
                         </Button>
                       </Box>
                     )}

@@ -24,7 +24,7 @@ export function getOwner(projectId) {
 }
 
 function nameOf(request) {
-  return request.applicantName || request.userName || request.applicant?.name || "Unknown";
+  return request.applicantName || request.userName || request.applicant?.name || "نامشخص";
 }
 
 // relation: owner | member | pending | none
@@ -84,11 +84,11 @@ export async function getMyRequests() {
 
 export async function createJoinRequest(projectId, message = "") {
   const { project, relation, spotsLeft } = await getProjectDetails(projectId);
-  if (relation === "owner") throw new Error("You own this project.");
-  if (relation === "member") throw new Error("You're already on this team.");
-  if (relation === "pending") throw new Error("You already sent a request.");
-  if (project.status !== "open") throw new Error("This project is closed.");
-  if (spotsLeft === 0) throw new Error("This project is full.");
+  if (relation === "owner") throw new Error("شما مالک این پروژه هستید.");
+  if (relation === "member") throw new Error("شما همین حالا عضو این تیم هستید.");
+  if (relation === "pending") throw new Error("قبلاً درخواست فرستاده‌اید.");
+  if (project.status !== "open") throw new Error("این پروژه بسته شده است.");
+  if (spotsLeft === 0) throw new Error("ظرفیت این پروژه تکمیل است.");
 
   const request = {
     id: crypto.randomUUID(),
@@ -112,8 +112,8 @@ export async function createJoinRequest(projectId, message = "") {
 export async function withdrawRequest(requestId) {
   const all = readRequests();
   const target = all.find((r) => String(r.id) === String(requestId) && r.userId === currentUser.id);
-  if (!target) throw new Error("Request not found.");
-  if (target.status !== "pending") throw new Error("Only waiting requests can be withdrawn.");
+  if (!target) throw new Error("درخواست پیدا نشد.");
+  if (target.status !== "pending") throw new Error("فقط درخواست‌های در انتظار را می‌توان پس گرفت.");
   writeRequests(all.filter((r) => r !== target));
 }
 

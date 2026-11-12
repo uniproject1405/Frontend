@@ -40,18 +40,18 @@ function EditDialog({ open, onClose }) {
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Edit your profile</DialogTitle>
+      <DialogTitle>ویرایش پروفایل</DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ pt: 1 }}>
-          <TextField label="Name" value={form.name} onChange={set("name")} error={nameError} helperText={nameError ? "Name is required" : `${form.name.length}/40`} slotProps={{ htmlInput: { maxLength: 40 } }} />
-          <TextField label="Headline" value={form.headline} onChange={set("headline")} helperText="For example: Product designer" slotProps={{ htmlInput: { maxLength: 60 } }} />
-          <TextField label="About you" multiline minRows={3} value={form.bio} onChange={set("bio")} helperText={`${form.bio.length}/300`} slotProps={{ htmlInput: { maxLength: 300 } }} />
-          <TextField label="Skills" value={form.skillsText} onChange={set("skillsText")} helperText="Separate with commas" />
+          <TextField label="نام" value={form.name} onChange={set("name")} error={nameError} helperText={nameError ? "نام الزامی است" : `${form.name.length}/40`} slotProps={{ htmlInput: { maxLength: 40 } }} />
+          <TextField label="عنوان شغلی" value={form.headline} onChange={set("headline")} helperText="مثلاً: طراح محصول" slotProps={{ htmlInput: { maxLength: 60 } }} />
+          <TextField label="درباره شما" multiline minRows={3} value={form.bio} onChange={set("bio")} helperText={`${form.bio.length}/300`} slotProps={{ htmlInput: { maxLength: 300 } }} />
+          <TextField label="مهارت‌ها" value={form.skillsText} onChange={set("skillsText")} helperText="با ویرگول جدا کنید" />
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button variant="contained" onClick={save} disabled={nameError}>Save</Button>
+        <Button onClick={onClose}>انصراف</Button>
+        <Button variant="contained" onClick={save} disabled={nameError}>ذخیره</Button>
       </DialogActions>
     </Dialog>
   );
@@ -77,33 +77,33 @@ function Profile() {
             {profile.bio && <Typography sx={{ whiteSpace: "pre-line", wordBreak: "break-word" }}>{profile.bio}</Typography>}
             <Stack direction="row" sx={{ gap: 1, flexWrap: "wrap" }}>
               {profile.skills.map((s) => <Chip key={s} label={s} sx={{ bgcolor: "#F0F3F8", color: "#4B6382" }} />)}
-              {profile.skills.length === 0 && <Typography variant="body2" color="text.secondary">Add skills so owners know how you can help.</Typography>}
+              {profile.skills.length === 0 && <Typography variant="body2" color="text.secondary">مهارت‌هایتان را اضافه کنید تا مالکان پروژه بدانند چه کمکی از شما برمی‌آید.</Typography>}
             </Stack>
-            <Typography variant="body2" color="text.secondary">Project owners see this when you ask to join.</Typography>
-            <Button variant="outlined" onClick={() => setEditing(true)}>Edit profile</Button>
+            <Typography variant="body2" color="text.secondary">مالکان پروژه هنگام درخواست عضویت شما این را می‌بینند.</Typography>
+            <Button variant="outlined" onClick={() => setEditing(true)}>ویرایش پروفایل</Button>
           </Stack>
           {editing && <EditDialog open onClose={() => setEditing(false)} />}
         </Card>
 
         <Stack spacing={3}>
           <Box sx={{ display: "grid", gap: 2, gridTemplateColumns: { xs: "repeat(2, 1fr)", sm: "repeat(4, 1fr)" } }}>
-            <Stat label="Projects you created" value={stats.created} to="/my-projects" />
-            <Stat label="Teams you joined" value={stats.joined} to="/my-projects?tab=joined" />
-            <Stat label="Waiting for reply" value={stats.waiting} to="/my-projects?tab=requests" />
-            <Stat label="Requests to review" value={stats.toReview} to="/my-projects?tab=review" />
+            <Stat label="پروژه‌هایی که ساخته‌اید" value={stats.created} to="/my-projects" />
+            <Stat label="تیم‌هایی که عضو شده‌اید" value={stats.joined} to="/my-projects?tab=joined" />
+            <Stat label="در انتظار پاسخ" value={stats.waiting} to="/my-projects?tab=requests" />
+            <Stat label="درخواست‌های در انتظار بررسی" value={stats.toReview} to="/my-projects?tab=review" />
           </Box>
 
           <Card sx={{ p: 3 }}>
-            <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 1.5 }}>Needs your attention</Typography>
+            <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 1.5 }}>نیازمند توجه شما</Typography>
             {stats.byProject.length === 0 ? (
-              <Typography color="text.secondary">Nothing to review right now.</Typography>
+              <Typography color="text.secondary">فعلاً چیزی برای بررسی نیست.</Typography>
             ) : (
               <Stack spacing={1}>
                 {stats.byProject.map(({ project, count }) => (
                   <Stack key={project.id} direction="row" sx={{ alignItems: "center", justifyContent: "space-between", gap: 2 }}>
                     <Typography sx={{ minWidth: 0, wordBreak: "break-word" }}>{project.title}</Typography>
                     <Button component={RouterLink} to={`/my-projects/${project.id}/requests`} sx={{ flexShrink: 0 }}>
-                      Review {count} {count === 1 ? "request" : "requests"}
+                      بررسی {count} درخواست
                     </Button>
                   </Stack>
                 ))}
@@ -112,9 +112,9 @@ function Profile() {
           </Card>
 
           <Card sx={{ p: 3 }}>
-            <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 0.5 }}>Demo data</Typography>
-            <Typography color="text.secondary" sx={{ mb: 2 }}>Restore the sample projects, requests and notifications.</Typography>
-            <Button color="inherit" variant="outlined" onClick={async () => { await resetMockData(); setDone("Demo data restored."); }}>Reset demo data</Button>
+            <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 0.5 }}>داده‌های آزمایشی</Typography>
+            <Typography color="text.secondary" sx={{ mb: 2 }}>پروژه‌ها، درخواست‌ها و اعلان‌های نمونه را بازگردانی کنید.</Typography>
+            <Button color="inherit" variant="outlined" onClick={async () => { await resetMockData(); setDone("داده‌های آزمایشی بازگردانی شد."); }}>بازنشانی داده‌های آزمایشی</Button>
             {done && <Alert severity="success" sx={{ mt: 2 }} onClose={() => setDone("")}>{done}</Alert>}
           </Card>
         </Stack>

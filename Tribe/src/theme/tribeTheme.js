@@ -2,6 +2,7 @@
 import { createTheme } from "@mui/material/styles";
 
 const tribeTheme = createTheme({
+  direction: "rtl",
   palette: {
     mode: "light",
 
@@ -37,7 +38,7 @@ const tribeTheme = createTheme({
   },
 
   typography: {
-    fontFamily: '"Inter", "Segoe UI", Arial, sans-serif',
+    fontFamily: '"Vazirmatn", "Segoe UI", Arial, sans-serif',
 
     h4: {
       fontWeight: 700,

@@ -15,7 +15,7 @@ const router = createBrowserRouter([
   {
     path: "/my-projects",
     element: (
-      <DashboardLayout pageTitle="My Projects">
+      <DashboardLayout pageTitle="پروژه‌های من">
         <MyProjects />
       </DashboardLayout>
     ),
@@ -23,7 +23,7 @@ const router = createBrowserRouter([
   {
     path: "/my-projects/:projectId/requests",
     element: (
-      <DashboardLayout pageTitle="Project Requests">
+      <DashboardLayout pageTitle="درخواست‌های پروژه">
         <ProjectRequests />
       </DashboardLayout>
     ),
@@ -31,7 +31,7 @@ const router = createBrowserRouter([
   {
     path: "/create-project",
     element: (
-      <DashboardLayout pageTitle="Create Project">
+      <DashboardLayout pageTitle="ساخت پروژه">
         <CreateProject />
       </DashboardLayout>
     ),
@@ -39,7 +39,7 @@ const router = createBrowserRouter([
   {
     path: "/my-projects/:projectId/edit",
     element: (
-      <DashboardLayout pageTitle="Edit Project">
+      <DashboardLayout pageTitle="ویرایش پروژه">
         <EditProject />
       </DashboardLayout>
     ),
@@ -47,7 +47,7 @@ const router = createBrowserRouter([
   {
     path: "/projects/:projectId",
     element: (
-      <DashboardLayout pageTitle="Project">
+      <DashboardLayout pageTitle="پروژه">
         <ProjectDetails />
       </DashboardLayout>
     ),
@@ -55,7 +55,7 @@ const router = createBrowserRouter([
   {
     path: "/notifications",
     element: (
-      <DashboardLayout pageTitle="Notifications">
+      <DashboardLayout pageTitle="اعلان‌ها">
         <Notifications />
       </DashboardLayout>
     ),
@@ -63,7 +63,7 @@ const router = createBrowserRouter([
   {
     path: "/profile",
     element: (
-      <DashboardLayout pageTitle="Profile">
+      <DashboardLayout pageTitle="پروفایل">
         <Profile />
       </DashboardLayout>
     ),

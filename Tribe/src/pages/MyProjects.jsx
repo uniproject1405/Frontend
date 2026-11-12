@@ -104,10 +104,10 @@ function MyProjects() {
       );
 
       setCloseTarget(null);
-      setToast("Project closed successfully.");
+      setToast("پروژه با موفقیت بسته شد.");
     } catch (error) {
       console.error("Failed to close project:", error);
-      setCloseError(error.message || "Could not close the project.");
+      setCloseError(error.message || "بستن پروژه انجام نشد.");
     } finally {
       setIsClosing(false);
     }
@@ -149,8 +149,8 @@ function MyProjects() {
         <Alert
           onClose={() => setToast("")}
           severity={
-            toast.toLowerCase().includes("could not") ||
-            toast.toLowerCase().includes("failed")
+            toast.includes("انجام نشد") ||
+            toast.includes("ناموفق")
               ? "error"
               : "success"
           }
@@ -204,7 +204,7 @@ function MyProjects() {
               lineHeight: 1.2,
             }}
           >
-            My Projects
+            پروژه‌های من
           </Typography>
 
           <Button
@@ -220,7 +220,7 @@ function MyProjects() {
               "&:hover": { bgcolor: "#D6B184" },
             }}
           >
-            New Project
+            پروژه جدید
           </Button>
         </Stack>
       </Box>
@@ -230,10 +230,10 @@ function MyProjects() {
         onChange={(_, v) => setSearchParams(v === "created" ? {} : { tab: v })}
         sx={{ mb: 3, borderBottom: 1, borderColor: "divider" }}
       >
-        <Tab value="created" label="Created" />
-        <Tab value="review" label="To review" />
-        <Tab value="joined" label="Joined" />
-        <Tab value="requests" label="Sent requests" />
+        <Tab value="created" label="ساخته‌شده" />
+        <Tab value="review" label="برای بررسی" />
+        <Tab value="joined" label="عضو شده" />
+        <Tab value="requests" label="درخواست‌های ارسالی" />
       </Tabs>
 
       {tab !== "created" && <MembershipTabs key={tab} tab={tab} onToast={setToast} />}
@@ -249,17 +249,17 @@ function MyProjects() {
       >
         <Box>
           <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Your Project Collection
+            مجموعه پروژه‌های شما
           </Typography>
 
           <Typography variant="body2" color="text.secondary">
-            All the projects you own, in one organized space.
+            همه پروژه‌هایی که ساخته‌اید، در یک جا.
           </Typography>
         </Box>
 
         {isConnected && (
           <Chip
-            label={`${projects.length} Projects`}
+            label={`${projects.length} پروژه`}
             size="small"
             sx={{
               bgcolor: "#E8EEF3",
@@ -285,7 +285,7 @@ function MyProjects() {
           >
             <CircularProgress size={36} />
             <Typography color="text.secondary">
-              Loading your projects...
+              در حال بارگذاری پروژه‌ها...
             </Typography>
           </CardContent>
         </Card>
@@ -311,15 +311,14 @@ function MyProjects() {
             />
 
             <Typography variant="h6">
-              Unable to load projects
+              بارگذاری پروژه‌ها ممکن نشد
             </Typography>
 
             <Typography
               color="text.secondary"
               sx={{ maxWidth: 400 }}
             >
-              Something went wrong while loading
-              your projects. Please try again.
+              هنگام بارگذاری پروژه‌ها مشکلی پیش آمد. لطفاً دوباره تلاش کنید.
             </Typography>
 
             <Button
@@ -327,7 +326,7 @@ function MyProjects() {
               startIcon={<RefreshRoundedIcon />}
               onClick={loadProjects}
             >
-              Try Again
+              تلاش دوباره
             </Button>
           </CardContent>
         </Card>
@@ -352,15 +351,14 @@ function MyProjects() {
             />
 
             <Typography variant="h6" sx={{ mb: 1 }}>
-              No projects yet
+              هنوز پروژه‌ای ندارید
             </Typography>
 
             <Typography
               color="text.secondary"
               sx={{ maxWidth: 420, mb: 3 }}
             >
-              You haven't created any projects yet.
-              Create your first project to get started.
+              هنوز پروژه‌ای نساخته‌اید. اولین پروژه‌تان را بسازید.
             </Typography>
 
             <Button
@@ -369,7 +367,7 @@ function MyProjects() {
               variant="outlined"
               startIcon={<AddRoundedIcon />}
             >
-              Create Your First Project
+              ساخت اولین پروژه
             </Button>
           </CardContent>
         </Card>

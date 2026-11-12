@@ -7,7 +7,7 @@ import {
 
 import { getJoinedProjects, getMyRequests, useMyStats, withdrawRequest } from "../services/membershipService";
 
-const statusLabel = { pending: "Waiting", accepted: "Accepted", rejected: "Not accepted" };
+const statusLabel = { pending: "در انتظار", accepted: "پذیرفته شد", rejected: "پذیرفته نشد" };
 const statusColor = { pending: "default", accepted: "success", rejected: "default" };
 
 function Row({ to, title, meta, action, children }) {
@@ -46,7 +46,7 @@ function MembershipTabs({ tab, onToast }) {
     let cancelled = false;
     (tab === "joined" ? getJoinedProjects() : getMyRequests())
       .then((d) => !cancelled && setItems(d))
-      .catch((e) => !cancelled && setError(e.message || "Unable to load."));
+      .catch((e) => !cancelled && setError(e.message || "بارگذاری ممکن نشد."));
     return () => { cancelled = true; };
   }, [tab, reload]);
 
@@ -55,15 +55,15 @@ function MembershipTabs({ tab, onToast }) {
     setToWithdraw(null);
     try {
       await withdrawRequest(id);
-      onToast("Request withdrawn");
+      onToast("درخواست پس گرفته شد");
       setReload((n) => n + 1);
     } catch (e) {
-      onToast(e.message || "Could not withdraw the request.");
+      onToast(e.message || "پس گرفتن درخواست انجام نشد.");
     }
   }
 
   if (tab === "review") {
-    if (stats.byProject.length === 0) return <Empty text="No one is waiting on you. New requests to your projects will show up here." />;
+    if (stats.byProject.length === 0) return <Empty text="کسی منتظر شما نیست. درخواست‌های تازه برای پروژه‌هایتان اینجا نمایش داده می‌شوند." />;
     return (
       <Stack spacing={1.5}>
         {stats.byProject.map(({ project, count }) => (
@@ -71,8 +71,8 @@ function MembershipTabs({ tab, onToast }) {
             key={project.id}
             to={`/my-projects/${project.id}/requests`}
             title={project.title}
-            meta={`${count} ${count === 1 ? "person wants" : "people want"} to join`}
-            action={<Button variant="contained" sx={{ position: "relative", zIndex: 1 }} component={RouterLink} to={`/my-projects/${project.id}/requests`}>Review {count}</Button>}
+            meta={`${count} نفر می‌خواهند عضو شوند`}
+            action={<Button variant="contained" sx={{ position: "relative", zIndex: 1 }} component={RouterLink} to={`/my-projects/${project.id}/requests`}>بررسی {count}</Button>}
           />
         ))}
       </Stack>
@@ -83,7 +83,7 @@ function MembershipTabs({ tab, onToast }) {
   if (!items) return <Box sx={{ display: "grid", placeItems: "center", py: 8 }}><CircularProgress /></Box>;
 
   if (tab === "joined") {
-    if (items.length === 0) return <Empty text="Teams you join will show up here." />;
+    if (items.length === 0) return <Empty text="تیم‌هایی که عضو می‌شوید اینجا نمایش داده می‌شوند." />;
     return (
       <Stack spacing={1.5}>
         {items.map(({ project, owner, memberCount, joinedAt }) => {
@@ -93,8 +93,8 @@ function MembershipTabs({ tab, onToast }) {
               key={project.id}
               to={`/projects/${project.id}`}
               title={project.title}
-              meta={`Owner: ${owner.name}${owner.headline ? ` · ${owner.headline}` : ""}`}
-              action={project.status !== "open" ? <Chip size="small" variant="outlined" label="Closed" /> : null}
+              meta={`مالک: ${owner.name}${owner.headline ? ` · ${owner.headline}` : ""}`}
+              action={project.status !== "open" ? <Chip size="small" variant="outlined" label="بسته" /> : null}
             >
               {project.goal && (
                 <Typography variant="body2" sx={{ mt: 0.75, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{project.goal}</Typography>
@@ -103,7 +103,7 @@ function MembershipTabs({ tab, onToast }) {
                 {(project.requiredSkills || []).slice(0, 4).map((sk) => <Chip key={sk} size="small" label={sk} sx={{ bgcolor: "#F0F3F8", color: "#4B6382" }} />)}
               </Stack>
               <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
-                {memberCount} {memberCount === 1 ? "member" : "members"} · {left === 0 ? "team full" : `${left} ${left === 1 ? "spot" : "spots"} left`} · joined {new Date(joinedAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                {memberCount} عضو · {left === 0 ? "ظرفیت تکمیل" : `${left} جای خالی`} · عضویت از {new Date(joinedAt).toLocaleDateString("fa-IR", { month: "short", day: "numeric" })}
               </Typography>
             </Row>
           );
@@ -112,7 +112,7 @@ function MembershipTabs({ tab, onToast }) {
     );
   }
 
-  if (items.length === 0) return <Empty text="Requests you send will show up here." />;
+  if (items.length === 0) return <Empty text="درخواست‌هایی که می‌فرستید اینجا نمایش داده می‌شوند." />;
   return (
     <>
       <Stack spacing={1.5}>
@@ -122,18 +122,18 @@ function MembershipTabs({ tab, onToast }) {
             to={`/projects/${x.project.id}`}
             title={x.project.title}
             meta={<Chip size="small" variant="outlined" label={statusLabel[x.request.status]} color={statusColor[x.request.status]} />}
-            action={x.request.status === "pending" && <Button color="inherit" sx={{ position: "relative", zIndex: 1, color: "text.secondary" }} onClick={() => setToWithdraw(x)}>Withdraw</Button>}
+            action={x.request.status === "pending" && <Button color="inherit" sx={{ position: "relative", zIndex: 1, color: "text.secondary" }} onClick={() => setToWithdraw(x)}>پس گرفتن</Button>}
           />
         ))}
       </Stack>
       <Dialog open={Boolean(toWithdraw)} onClose={() => setToWithdraw(null)}>
-        <DialogTitle>Withdraw request?</DialogTitle>
+        <DialogTitle>درخواست پس گرفته شود؟</DialogTitle>
         <DialogContent>
-          <DialogContentText>The owner will no longer see your request to join {toWithdraw?.project.title}.</DialogContentText>
+          <DialogContentText>مالک پروژه دیگر درخواست شما برای پیوستن به {toWithdraw?.project.title} را نخواهد دید.</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setToWithdraw(null)}>Keep request</Button>
-          <Button color="error" onClick={confirmWithdraw}>Yes, withdraw</Button>
+          <Button onClick={() => setToWithdraw(null)}>نگه داشتن</Button>
+          <Button color="error" onClick={confirmWithdraw}>بله، پس بگیر</Button>
         </DialogActions>
       </Dialog>
     </>

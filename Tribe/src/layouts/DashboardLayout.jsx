@@ -36,23 +36,23 @@ const drawerWidth = 260;
 
 const menuItems = [
   {
-    title: "My Projects",
+    title: "پروژه‌های من",
     icon: <FolderRoundedIcon />,
     href: "/my-projects",
   },
   {
-    title: "Create Project",
+    title: "ساخت پروژه",
     icon: <AddCircleOutlineRoundedIcon />,
     href: "/create-project",
   },
   {
-    title: "Notifications",
+    title: "اعلان‌ها",
     icon: <NotificationsNoneRoundedIcon />,
     href: "/notifications",
     badge: true,
   },
   {
-    title: "Profile",
+    title: "پروفایل",
     icon: <PersonRoundedIcon />,
     href: "/profile",
   },
@@ -60,7 +60,7 @@ const menuItems = [
 
 const EMPTY = {};
 
-function DashboardLayout({ children, pageTitle = "Dashboard" }) {
+function DashboardLayout({ children, pageTitle = "داشبورد" }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [bellAnchor, setBellAnchor] = useState(null);
   const [userAnchor, setUserAnchor] = useState(null);
@@ -98,7 +98,7 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
           variant="caption"
           sx={{ color: "#A4B5C4" }}
         >
-          CREATE · CONNECT · GROW
+          بساز · وصل شو · رشد کن
         </Typography>
       </Box>
 
@@ -144,13 +144,13 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
       </List>
 
       <Typography variant="overline" sx={{ display: "block", color: "#A4B5C4", px: 2, mt: 4, mb: 0.5 }}>
-        Your activity
+        فعالیت شما
       </Typography>
       <List dense sx={{ display: "grid", gap: 0.5 }}>
         {[
-          ["Requests to review", stats.toReview, "/my-projects?tab=review"],
-          ["Waiting for a reply", stats.waiting, "/my-projects?tab=requests"],
-          ["Teams you joined", stats.joined, "/my-projects?tab=joined"],
+          ["درخواست‌های در انتظار بررسی", stats.toReview, "/my-projects?tab=review"],
+          ["در انتظار پاسخ", stats.waiting, "/my-projects?tab=requests"],
+          ["تیم‌هایی که عضو شده‌اید", stats.joined, "/my-projects?tab=joined"],
         ].map(([label, value, href]) => (
           <ListItemButton
             key={label}
@@ -160,7 +160,7 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
             sx={{ borderRadius: "10px", color: "#CDD5DB", "&:hover": { bgcolor: "rgba(255,255,255,0.09)", color: "#FFFFFF" } }}
           >
             <ListItemText primary={label} slotProps={{ primary: { sx: { fontSize: 14 } } }} />
-            <Box component="span" sx={{ fontWeight: 700, fontVariantNumeric: "tabular-nums", color: label === "Requests to review" && value > 0 ? "#E3C39D" : "#FFFFFF" }}>
+            <Box component="span" sx={{ fontWeight: 700, fontVariantNumeric: "tabular-nums", color: label === "درخواست‌های در انتظار بررسی" && value > 0 ? "#E3C39D" : "#FFFFFF" }}>
               {value}
             </Box>
           </ListItemButton>
@@ -186,7 +186,7 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
           <IconButton
             onClick={() => setMobileOpen(true)}
             sx={{ display: { md: "none" } }}
-            aria-label="Open navigation"
+            aria-label="باز کردن منو"
           >
             <MenuRoundedIcon />
           </IconButton>
@@ -207,7 +207,7 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
             <Box
               component="button"
               type="button"
-              aria-label="Notifications"
+              aria-label="اعلان‌ها"
               onClick={(event) => setBellAnchor(event.currentTarget)}
               sx={{
                 cursor: "pointer",
@@ -245,7 +245,7 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
             <Box
               component="button"
               type="button"
-              aria-label="Account menu"
+              aria-label="منوی حساب"
               onClick={(event) => setUserAnchor(event.currentTarget)}
               sx={{
                 cursor: "pointer",
@@ -290,7 +290,7 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
                   color="text.secondary"
                   sx={{ display: "block", lineHeight: 1.2, fontSize: 9.5 }}
                 >
-                  {stats.toReview > 0 ? `${stats.toReview} to review` : profile.headline || "Account"}
+                  {stats.toReview > 0 ? `${stats.toReview} درخواست برای بررسی` : profile.headline || "حساب کاربری"}
                 </Typography>
               </Box>
 
@@ -309,14 +309,14 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
         slotProps={{ paper: { sx: { width: 360, maxWidth: "calc(100vw - 24px)" } } }}
       >
         <Box sx={{ px: 2, py: 1, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Typography sx={{ fontWeight: 700 }}>Notifications</Typography>
+          <Typography sx={{ fontWeight: 700 }}>اعلان‌ها</Typography>
           <Box component="button" type="button" disabled={unread === 0} onClick={markAllRead} sx={{ all: "unset", cursor: "pointer", fontSize: 13, color: "#071739", textDecoration: "underline", "&[disabled]": { opacity: 0.4, cursor: "default" } }}>
-            Mark all read
+            خواندن همه
           </Box>
         </Box>
         <Divider />
         {notes.length === 0 && (
-          <Typography color="text.secondary" sx={{ p: 2 }}>You're all caught up</Typography>
+          <Typography color="text.secondary" sx={{ p: 2 }}>اعلان تازه‌ای ندارید</Typography>
         )}
         {notes.slice(0, 5).map((item) => (
           <NotificationRow
@@ -328,7 +328,7 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
         ))}
         <Divider />
         <MenuItem onClick={() => { setBellAnchor(null); navigate("/notifications"); }} sx={{ justifyContent: "center", fontWeight: 600 }}>
-          View all {notes.length > 0 ? `(${notes.length})` : ""}
+          مشاهده همه {notes.length > 0 ? `(${notes.length})` : ""}
         </MenuItem>
       </Menu>
 
@@ -346,14 +346,14 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
           </Typography>
         </Box>
         <Divider />
-        <MenuItem onClick={() => { setUserAnchor(null); navigate("/profile"); }}>View profile</MenuItem>
+        <MenuItem onClick={() => { setUserAnchor(null); navigate("/profile"); }}>مشاهده پروفایل</MenuItem>
         <MenuItem onClick={() => { setUserAnchor(null); navigate(stats.toReview > 0 ? "/my-projects?tab=review" : "/my-projects"); }}>
-          My Projects{stats.toReview > 0 ? ` · ${stats.toReview} to review` : ""}
+          پروژه‌های من{stats.toReview > 0 ? ` · ${stats.toReview} درخواست برای بررسی` : ""}
         </MenuItem>
         <MenuItem onClick={() => { setUserAnchor(null); navigate("/my-projects?tab=requests"); }}>
-          Sent requests{stats.waiting > 0 ? ` · ${stats.waiting} waiting` : ""}
+          درخواست‌های ارسالی{stats.waiting > 0 ? ` · ${stats.waiting} در انتظار` : ""}
         </MenuItem>
-        <MenuItem onClick={() => { setUserAnchor(null); navigate("/notifications"); }}>Notifications</MenuItem>
+        <MenuItem onClick={() => { setUserAnchor(null); navigate("/notifications"); }}>اعلان‌ها</MenuItem>
       </Menu>
 
       <Drawer
@@ -372,7 +372,7 @@ function DashboardLayout({ children, pageTitle = "Dashboard" }) {
         <Box sx={{ position: "absolute", top: 12, right: 12, zIndex: 1 }}>
           <IconButton
             onClick={() => setMobileOpen(false)}
-            aria-label="Close navigation"
+            aria-label="بستن منو"
             sx={{ color: "white" }}
           >
             <CloseRoundedIcon />

@@ -19,7 +19,7 @@ function JoinRequestDialog({ project, open, onClose, onSent }) {
       setMessage("");
       onSent();
     } catch (e) {
-      setError(e.message || "Could not send your request. Please try again.");
+      setError(e.message || "ارسال درخواست انجام نشد. لطفاً دوباره تلاش کنید.");
     } finally {
       setSending(false);
     }
@@ -27,9 +27,9 @@ function JoinRequestDialog({ project, open, onClose, onSent }) {
 
   return (
     <Dialog open={open} onClose={sending ? undefined : onClose} fullWidth maxWidth="sm">
-      <DialogTitle sx={{ fontWeight: 700 }}>Join {project.title}</DialogTitle>
+      <DialogTitle sx={{ fontWeight: 700 }}>پیوستن به {project.title}</DialogTitle>
       <DialogContent>
-        <DialogContentText sx={{ mb: 1 }}>The owner will review your request.</DialogContentText>
+        <DialogContentText sx={{ mb: 1 }}>مالک پروژه درخواست شما را بررسی می‌کند.</DialogContentText>
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
         <TextField
           autoFocus
@@ -37,15 +37,15 @@ function JoinRequestDialog({ project, open, onClose, onSent }) {
           multiline
           minRows={3}
           margin="dense"
-          placeholder="Add a short note (optional)"
+          placeholder="یک پیام کوتاه بنویسید (اختیاری)"
           value={message}
           onChange={(e) => setMessage(e.target.value.slice(0, MAX))}
           helperText={message.length > 240 ? `${message.length}/${MAX}` : " "}
         />
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 2 }}>
-        <Button onClick={onClose} disabled={sending}>Cancel</Button>
-        <Button variant="contained" onClick={send} disabled={sending}>Send request</Button>
+        <Button onClick={onClose} disabled={sending}>انصراف</Button>
+        <Button variant="contained" onClick={send} disabled={sending}>ارسال درخواست</Button>
       </DialogActions>
     </Dialog>
   );

@@ -47,11 +47,11 @@ export function useNotifications() {
 
 export function timeAgo(iso) {
   const mins = Math.max(1, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
-  if (mins < 60) return `${mins}m ago`;
+  if (mins < 60) return `${mins} دقیقه پیش`;
   const hours = Math.round(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) return `${hours} ساعت پیش`;
   const days = Math.round(hours / 24);
-  return days < 30 ? `${days}d ago` : new Date(iso).toLocaleDateString();
+  return days < 30 ? `${days} روز پیش` : new Date(iso).toLocaleDateString("fa-IR");
 }
 
 // Filter tab a notification belongs to.

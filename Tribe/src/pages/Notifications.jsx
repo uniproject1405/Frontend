@@ -9,17 +9,17 @@ const PAGE_SIZE = 10;
 
 const filters = [
   ["all", "All"],
-  ["unread", "Unread"],
-  ["requests", "Requests"],
-  ["updates", "Updates"],
+  ["unread", "خوانده‌نشده"],
+  ["requests", "درخواست‌ها"],
+  ["updates", "به‌روزرسانی‌ها"],
 ];
 
 function dayLabel(iso) {
   const days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
-  if (days < 1) return "Today";
-  if (days < 2) return "Yesterday";
-  if (days < 7) return "This week";
-  return "Earlier";
+  if (days < 1) return "امروز";
+  if (days < 2) return "دیروز";
+  if (days < 7) return "این هفته";
+  return "قبل‌تر";
 }
 
 function Notifications() {
@@ -52,12 +52,12 @@ function Notifications() {
     <Box sx={{ maxWidth: 900, mx: "auto", width: "100%" }}>
       <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between", gap: 2, flexWrap: "wrap", mb: 2 }}>
         <Box>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 700 }}>Notifications</Typography>
+          <Typography variant="h4" component="h1" sx={{ fontWeight: 700 }}>اعلان‌ها</Typography>
           <Typography color="text.secondary">
-            {unread === 0 ? "You're all caught up" : `${unread} unread`} · {items.length} total
+            {unread === 0 ? "اعلان تازه‌ای ندارید" : `${unread} خوانده‌نشده`} · {items.length} اعلان
           </Typography>
         </Box>
-        <Button variant="outlined" disabled={unread === 0} onClick={markAllRead}>Mark all as read</Button>
+        <Button variant="outlined" disabled={unread === 0} onClick={markAllRead}>خواندن همه</Button>
       </Stack>
 
       <Tabs value={filter} onChange={(_, v) => { setFilter(v); setVisible(PAGE_SIZE); }} variant="scrollable" scrollButtons="auto" sx={{ mb: 2 }}>
@@ -66,8 +66,8 @@ function Notifications() {
 
       {filtered.length === 0 ? (
         <Card sx={{ p: 4, textAlign: "center" }}>
-          <Typography sx={{ fontWeight: 600 }}>{filter === "unread" ? "Nothing unread" : "Nothing here yet"}</Typography>
-          <Typography color="text.secondary">New requests and replies will show up here.</Typography>
+          <Typography sx={{ fontWeight: 600 }}>{filter === "unread" ? "اعلان خوانده‌نشده‌ای نیست" : "هنوز چیزی اینجا نیست"}</Typography>
+          <Typography color="text.secondary">درخواست‌ها و پاسخ‌های تازه اینجا نمایش داده می‌شوند.</Typography>
         </Card>
       ) : (
         <Stack spacing={2}>
@@ -81,7 +81,7 @@ function Notifications() {
           ))}
           {filtered.length > shown.length && (
             <Button onClick={() => setVisible((v) => v + PAGE_SIZE)} sx={{ alignSelf: "center" }}>
-              Show more ({filtered.length - shown.length} left)
+              نمایش بیشتر ({filtered.length - shown.length} مورد دیگر)
             </Button>
           )}
         </Stack>

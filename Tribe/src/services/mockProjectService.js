@@ -54,7 +54,7 @@ export async function getProjectById(projectId) {
   );
 
   if (!project) {
-    throw new Error("Project not found.");
+    throw new Error("پروژه پیدا نشد.");
   }
 
   return project;
@@ -85,7 +85,7 @@ export async function updateProject(projectId, updates) {
   );
 
   if (index === -1) {
-    throw new Error("Project not found.");
+    throw new Error("پروژه پیدا نشد.");
   }
 
   const updatedProject = {
@@ -122,7 +122,7 @@ export async function updateRequestStatus(requestId, status) {
   const allowedStatuses = ["pending", "accepted", "rejected"];
 
   if (!allowedStatuses.includes(status)) {
-    throw new Error("Invalid request status.");
+    throw new Error("وضعیت درخواست نامعتبر است.");
   }
 
   const requests = getRequests();
@@ -132,7 +132,7 @@ export async function updateRequestStatus(requestId, status) {
   );
 
   if (index === -1) {
-    throw new Error("Request not found.");
+    throw new Error("درخواست پیدا نشد.");
   }
 
   if (status === "accepted" && requests[index].status !== "accepted") {
@@ -145,7 +145,7 @@ export async function updateRequestStatus(requestId, status) {
         request.status === "accepted"
     ).length;
     if (project && taken >= project.capacity) {
-      throw new Error("This project is full. No spots are left.");
+      throw new Error("ظرفیت این پروژه تکمیل است. جای خالی وجود ندارد.");
     }
   }
 
