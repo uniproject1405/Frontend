@@ -263,7 +263,7 @@ function EditProject() {
                 error={Boolean(errors.title)}
                 helperText={errors.title}
                 required
-                inputProps={{ maxLength: 80 }}
+                slotProps={{ htmlInput: { maxLength: 80 } }}
               />
 
               <TextField
@@ -274,7 +274,7 @@ function EditProject() {
                 error={Boolean(errors.goal)}
                 helperText={errors.goal}
                 required
-                inputProps={{ maxLength: 160 }}
+                slotProps={{ htmlInput: { maxLength: 160 } }}
               />
 
               <TextField
@@ -287,7 +287,7 @@ function EditProject() {
                 error={Boolean(errors.description)}
                 helperText={errors.description}
                 required
-                inputProps={{ maxLength: 1000 }}
+                slotProps={{ htmlInput: { maxLength: 1000 } }}
               />
 
               <Box>
@@ -308,8 +308,7 @@ function EditProject() {
                   direction="row"
                   spacing={1}
                   useFlexGap
-                  flexWrap="wrap"
-                  sx={{ mt: 2, maxWidth: "100%", overflowWrap: "anywhere" }}
+                  sx={{ flexWrap: "wrap", mt: 2, maxWidth: "100%", overflowWrap: "anywhere" }}
                 >
                   {skills.map((skill) => (
                     <Chip
@@ -335,7 +334,7 @@ function EditProject() {
                 onChange={handleChange}
                 error={Boolean(errors.capacity)}
                 helperText={errors.capacity}
-                inputProps={{ min: 1, step: 1 }}
+                slotProps={{ htmlInput: { min: 1, step: 1 } }}
                 required
               />
 
@@ -346,8 +345,7 @@ function EditProject() {
               <Stack
                 direction={{ xs: "column", sm: "row" }}
                 spacing={2}
-                justifyContent="flex-end"
-                sx={{ pt: 1 }}
+                sx={{ justifyContent: "flex-end", pt: 1 }}
               >
                 <Button
                   component={Link}
