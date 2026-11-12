@@ -25,7 +25,7 @@ function JoinArea({ details, onJoin }) {
     );
   }
   let label = "درخواست عضویت";
-  let hint = relation === "none" && !full ? "مالک پروژه درخواست شما را بررسی می‌کند" : "";
+  let hint = "";
   if (relation === "member") { label = "شما عضو این تیم هستید"; }
   else if (relation === "pending") { label = "درخواست ارسال شد"; hint = "در انتظار پاسخ"; }
   else if (closed) { label = "پروژه بسته شده"; }
