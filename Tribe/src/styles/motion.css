@@ -11,9 +11,18 @@
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-/* شناور بودن آرام؛ با خاصیت translate تا با چرخش (rotate) عنصر قاطی نشود */
+/* شناور بودن آرام؛ چرخش کج عنصرها با خاصیت rotate جدا اعمال می‌شود */
 @keyframes float-y {
-  to { translate: 0 calc(var(--float, 5px) * -1); }
+  to { transform: translateY(calc(var(--float, 8px) * -1)); }
+}
+/* نفس کشیدن حلقه پشت کارت */
+@keyframes breathe {
+  to { scale: 1.035; }
+}
+/* ضربان نقطه‌های تزئینی (رنگ از --dot می‌آید) */
+@keyframes dot-pulse {
+  0%, 100% { box-shadow: 0 0 0 .45em rgba(var(--dot), .2); }
+  50% { box-shadow: 0 0 0 .9em rgba(var(--dot), .06); }
 }
 /* لرزش کوتاه فیلدی که خطا دارد */
 @keyframes shake {
