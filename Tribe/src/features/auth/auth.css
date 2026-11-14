@@ -105,11 +105,12 @@
   width: .9em;
   height: .9em;
   border-radius: 50%;
-  background: #c99a5b;
-  box-shadow: 0 0 0 .45em rgba(201, 154, 91, .2);
+  --dot: 201, 154, 91;
+  background: rgb(var(--dot));
+  box-shadow: 0 0 0 .45em rgba(var(--dot), .2);
 }
 .hv-dot-1 { left: 12%; top: 27%; }
-.hv-dot-2 { right: 15%; bottom: 14%; background: #4d6fa3; box-shadow: 0 0 0 .45em rgba(77, 111, 163, .18); }
+.hv-dot-2 { right: 15%; bottom: 14%; --dot: 77, 111, 163; }
 
 .hv-pill {
   position: absolute;
@@ -121,9 +122,9 @@
   border-radius: 999px;
   box-shadow: 0 .5em 1em -.6em rgba(11, 27, 61, .3);
 }
-.hv-pill-figma { left: 5%; top: 6%; transform: rotate(-4deg); }
-.hv-pill-react { left: 0; top: 41%; transform: rotate(5deg); }
-.hv-pill-research { right: 2%; bottom: 27%; transform: rotate(-5deg); }
+.hv-pill-figma { left: 5%; top: 6%; rotate: -4deg; }
+.hv-pill-react { left: 0; top: 41%; rotate: 5deg; }
+.hv-pill-research { right: 2%; bottom: 27%; rotate: -5deg; }
 
 .hv-card {
   position: absolute;
@@ -133,7 +134,7 @@
   padding: 1.1em;
   background: #fff;
   border-radius: 1.2em;
-  transform: rotate(-4deg);
+  rotate: -4deg;
   box-shadow: 0 1.6em 2.8em -1.2em rgba(11, 27, 61, .35), 0 0 0 1px rgba(11, 27, 61, .06);
 }
 .hv-card-top {
@@ -212,8 +213,8 @@
 .hv-chip span { display: flex; flex-direction: column; text-align: right; }
 .hv-chip small { font-size: .72em; color: var(--text-faint); }
 .hv-chip strong { font-size: .86em; font-weight: 700; white-space: nowrap; }
-.hv-chip-idea { right: 0; top: 22%; transform: rotate(3deg); }
-.hv-chip-member { left: 2%; bottom: 4%; transform: rotate(-3deg); }
+.hv-chip-idea { right: 0; top: 22%; rotate: 3deg; }
+.hv-chip-member { left: 2%; bottom: 4%; rotate: -3deg; }
 .hv-member-avatar {
   display: grid !important;
   place-items: center;
@@ -430,16 +431,19 @@
 .auth-showcase-text { animation: fade-up .6s .05s ease-out both; }
 .auth-hero { animation: fade-in .8s .15s ease-out both; }
 
-/* شناور بودن آرام کارت و چیپ‌ها، هرکدام با زمان و فاز جدا */
+/* شناور بودن: هر عنصر با دامنه، زمان و فاز جدا */
 .hv-card,
 .hv-chip,
-.hv-pill { animation: float-y 7s ease-in-out infinite alternate; }
-.hv-card { --float: 4px; }
-.hv-chip-idea { --float: 6px; animation-duration: 6s; animation-delay: -2s; }
-.hv-chip-member { --float: 6px; animation-duration: 8s; animation-delay: -4s; }
-.hv-pill-figma { --float: 4px; animation-duration: 5.5s; animation-delay: -1s; }
-.hv-pill-react { --float: 4px; animation-duration: 6.5s; animation-delay: -3s; }
-.hv-pill-research { --float: 4px; animation-duration: 7.5s; animation-delay: -5s; }
+.hv-pill { animation: float-y 6s ease-in-out infinite alternate; }
+.hv-card { --float: 7px; animation-duration: 7s; }
+.hv-chip-idea { --float: 11px; animation-duration: 5s; animation-delay: -2s; }
+.hv-chip-member { --float: 11px; animation-duration: 6.5s; animation-delay: -4s; }
+.hv-pill-figma { --float: 9px; animation-duration: 4.5s; animation-delay: -1s; }
+.hv-pill-react { --float: 9px; animation-duration: 5.5s; animation-delay: -3s; }
+.hv-pill-research { --float: 9px; animation-duration: 6s; animation-delay: -5s; }
+.hv-ring { animation: breathe 9s ease-in-out infinite alternate; }
+.hv-dot { animation: dot-pulse 3.2s ease-in-out infinite; }
+.hv-dot-2 { animation-delay: -1.6s; }
 
 /* بازخورد: فیلد دارای خطا کمی تکان می‌خورد */
 .auth-form-box .auth-field-error .MuiInputBase-root { animation: shake .35s ease-in-out; }
