@@ -73,13 +73,7 @@ export default function ExploreProjects() {
               هدفی مشترک پیدا کنید، مهارت‌هایتان را به اشتراک بگذارید و چیزی ارزشمند بسازید.
             </Typography>
           </Box>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            sx={{ bgcolor: NAVY, px: 2.5, flexShrink: 0, textTransform: 'none', '&:hover': { bgcolor: '#0E2452' } }}
-          >
-            ایجاد پروژه
-          </Button>
+    
         </Stack>
 
         <Box component="form" onSubmit={onSearch} sx={{ bgcolor: '#fff', border: '1px solid #E3E8EF', borderRadius: 3, p: 2, mb: 3 }}>
