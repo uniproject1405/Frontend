@@ -5,6 +5,8 @@ import {
   DialogContentText, DialogTitle, Stack, Typography,
 } from "@mui/material";
 
+import { SkillChips } from "./projectParts";
+import { fa } from "../utils/fa";
 import { getJoinedProjects, getMyRequests, useMyStats, withdrawRequest } from "../services/membershipService";
 
 const statusLabel = { pending: "در انتظار", accepted: "پذیرفته شد", rejected: "پذیرفته نشد" };
@@ -12,7 +14,7 @@ const statusColor = { pending: "default", accepted: "success", rejected: "defaul
 
 function Row({ to, title, meta, action, children }) {
   return (
-    <Card sx={{ position: "relative", p: 2, display: "flex", gap: 2, alignItems: "center", flexWrap: "wrap", transition: "transform .15s", "&:hover": { transform: "translateY(-2px)" } }}>
+    <Card variant="outlined" sx={{ position: "relative", p: 2.5, borderRadius: 3, display: "flex", gap: 2, alignItems: "center", flexWrap: "wrap", transition: "transform .15s", "&:hover": { transform: "translateY(-2px)" } }}>
       <Box sx={{ flex: 1, minWidth: 180 }}>
         <Typography component={RouterLink} to={to} sx={{ fontWeight: 600, color: "text.primary", textDecoration: "none", "&:hover": { textDecoration: "underline" }, "&::after": { content: '""', position: "absolute", inset: 0 } }}>
           {title}
@@ -27,7 +29,7 @@ function Row({ to, title, meta, action, children }) {
 
 function Empty({ text }) {
   return (
-    <Card sx={{ p: 4, textAlign: "center" }}>
+    <Card variant="outlined" sx={{ p: 4, textAlign: "center", borderRadius: 3 }}>
       <Typography color="text.secondary">{text}</Typography>
     </Card>
   );
@@ -71,8 +73,8 @@ function MembershipTabs({ tab, onToast }) {
             key={project.id}
             to={`/my-projects/${project.id}/requests`}
             title={project.title}
-            meta={`${count} نفر می‌خواهند عضو شوند`}
-            action={<Button variant="contained" sx={{ position: "relative", zIndex: 1 }} component={RouterLink} to={`/my-projects/${project.id}/requests`}>بررسی {count}</Button>}
+            meta={`${fa(count)} نفر می‌خواهند عضو شوند`}
+            action={<Button variant="contained" sx={{ position: "relative", zIndex: 1 }} component={RouterLink} to={`/my-projects/${project.id}/requests`}>بررسی {fa(count)}</Button>}
           />
         ))}
       </Stack>
@@ -99,11 +101,9 @@ function MembershipTabs({ tab, onToast }) {
               {project.goal && (
                 <Typography variant="body2" sx={{ mt: 0.75, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{project.goal}</Typography>
               )}
-              <Stack direction="row" sx={{ mt: 1, gap: 0.75, flexWrap: "wrap" }}>
-                {(project.requiredSkills || []).slice(0, 4).map((sk) => <Chip key={sk} size="small" label={sk} sx={{ bgcolor: "#F0F3F8", color: "#4B6382" }} />)}
-              </Stack>
+              <SkillChips skills={(project.requiredSkills || []).slice(0, 4)} />
               <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
-                {memberCount} عضو · {left === 0 ? "ظرفیت تکمیل" : `${left} جای خالی`} · عضویت از {new Date(joinedAt).toLocaleDateString("fa-IR", { month: "short", day: "numeric" })}
+                {fa(memberCount)} عضو · {left === 0 ? "ظرفیت تکمیل" : `${fa(left)} جای خالی`} · عضویت از {new Date(joinedAt).toLocaleDateString("fa-IR", { month: "short", day: "numeric" })}
               </Typography>
             </Row>
           );

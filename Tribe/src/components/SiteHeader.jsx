@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { Avatar, Badge, Box, Button, Container, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack, Typography } from '@mui/material';
+import { Avatar, Badge, Box, Button, Container, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
@@ -43,10 +43,10 @@ function UserMenu() {
   const closeBell = () => setBell(null);
   const close = () => setAnchor(null);
   const go = (to) => () => { close(); navigate(to); };
-  const item = (to, Icon, label) => (
+  const item = (to, Icon, label, note) => (
     <MenuItem onClick={go(to)}>
       <ListItemIcon><Icon fontSize="small" /></ListItemIcon>
-      {label}
+      <ListItemText primary={label} secondary={note} slotProps={{ secondary: { sx: { whiteSpace: 'normal' } } }} />
     </MenuItem>
   );
   return (
@@ -84,8 +84,8 @@ function UserMenu() {
           {profile.headline && <Typography variant="body2" color="text.secondary">{profile.headline}</Typography>}
         </Box>
         <Divider />
-        {item('/my-projects', FolderOpenOutlinedIcon, 'پروژه‌های من' + (stats.toReview > 0 ? ` · ${fa(stats.toReview)} درخواست برای بررسی` : ''))}
-        {item('/my-projects?tab=requests', SendOutlinedIcon, 'درخواست‌های ارسالی' + (stats.waiting > 0 ? ` · ${fa(stats.waiting)} در انتظار` : ''))}
+        {item('/my-projects', FolderOpenOutlinedIcon, 'پروژه‌های من', stats.toReview > 0 ? `${fa(stats.toReview)} درخواست برای بررسی` : '')}
+        {item('/my-projects?tab=requests', SendOutlinedIcon, 'درخواست‌های ارسالی', stats.waiting > 0 ? `${fa(stats.waiting)} در انتظار` : '')}
         {item('/profile', PersonOutlineIcon, 'پروفایل')}
         <Divider />
         <MenuItem onClick={() => { close(); logout(); }}>
