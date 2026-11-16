@@ -3,12 +3,13 @@ import { useNavigate } from "react-router";
 import { Box, Button, Card, Stack, Tab, Tabs, Typography } from "@mui/material";
 
 import { groupOf, markAllRead, markRead, useNotifications } from "../services/notificationService";
+import { fa } from "../utils/fa";
 import NotificationRow from "../components/NotificationRow";
 
 const PAGE_SIZE = 10;
 
 const filters = [
-  ["all", "All"],
+  ["all", "همه"],
   ["unread", "خوانده‌نشده"],
   ["requests", "درخواست‌ها"],
   ["updates", "به‌روزرسانی‌ها"],
@@ -52,9 +53,9 @@ function Notifications() {
     <Box sx={{ maxWidth: 900, mx: "auto", width: "100%" }}>
       <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between", gap: 2, flexWrap: "wrap", mb: 2 }}>
         <Box>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 700 }}>اعلان‌ها</Typography>
+          <Typography variant="h4" component="h1" sx={{ fontWeight: 800, color: "#071739" }}>اعلان‌ها</Typography>
           <Typography color="text.secondary">
-            {unread === 0 ? "اعلان تازه‌ای ندارید" : `${unread} خوانده‌نشده`} · {items.length} اعلان
+            {unread === 0 ? "اعلان تازه‌ای ندارید" : `${fa(unread)} خوانده‌نشده`} · {fa(items.length)} اعلان
           </Typography>
         </Box>
         <Button variant="outlined" disabled={unread === 0} onClick={markAllRead}>خواندن همه</Button>
@@ -65,7 +66,7 @@ function Notifications() {
       </Tabs>
 
       {filtered.length === 0 ? (
-        <Card sx={{ p: 4, textAlign: "center" }}>
+        <Card variant="outlined" sx={{ p: 4, textAlign: "center", borderRadius: 3 }}>
           <Typography sx={{ fontWeight: 600 }}>{filter === "unread" ? "اعلان خوانده‌نشده‌ای نیست" : "هنوز چیزی اینجا نیست"}</Typography>
           <Typography color="text.secondary">درخواست‌ها و پاسخ‌های تازه اینجا نمایش داده می‌شوند.</Typography>
         </Card>
@@ -74,14 +75,14 @@ function Notifications() {
           {groups.map((g) => (
             <Box key={g.label}>
               <Typography variant="overline" color="text.secondary">{g.label}</Typography>
-              <Card sx={{ overflow: "hidden", "& > * + *": { borderTop: "1px solid #E4E9EF" } }}>
+              <Card variant="outlined" sx={{ borderRadius: 3, overflow: "hidden", "& > * + *": { borderTop: "1px solid #E4E9EF" } }}>
                 {g.items.map((x) => <NotificationRow key={x.id} item={x} onOpen={open} />)}
               </Card>
             </Box>
           ))}
           {filtered.length > shown.length && (
             <Button onClick={() => setVisible((v) => v + PAGE_SIZE)} sx={{ alignSelf: "center" }}>
-              نمایش بیشتر ({filtered.length - shown.length} مورد دیگر)
+              نمایش بیشتر ({fa(filtered.length - shown.length)} مورد دیگر)
             </Button>
           )}
         </Stack>

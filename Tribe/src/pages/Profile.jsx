@@ -8,6 +8,7 @@ import {
 import { getProfile, saveProfile } from "../services/currentUser";
 import { useMyStats } from "../services/membershipService";
 import { resetMockData } from "../services/mockProjectService";
+import { fa } from "../utils/fa";
 import { useStoredJson } from "../services/store";
 import { PROFILE_KEY } from "../services/currentUser";
 
@@ -16,11 +17,12 @@ const EMPTY = {};
 function Stat({ label, value, to }) {
   return (
     <Card
+      variant="outlined"
       component={RouterLink}
       to={to}
       sx={{ p: 2, textDecoration: "none", color: "inherit", transition: "transform .15s", "&:hover": { transform: "translateY(-2px)" }, "&:focus-visible": { outline: "2px solid #071739" } }}
     >
-      <Typography variant="h4" component="p" sx={{ fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>{value}</Typography>
+      <Typography variant="h4" component="p" sx={{ fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>{fa(value)}</Typography>
       <Typography variant="body2" color="text.secondary">{label}</Typography>
     </Card>
   );
@@ -67,11 +69,11 @@ function Profile() {
   return (
     <Box sx={{ maxWidth: 1200, mx: "auto", width: "100%" }}>
       <Box sx={{ display: "grid", gap: 3, gridTemplateColumns: { xs: "1fr", lg: "minmax(0, 380px) minmax(0, 1fr)" }, alignItems: "start" }}>
-        <Card sx={{ p: 3 }}>
+        <Card variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
           <Stack spacing={2} sx={{ alignItems: "flex-start" }}>
-            <Avatar sx={{ width: 64, height: 64, bgcolor: "primary.main", fontSize: 24 }}>{profile.name[0]}</Avatar>
+            <Avatar sx={{ width: 64, height: 64, bgcolor: "#E3C39D", color: "#071739", fontSize: 24 }}>{profile.name[0]}</Avatar>
             <Box>
-              <Typography variant="h5" component="h1" sx={{ fontWeight: 700, wordBreak: "break-word" }}>{profile.name}</Typography>
+              <Typography variant="h5" component="h1" sx={{ fontWeight: 800, color: "#071739", wordBreak: "break-word" }}>{profile.name}</Typography>
               {profile.headline && <Typography color="text.secondary">{profile.headline}</Typography>}
             </Box>
             {profile.bio && <Typography sx={{ whiteSpace: "pre-line", wordBreak: "break-word" }}>{profile.bio}</Typography>}
@@ -92,7 +94,7 @@ function Profile() {
             <Stat label="درخواست‌های در انتظار بررسی" value={stats.toReview} to="/my-projects?tab=review" />
           </Box>
 
-          <Card sx={{ p: 3 }}>
+          <Card variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
             <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 1.5 }}>نیازمند توجه شما</Typography>
             {stats.byProject.length === 0 ? (
               <Typography color="text.secondary">فعلاً چیزی برای بررسی نیست.</Typography>
@@ -102,7 +104,7 @@ function Profile() {
                   <Stack key={project.id} direction="row" sx={{ alignItems: "center", justifyContent: "space-between", gap: 2 }}>
                     <Typography sx={{ minWidth: 0, wordBreak: "break-word" }}>{project.title}</Typography>
                     <Button component={RouterLink} to={`/my-projects/${project.id}/requests`} sx={{ flexShrink: 0 }}>
-                      بررسی {count} درخواست
+                      بررسی {fa(count)} درخواست
                     </Button>
                   </Stack>
                 ))}
@@ -110,7 +112,7 @@ function Profile() {
             )}
           </Card>
 
-          <Card sx={{ p: 3 }}>
+          <Card variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
             <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 0.5 }}>داده‌های آزمایشی</Typography>
             <Button color="inherit" variant="outlined" onClick={async () => { await resetMockData(); setDone("داده‌های آزمایشی بازگردانی شد."); }}>بازنشانی داده‌های آزمایشی</Button>
             {done && <Alert severity="success" sx={{ mt: 2 }} onClose={() => setDone("")}>{done}</Alert>}
