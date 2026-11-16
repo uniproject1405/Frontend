@@ -48,12 +48,12 @@ const router = createBrowserRouter([
     element: <ProtectedRoute />,
     children: [
       { path: "/dashboard", element: <Navigate to="/my-projects" replace /> },
-      { path: "/my-projects", element: <DashboardLayout pageTitle="پروژه‌های من"><MyProjects /></DashboardLayout> },
-      { path: "/my-projects/:projectId/requests", element: <DashboardLayout pageTitle="درخواست‌های پروژه"><ProjectRequests /></DashboardLayout> },
-      { path: "/my-projects/:projectId/edit", element: <DashboardLayout pageTitle="ویرایش پروژه"><EditProject /></DashboardLayout> },
-      { path: "/create-project", element: <DashboardLayout pageTitle="ساخت پروژه"><CreateProject /></DashboardLayout> },
-      { path: "/notifications", element: <DashboardLayout pageTitle="اعلان‌ها"><Notifications /></DashboardLayout> },
-      { path: "/profile", element: <DashboardLayout pageTitle="پروفایل"><Profile /></DashboardLayout> },
+      { path: "/my-projects", element: <DashboardLayout><MyProjects /></DashboardLayout> },
+      { path: "/my-projects/:projectId/requests", element: <DashboardLayout><ProjectRequests /></DashboardLayout> },
+      { path: "/my-projects/:projectId/edit", element: <DashboardLayout><EditProject /></DashboardLayout> },
+      { path: "/create-project", element: <DashboardLayout><CreateProject /></DashboardLayout> },
+      { path: "/notifications", element: <DashboardLayout><Notifications /></DashboardLayout> },
+      { path: "/profile", element: <DashboardLayout><Profile /></DashboardLayout> },
     ],
   },
 

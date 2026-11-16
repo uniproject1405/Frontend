@@ -161,67 +161,10 @@ function MyProjects() {
         </Alert>
       </Snackbar>
 
-      {/* Compact hero — PO review: shorter, no subtitle, 16px corners */}
-      <Box
-        sx={{
-          position: "relative",
-          overflow: "hidden",
-          borderRadius: "16px",
-          color: "#FFFFFF",
-          background: "linear-gradient(125deg, #071739 0%, #142A50 65%, #4B6382 150%)",
-          px: { xs: 3, sm: 4 },
-          py: { xs: 3, sm: 3.5 },
-          mb: 4,
-        }}
-      >
-        <Box
-          sx={{
-            position: "absolute",
-            width: 220,
-            height: 220,
-            borderRadius: "50%",
-            bgcolor: "rgba(227,195,157,0.08)",
-            top: -135,
-            right: -65,
-            pointerEvents: "none",
-          }}
-        />
-
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          spacing={2}
-          sx={{ alignItems: { xs: "flex-start", sm: "center" }, justifyContent: "space-between", position: "relative", zIndex: 1 }}
-        >
-          <Typography
-            component="h1"
-            sx={{
-              color: "#FFFFFF",
-              fontSize: { xs: "30px", sm: "36px" },
-              fontWeight: 800,
-              letterSpacing: "-1px",
-              lineHeight: 1.2,
-            }}
-          >
-            پروژه‌های من
-          </Typography>
-
-          <Button
-            component={Link}
-            to="/create-project"
-            variant="contained"
-            startIcon={<AddRoundedIcon />}
-            sx={{
-              bgcolor: "#E3C39D",
-              color: "#071739",
-              borderRadius: "8px",
-              flexShrink: 0,
-              "&:hover": { bgcolor: "#D6B184" },
-            }}
-          >
-            پروژه جدید
-          </Button>
-        </Stack>
-      </Box>
+      <Stack direction="row" sx={{ justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+        <Typography variant="h4" component="h1" sx={{ fontWeight: 800, color: "#071739" }}>پروژه‌های من</Typography>
+        <Button component={Link} to="/create-project" variant="contained" startIcon={<AddRoundedIcon />}>پروژه جدید</Button>
+      </Stack>
 
       <Tabs
         value={tab}
