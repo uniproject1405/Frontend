@@ -101,8 +101,8 @@ function CreateProject() {
   }
 
   function addSkill(value = skillInput) {
-    const newSkill = value.trim();
-    if (!newSkill) return;
+    const newSkill = value.replace(/[,،]/g, "").trim();
+    if (!newSkill) { setSkillInput(""); return; }
 
     const alreadyExists = skills.some(
       (skill) => skill.toLowerCase() === newSkill.toLowerCase()
@@ -486,7 +486,7 @@ async function handleSubmit(event) {
                     </Box>
                     <Box>
                       <Typography variant="subtitle2" color="text.secondary">ظرفیت تیم</Typography>
-                      <Typography>{formData.capacity} members</Typography>
+                      <Typography>{formData.capacity} عضو</Typography>
                     </Box>
                   </Stack>
                 </CardContent>
