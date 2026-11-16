@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import { RouterProvider } from "react-router/dom";
 
+import PublicLayout from "./layouts/PublicLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
 import MyProjects from "./pages/MyProjects";
 import ProjectRequests from "./pages/ProjectRequests";
@@ -9,9 +10,11 @@ import EditProject from "./pages/EditProject";
 import ProjectDetails from "./pages/ProjectDetails";
 import Notifications from "./pages/Notifications";
 import Profile from "./pages/Profile";
+import ExploreProjects from "./pages/ExploreProjects";
 
 const router = createBrowserRouter([
-  { path: "/", element: <Navigate to="/my-projects" replace /> },
+  { path: "/", element: <Navigate to="/explore" replace /> },
+  { path: "/explore", element: <ExploreProjects /> },
   {
     path: "/my-projects",
     element: (
@@ -47,9 +50,9 @@ const router = createBrowserRouter([
   {
     path: "/projects/:projectId",
     element: (
-      <DashboardLayout pageTitle="پروژه">
+      <PublicLayout>
         <ProjectDetails />
-      </DashboardLayout>
+      </PublicLayout>
     ),
   },
   {
