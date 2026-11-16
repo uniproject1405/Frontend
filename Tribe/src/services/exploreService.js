@@ -33,8 +33,8 @@ export async function getExploreProjects({ search = '', skill = '', status = '' 
   await wait();
   const q = search.trim().toLowerCase();
   return (await loadProjects()).filter(p =>
-    (!q || p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q))
-    && (!skill || p.requiredSkills.includes(skill))
+    (!q || (p.title || '').toLowerCase().includes(q) || (p.description || '').toLowerCase().includes(q))
+    && (!skill || (p.requiredSkills || []).includes(skill))
     && (!status || p.status === status)
   );
 }

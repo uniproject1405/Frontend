@@ -10,6 +10,8 @@ import {
   Chip,
   Stack,
   Snackbar,
+  Tab,
+  Tabs,
   Typography,
 } from "@mui/material";
 
@@ -18,17 +20,20 @@ import FolderOpenRoundedIcon from "@mui/icons-material/FolderOpenRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import CloudOffRoundedIcon from "@mui/icons-material/CloudOffRounded";
 
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router";
 import {
   closeProject,
   getMyProjects,
 } from "../services/mockProjectService";
 import ProjectCard from "../components/ProjectCard";
+import MembershipTabs from "../components/MembershipTabs";
 import CloseProjectDialog from "../components/CloseProjectDialog";
 
 function MyProjects() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tab = ["joined", "requests", "review"].includes(searchParams.get("tab")) ? searchParams.get("tab") : "created";
 
   const [projects, setProjects] = useState([]);
   const [status, setStatus] = useState("loading");
@@ -156,70 +161,25 @@ function MyProjects() {
         </Alert>
       </Snackbar>
 
-      {/* Compact hero — PO review: shorter, no subtitle, 16px corners */}
-      <Box
-        sx={{
-          position: "relative",
-          overflow: "hidden",
-          borderRadius: "16px",
-          color: "#FFFFFF",
-          background: "linear-gradient(125deg, #071739 0%, #142A50 65%, #4B6382 150%)",
-          px: { xs: 3, sm: 4 },
-          py: { xs: 3, sm: 3.5 },
-          mb: 4,
-        }}
+      <Stack direction="row" sx={{ justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+        <Typography variant="h4" component="h1" sx={{ fontWeight: 800, color: "#071739" }}>پروژه‌های من</Typography>
+        <Button component={Link} to="/create-project" variant="contained" startIcon={<AddRoundedIcon />}>پروژه جدید</Button>
+      </Stack>
+
+      <Tabs
+        value={tab}
+        onChange={(_, v) => setSearchParams(v === "created" ? {} : { tab: v })}
+        sx={{ mb: 3, borderBottom: 1, borderColor: "divider" }}
       >
-        <Box
-          sx={{
-            position: "absolute",
-            width: 220,
-            height: 220,
-            borderRadius: "50%",
-            bgcolor: "rgba(227,195,157,0.08)",
-            top: -135,
-            right: -65,
-            pointerEvents: "none",
-          }}
-        />
+        <Tab value="created" label="ساخته‌شده" />
+        <Tab value="review" label="برای بررسی" />
+        <Tab value="joined" label="عضو شده" />
+        <Tab value="requests" label="درخواست‌های ارسالی" />
+      </Tabs>
 
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          spacing={2}
-          sx={{ alignItems: { xs: "flex-start", sm: "center" }, justifyContent: "space-between", position: "relative", zIndex: 1 }}
-        >
-          <Typography
-            component="h1"
-            sx={{
-              color: "#FFFFFF",
-              fontSize: { xs: "30px", sm: "36px" },
-              fontWeight: 800,
-              letterSpacing: "-1px",
-              lineHeight: 1.2,
-            }}
-          >
-            پروژه‌های من
-          </Typography>
+      {tab !== "created" && <MembershipTabs key={tab} tab={tab} onToast={setToast} />}
 
-          <Button
-            component={Link}
-            to="/create-project"
-            variant="contained"
-            startIcon={<AddRoundedIcon />}
-            sx={{
-              bgcolor: "#E3C39D",
-              color: "#071739",
-              borderRadius: "8px",
-              flexShrink: 0,
-              "&:hover": { bgcolor: "#D6B184" },
-            }}
-          >
-            پروژه جدید
-          </Button>
-        </Stack>
-      </Box>
-
-
-      <>
+      {tab === "created" && (<>
       {/* SECTION HEADING */}
       <Stack
         direction={{ xs: "column", sm: "row" }}
@@ -366,7 +326,7 @@ function MyProjects() {
           ))}
         </Box>
       )}
-      </>
+      </>)}
 
       <CloseProjectDialog
         open={Boolean(closeTarget)}
