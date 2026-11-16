@@ -1,0 +1,14 @@
+/* Colours for the plain-CSS pages (login, signup, terms, 404).
+   Same palette as src/theme/tribeTheme.js and the explore page: change both together. */
+:root {
+  --navy: #071739;
+  --navy-hover: #0E2452;
+  --bg: #F4F6F8;
+  --surface: #ffffff;
+  --line: #E3E8EF;
+  --line-soft: #E3E8EF;
+  --text-muted: #4B6382;
+  --text-faint: #4B6382;
+  --beige: #E3C39D;
+  --brown: #786045;
+}

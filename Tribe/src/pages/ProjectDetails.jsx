@@ -5,7 +5,8 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-import { isLoggedIn, LOGIN_PATH } from "../services/currentUser";
+import { LOGIN_PATH } from "../services/currentUser";
+import { useAuth } from "../features/auth/useAuth.js";
 import { getProjectDetails } from "../services/membershipService";
 import JoinRequestDialog from "../components/JoinRequestDialog";
 
@@ -52,6 +53,7 @@ function JoinArea({ details, onJoin }) {
 }
 
 function ProjectDetailsView({ projectId }) {
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [details, setDetails] = useState(null);
@@ -156,7 +158,7 @@ function ProjectDetailsView({ projectId }) {
                 {spotsLeft === 0 ? "جای خالی نیست" : `${spotsLeft} جای خالی از ${project.capacity}`}
               </Typography>
             )}
-            <JoinArea details={details} onJoin={() => (isLoggedIn() ? setJoining(true) : navigate(`${LOGIN_PATH}?next=${encodeURIComponent(location.pathname)}`))} />
+            <JoinArea details={details} onJoin={() => (isAuthenticated ? setJoining(true) : navigate(`${LOGIN_PATH}?next=${encodeURIComponent(location.pathname)}`))} />
             <JoinRequestDialog
               project={project}
               open={joining}
