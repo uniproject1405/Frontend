@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router";
+import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 
 import PublicLayout from "./layouts/PublicLayout";
@@ -10,10 +10,11 @@ import EditProject from "./pages/EditProject";
 import ProjectDetails from "./pages/ProjectDetails";
 import Notifications from "./pages/Notifications";
 import Profile from "./pages/Profile";
+import Home from "./pages/Home";
 import ExploreProjects from "./pages/ExploreProjects";
 
 const router = createBrowserRouter([
-  { path: "/", element: <Navigate to="/explore" replace /> },
+  { path: "/", element: <Home /> },
   { path: "/explore", element: <ExploreProjects /> },
   {
     path: "/my-projects",
