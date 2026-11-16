@@ -14,6 +14,7 @@ import {
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import PeopleOutlineRoundedIcon from "@mui/icons-material/PeopleOutlineRounded";
+import { fa } from "../utils/fa";
 
 function ProjectCard({ project, onEdit, onClose, onRequests }) {
   const skills = Array.isArray(project.requiredSkills)
@@ -142,7 +143,7 @@ function ProjectCard({ project, onEdit, onClose, onRequests }) {
               variant="body2"
               sx={{ overflowWrap: "anywhere" }}
             >
-              ظرفیت تیم: {project.capacity}
+              ظرفیت تیم: {fa(project.capacity)}
             </Typography>
           </Stack>
 

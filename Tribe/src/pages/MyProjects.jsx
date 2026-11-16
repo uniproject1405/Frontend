@@ -25,6 +25,7 @@ import {
   closeProject,
   getMyProjects,
 } from "../services/mockProjectService";
+import { fa } from "../utils/fa";
 import ProjectCard from "../components/ProjectCard";
 import MembershipTabs from "../components/MembershipTabs";
 import CloseProjectDialog from "../components/CloseProjectDialog";
@@ -188,7 +189,7 @@ function MyProjects() {
       >
         {isConnected && (
           <Chip
-            label={`${projects.length} پروژه`}
+            label={`${fa(projects.length)} پروژه`}
             size="small"
             sx={{
               bgcolor: "#E8EEF3",
