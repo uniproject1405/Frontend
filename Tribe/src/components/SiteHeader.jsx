@@ -19,11 +19,14 @@ export default function SiteHeader() {
     <Box component="header" sx={{ bgcolor: '#fff', borderBottom: '1px solid #E3E8EF' }}>
       <Container
         maxWidth="lg"
-        sx={{ py: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap' }}
+        sx={{ py: 0.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap' }}
       >
-        <Box component={Link} to="/explore" sx={{ textDecoration: 'none' }}>
-          <TribeLogo height={100} />
-        </Box>
+        <Stack direction="row" spacing={1.5} alignItems="center">
+          <Button sx={{ color: NAVY, fontWeight: 600, textTransform: 'none' }}>ورود</Button>
+          <Button variant="contained" sx={{ bgcolor: NAVY, textTransform: 'none', '&:hover': { bgcolor: '#0E2452' } }}>
+            عضویت در Tribe
+          </Button>
+        </Stack>
 
         <Stack direction="row" spacing={3} alignItems="center" sx={{ display: { xs: 'none', md: 'flex' } }}>
           {NAV.map(([label, to]) => (
@@ -37,12 +40,9 @@ export default function SiteHeader() {
           ))}
         </Stack>
 
-        <Stack direction="row" spacing={1.5} alignItems="center">
-          <Button sx={{ color: NAVY, fontWeight: 600, textTransform: 'none' }}>ورود</Button>
-          <Button variant="contained" sx={{ bgcolor: NAVY, textTransform: 'none', '&:hover': { bgcolor: '#0E2452' } }}>
-            عضویت در Tribe
-          </Button>
-        </Stack>
+        <Box component={Link} to="/explore" sx={{ textDecoration: 'none' }}>
+          <TribeLogo height={64} />
+        </Box>
       </Container>
     </Box>
   );
