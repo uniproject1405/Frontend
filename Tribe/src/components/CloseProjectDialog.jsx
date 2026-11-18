@@ -37,6 +37,14 @@ function CloseProjectDialog({
       fullWidth
       maxWidth="xs"
       aria-labelledby="close-project-dialog-title"
+      slotProps={{
+        paper: {
+          sx: {
+            mx: 2,
+            borderRadius: "16px",
+          },
+        },
+      }}
     >
       <DialogTitle id="close-project-dialog-title">
         <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
@@ -85,7 +93,7 @@ function CloseProjectDialog({
         )}
       </DialogContent>
 
-      <DialogActions sx={{ p: 3, pt: 1 }}>
+      <DialogActions sx={{ p: 3, pt: 1, flexWrap: "wrap", gap: 1 }}>
         <Button
           onClick={onCancel}
           disabled={isClosing}

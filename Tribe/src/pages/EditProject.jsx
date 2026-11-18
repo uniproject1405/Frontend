@@ -93,7 +93,7 @@ function EditProject() {
   }
 
   function addSkill() {
-    const value = skillInput.trim();
+    const value = skillInput.replace(/[,،]/g, "").trim();
 
     if (
       value &&
@@ -108,7 +108,7 @@ function EditProject() {
   }
 
   function handleSkillKeyDown(event) {
-    if (event.key === "Enter" || event.key === ",") {
+    if (event.key === "Enter" || event.key === "," || event.key === "،") {
       event.preventDefault();
       addSkill();
     }
@@ -124,7 +124,7 @@ function EditProject() {
     event.preventDefault();
 
     const finalSkills = [...skills];
-    const pendingSkill = skillInput.trim();
+    const pendingSkill = skillInput.replace(/[,،]/g, "").trim();
 
     if (
       pendingSkill &&

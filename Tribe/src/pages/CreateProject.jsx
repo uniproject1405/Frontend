@@ -23,6 +23,7 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import { createProject } from "../services/mockProjectService";
+import { fa } from "../utils/fa";
 
 import { validateProject, validateProjectStep } from "../utils/projectValidation";
 
@@ -134,7 +135,7 @@ function CreateProject() {
   }
 
   function handleSkillKeyDown(event) {
-    if (event.key === "Enter" || event.key === ",") {
+    if (event.key === "Enter" || event.key === "," || event.key === "،") {
       event.preventDefault();
       addSkill();
       return;
@@ -174,7 +175,7 @@ async function handleSubmit(event) {
   event.preventDefault();
   if (isSubmitted) return;
 
-  const pendingSkill = skillInput.trim();
+  const pendingSkill = skillInput.replace(/[,،]/g, "").trim();
   const finalSkills = [...skills];
 
   if (
@@ -297,7 +298,7 @@ async function handleSubmit(event) {
                 <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
                   <Chip
                     size="small"
-                    label={index + 1}
+                    label={fa(index + 1)}
                     color={index <= activeStep ? "primary" : "default"}
                     variant={index === activeStep ? "filled" : "outlined"}
                   />
@@ -353,7 +354,7 @@ async function handleSubmit(event) {
                       required
                       inputRef={(element) => { fieldRefs.current.title = element; }}
                       slotProps={{ htmlInput: { maxLength: 80 } }}
-                      helperText={errors.title || `${formData.title.length}/80 کاراکتر`}
+                      helperText={errors.title || `${fa(formData.title.length)}/${fa(80)} کاراکتر`}
                     />
 
                     <TextField
@@ -366,7 +367,7 @@ async function handleSubmit(event) {
                       required
                       inputRef={(element) => { fieldRefs.current.goal = element; }}
                       slotProps={{ htmlInput: { maxLength: 160 } }}
-                      helperText={errors.goal || `${formData.goal.length}/160 کاراکتر`}
+                      helperText={errors.goal || `${fa(formData.goal.length)}/${fa(160)} کاراکتر`}
                     />
 
                     <TextField
@@ -381,7 +382,7 @@ async function handleSubmit(event) {
                       required
                       inputRef={(element) => { fieldRefs.current.description = element; }}
                       slotProps={{ htmlInput: { maxLength: 1000 } }}
-                      helperText={errors.description || `${formData.description.length}/1000 کاراکتر`}
+                      helperText={errors.description || `${fa(formData.description.length)}/${fa(1000)} کاراکتر`}
                     />
                   </Stack>
                 </CardContent>
@@ -486,7 +487,7 @@ async function handleSubmit(event) {
                     </Box>
                     <Box>
                       <Typography variant="subtitle2" color="text.secondary">ظرفیت تیم</Typography>
-                      <Typography>{formData.capacity} عضو</Typography>
+                      <Typography>{fa(formData.capacity)} عضو</Typography>
                     </Box>
                   </Stack>
                 </CardContent>
@@ -583,7 +584,7 @@ async function handleSubmit(event) {
               ))}
             </Stack>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-              ظرفیت تیم: {formData.capacity || "–"}
+              ظرفیت تیم: {formData.capacity ? fa(formData.capacity) : "–"}
             </Typography>
           </CardContent>
         </Card>
