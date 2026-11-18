@@ -1,13 +1,13 @@
 import { Routes, Route } from "react-router-dom";
 
-import ProtectedRoute from "./features/auth/ProtectedRoute.jsx";
-import PublicOnlyRoute from "./features/auth/PublicOnlyRoute.jsx";
-import Login from "./features/auth/pages/Login.jsx";
-import Signup from "./features/auth/pages/Signup.jsx";
-import ForgotPassword from "./features/auth/pages/ForgotPassword.jsx";
-import Dashboard from "./features/dashboard/Dashboard.jsx";
-import TermsPage from "./features/legal/TermsPage.jsx";
-import NotFound from "./features/not-found/NotFound.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import PublicOnlyRoute from "./components/PublicOnlyRoute.jsx";
+import Login from "./pages/Login.jsx";
+import Signup from "./pages/Signup.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import TermsPage from "./pages/TermsPage.jsx";
+import NotFound from "./pages/NotFound.jsx";
 
 export default function App() {
   return (
