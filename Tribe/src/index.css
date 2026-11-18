@@ -116,3 +116,17 @@ code {
   margin: 0;
   text-align: left;
 }
+html {
+  direction: rtl;
+}
+
+body {
+  direction: rtl;
+  font-family: "Vazirmatn", "Segoe UI", Arial, sans-serif;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  text-align: right;
+}

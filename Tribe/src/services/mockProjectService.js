@@ -51,7 +51,7 @@ export async function getProjectById(projectId) {
   );
 
   if (!project) {
-    throw new Error("Project not found.");
+    throw new Error("پروژه موردنظر پیدا نشد.");
   }
 
   return project;
@@ -82,7 +82,7 @@ export async function updateProject(projectId, updates) {
   );
 
   if (index === -1) {
-    throw new Error("Project not found.");
+    throw new Error("پروژه موردنظر پیدا نشد.");
   }
 
   const updatedProject = {
@@ -119,7 +119,7 @@ export async function updateRequestStatus(requestId, status) {
   const allowedStatuses = ["pending", "accepted", "rejected"];
 
   if (!allowedStatuses.includes(status)) {
-    throw new Error("Invalid request status.");
+    throw new Error("وضعیت درخواست معتبر نیست.");
   }
 
   const requests = getRequests();
@@ -129,7 +129,7 @@ export async function updateRequestStatus(requestId, status) {
   );
 
   if (index === -1) {
-    throw new Error("Request not found.");
+    throw new Error("درخواست موردنظر پیدا نشد.");
   }
 
   const updatedRequest = {

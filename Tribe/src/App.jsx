@@ -12,16 +12,21 @@ import CreateProject from "./pages/CreateProject";
 import MyProjects from "./pages/MyProjects";
 import EditProject from "./pages/EditProject";
 import ProjectRequests from "./pages/ProjectRequests";
+import Home from "./pages/Home";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Navigate to="/my-projects" replace />,
+  path: "/",
+  element: (
+    <DashboardLayout pageTitle="خانه">
+      <Home />
+    </DashboardLayout>
+    ),
   },
   {
     path: "/my-projects",
     element: (
-      <DashboardLayout pageTitle="My Projects">
+      <DashboardLayout pageTitle="پروژه‌های من">
         <MyProjects />
       </DashboardLayout>
     ),
@@ -29,7 +34,7 @@ const router = createBrowserRouter([
   {
     path: "/create-project",
     element: (
-      <DashboardLayout pageTitle="Create Project">
+      <DashboardLayout pageTitle="ایجاد پروژه">
         <CreateProject />
       </DashboardLayout>
     ),
@@ -37,7 +42,7 @@ const router = createBrowserRouter([
   {
     path: "/my-projects/:projectId/edit",
     element: (
-      <DashboardLayout pageTitle="Edit Project">
+      <DashboardLayout pageTitle="ویرایش پروژه">
         <EditProject />
       </DashboardLayout>
     ),
@@ -45,7 +50,7 @@ const router = createBrowserRouter([
   {
     path: "/my-projects/:projectId/requests",
     element: (
-      <DashboardLayout pageTitle="Project Requests">
+      <DashboardLayout pageTitle="درخواست‌های عضویت">
         <ProjectRequests />
       </DashboardLayout>
     ),
