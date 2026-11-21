@@ -37,14 +37,6 @@ function CloseProjectDialog({
       fullWidth
       maxWidth="xs"
       aria-labelledby="close-project-dialog-title"
-      slotProps={{
-        paper: {
-          sx: {
-            mx: 2,
-            borderRadius: "16px",
-          },
-        },
-      }}
     >
       <DialogTitle id="close-project-dialog-title">
         <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
@@ -70,7 +62,8 @@ function CloseProjectDialog({
 
       <DialogContent>
         <Typography color="text.secondary">
-          مطمئن هستید که می‌خواهید {project?.title ? `«${project.title}»` : "این پروژه"} را ببندید؟
+          آیا مطمئن هستید که می‌خواهید پروژه
+          {project?.title ? ` «${project.title}»` : " این پروژه"} را ببندید؟
         </Typography>
 
         <Typography
@@ -78,12 +71,13 @@ function CloseProjectDialog({
           color="text.secondary"
           sx={{ mt: 2 }}
         >
-          وضعیت پروژه به «بسته» تغییر می‌کند.
+          با این کار، وضعیت پروژه به «بسته‌شده» تغییر می‌کند.
         </Typography>
         
         {typeof onConfirm !== "function" && (
   <Alert severity="info" sx={{ mt: 2 }}>
-    بستن پروژه پس از اتصال به سرور فعال می‌شود.
+    امکان بستن پروژه پس از
+    اتصال API بک‌اند فراهم خواهد شد.
   </Alert>
 )}
         {error && (
@@ -93,7 +87,7 @@ function CloseProjectDialog({
         )}
       </DialogContent>
 
-      <DialogActions sx={{ p: 3, pt: 1, flexWrap: "wrap", gap: 1 }}>
+      <DialogActions sx={{ p: 3, pt: 1 }}>
         <Button
           onClick={onCancel}
           disabled={isClosing}

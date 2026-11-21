@@ -9,7 +9,7 @@ function ProjectApiError({ error }) {
   const message =
     typeof error === "string"
       ? error
-      : error.message || "مشکلی پیش آمد. لطفاً دوباره تلاش کنید.";
+      : error.message || "Something went wrong. Please try again.";
 
   return (
     <Box role="alert" sx={{ width: "100%" }}>
@@ -27,7 +27,7 @@ function ProjectApiError({ error }) {
         }}
       >
         <AlertTitle sx={{ fontWeight: 700 }}>
-          انجام درخواست ممکن نشد
+          Unable to complete request
         </AlertTitle>
 
         {message}

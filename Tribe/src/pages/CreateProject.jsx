@@ -1,733 +1,399 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useBlocker, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Divider,
-  Stack,
-  TextField,
-  Typography,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Snackbar,
-  Alert,
+  Alert, Box, Button, Chip, Dialog, DialogActions, DialogContent,
+  DialogTitle, Divider, IconButton, Stack, TextField, Typography,
 } from "@mui/material";
-
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
-import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
 import { createProject } from "../services/mockProjectService";
+import { validateProject, validateProjectStep } from "../utils/projectValidation";
 import { fa } from "../utils/fa";
 
-import { validateProject, validateProjectStep } from "../utils/projectValidation";
+const EMPTY = { title: "", goal: "", description: "", requiredSkills: "", capacity: "" };
+const STEPS = ["اطلاعات پایه", "معرفی پروژه", "تیم و مهارت‌ها", "بازبینی"];
+const NAVY = "#071739";
+const BLUE = "#4B6382";
+const BORDER = "#E3E8EF";
+const SOFT = "#F4F6FA";
 
-const INITIAL_FORM_DATA = {
-  title: "",
-  goal: "",
-  description: "",
-  requiredSkills: "",
-  capacity: "",
+const fieldStyle = {
+  width: "100%",
+  "& .MuiOutlinedInput-root": {
+    bgcolor: "#FFFFFF",
+    borderRadius: "10px",
+    fontSize: 14,
+    minHeight: 49,
+    "& fieldset": { borderColor: BORDER },
+    "&:hover fieldset": { borderColor: "#A4B5C4" },
+    "&.Mui-focused fieldset": { borderColor: NAVY, borderWidth: 1.5 },
+  },
+  "& .MuiFormHelperText-root": { mx: 0, mt: 0.7, fontSize: 11, color: BLUE },
 };
 
-const STEPS = ["جزئیات پروژه", "نیازهای تیم", "بازبینی و ثبت"];
+const fieldLabelSx = {
+  fontWeight: 700,
+  fontSize: 12.5,
+  color: NAVY,
+  mb: 1,
+};
 
-function CreateProject() {
-  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
+/**
+ * Default use: <CreateProject /> for the /create-project route.
+ * Dashboard modal use: <CreateProject open={open} onClose={...} onCreated={...} />
+ */
+function CreateProject({ open = true, onClose, onCreated }) {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ ...EMPTY });
+  const [step, setStep] = useState(0);
+  const [skills, setSkills] = useState([]);
+  const [skillInput, setSkillInput] = useState("");
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
-  const [skillInput, setSkillInput] = useState("");
-  const [skills, setSkills] = useState([]);
-  const [activeStep, setActiveStep] = useState(0);
-  const [resetDialogOpen, setResetDialogOpen] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const fieldRefs = useRef({});
-  const navigate = useNavigate();
+  const [submitting, setSubmitting] = useState(false);
+  const [confirmClose, setConfirmClose] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const refs = useRef({});
+
+  const dirty = Object.values(form).some((v) => String(v).trim()) || Boolean(skillInput.trim());
 
   useEffect(() => {
-    if (!isSubmitted) return undefined;
+    if (!open || !dirty || saved) return undefined;
+    const warn = (event) => { event.preventDefault(); event.returnValue = ""; };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [open, dirty, saved]);
 
-    const timer = window.setTimeout(() => {
-      navigate("/my-projects");
-    }, 2000);
-
-    return () => window.clearTimeout(timer);
-  }, [isSubmitted, navigate]);
-
-  const hasUnsavedChanges =
-    Object.values(formData).some((value) => String(value).trim() !== "") ||
-    skillInput.trim() !== "";
-
-  const blocker = useBlocker(
-  ({ currentLocation, nextLocation }) =>
-    Boolean(hasUnsavedChanges) &&
-    !isSubmitted &&
-    currentLocation.pathname !== nextLocation.pathname
-  );
-
-  useEffect(() => {
-    if (!hasUnsavedChanges || isSubmitted) return undefined;
-
-    function handleBeforeUnload(event) {
-      event.preventDefault();
-      event.returnValue = "";
-    }
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [hasUnsavedChanges, isSubmitted]);
-
-  function handleStayOnPage() {
-    if (blocker.state === "blocked") blocker.reset();
+  function clearForm() {
+    setForm({ ...EMPTY }); setSkills([]); setSkillInput("");
+    setStep(0); setErrors({}); setMessage(""); setSaved(false);
   }
 
-  function handleLeavePage() {
-    if (blocker.state === "blocked") blocker.proceed();
+  function finishClose() {
+    setConfirmClose(false);
+    clearForm();
+    if (onClose) onClose();
+    else navigate("/my-projects");
   }
 
-  function clearFieldError(name) {
-    setErrors((previousErrors) => ({ ...previousErrors, [name]: "" }));
+  function requestClose() {
+    if (submitting) return;
+    if (dirty && !saved) setConfirmClose(true);
+    else finishClose();
+  }
+
+  function change(event) {
+    const { name, value } = event.target;
+    setForm((old) => ({ ...old, [name]: value }));
+    setErrors((old) => ({ ...old, [name]: "" }));
     setMessage("");
   }
 
-  function handleChange(event) {
-    const { name, value } = event.target;
-    setFormData((previousData) => ({ ...previousData, [name]: value }));
-    clearFieldError(name);
-  }
-
-  function addSkill(value = skillInput) {
-    const newSkill = value.replace(/[,،]/g, "").trim();
-    if (!newSkill) { setSkillInput(""); return; }
-
-    const alreadyExists = skills.some(
-      (skill) => skill.toLowerCase() === newSkill.toLowerCase()
-    );
-
-    if (alreadyExists) {
+  function addSkill(raw = skillInput) {
+    const value = raw.replace(/[,،]/g, "").trim();
+    if (!value) {
       setSkillInput("");
       return;
     }
-
-    const updatedSkills = [...skills, newSkill];
-    setSkills(updatedSkills);
+    const updated = skills.some((skill) => skill.toLowerCase() === value.toLowerCase())
+      ? skills : [...skills, value];
+    setSkills(updated);
+    setForm((old) => ({ ...old, requiredSkills: updated.join(", ") }));
     setSkillInput("");
-    setFormData((previousData) => ({
-      ...previousData,
-      requiredSkills: updatedSkills.join(", "),
-    }));
-    clearFieldError("requiredSkills");
+    setErrors((old) => ({ ...old, requiredSkills: "" }));
   }
 
-  function removeSkill(skillToRemove) {
-    const updatedSkills = skills.filter((skill) => skill !== skillToRemove);
-    setSkills(updatedSkills);
-    setFormData((previousData) => ({
-      ...previousData,
-      requiredSkills: updatedSkills.join(", "),
-    }));
-    clearFieldError("requiredSkills");
+  function removeSkill(value) {
+    const updated = skills.filter((skill) => skill !== value);
+    setSkills(updated);
+    setForm((old) => ({ ...old, requiredSkills: updated.join(", ") }));
   }
 
-  function handleSkillKeyDown(event) {
-    if (event.key === "Enter" || event.key === "," || event.key === "،") {
-      event.preventDefault();
-      addSkill();
-      return;
+  function fieldErrors(data, currentStep) {
+    if (currentStep === 3) return validateProject(data);
+    // Preserve existing validation rules even though the design has four visual steps.
+    const source = validateProjectStep(data, currentStep === 2 ? 1 : 0);
+    const names = currentStep === 0 ? ["title", "goal"]
+      : currentStep === 1 ? ["description"] : ["requiredSkills", "capacity"];
+    return Object.fromEntries(Object.entries(source).filter(([name]) => names.includes(name)));
+  }
+
+  async function next(event) {
+    event.preventDefault();
+    if (submitting) return;
+    const pending = skillInput.replace(/[,،]/g, "").trim();
+    const finalSkills = [...skills];
+    if (pending && !finalSkills.some((s) => s.toLowerCase() === pending.toLowerCase())) {
+      finalSkills.push(pending);
     }
-
-    if (event.key === "Backspace" && !skillInput.trim() && skills.length > 0) {
-      const updatedSkills = skills.slice(0, -1);
-      setSkills(updatedSkills);
-      setFormData((previousData) => ({
-        ...previousData,
-        requiredSkills: updatedSkills.join(", "),
-      }));
-      clearFieldError("requiredSkills");
+    const data = { ...form, requiredSkills: finalSkills.join(", ") };
+    setSkills(finalSkills); setSkillInput(""); setForm(data); setMessage("");
+    const invalid = fieldErrors(data, step);
+    setErrors(invalid);
+    const first = Object.keys(invalid).find((key) => invalid[key]);
+    if (first) { refs.current[first]?.focus(); return; }
+    if (step < 3) { setStep((s) => s + 1); return; }
+    setSubmitting(true);
+    try {
+      await createProject({ ...data, requiredSkills: finalSkills, capacity: Number(data.capacity) });
+      setSaved(true);
+      if (onCreated) await onCreated();
+      finishClose();
+    } catch (error) {
+      setMessage(error?.message || "ایجاد پروژه انجام نشد. لطفاً دوباره تلاش کنید.");
+    } finally {
+      setSubmitting(false);
     }
   }
 
-  function handleOpenResetDialog() {
-    setResetDialogOpen(true);
-  }
-
-  function handleCancelReset() {
-    setResetDialogOpen(false);
-  }
-
-  function handleConfirmReset() {
-    setFormData({ ...INITIAL_FORM_DATA });
-    setSkills([]);
-    setSkillInput("");
-    setErrors({});
-    setMessage("");
-    setActiveStep(0);
-    setResetDialogOpen(false);
-  }
-
-  
-async function handleSubmit(event) {
-  event.preventDefault();
-  if (isSubmitted) return;
-
-  const pendingSkill = skillInput.replace(/[,،]/g, "").trim();
-  const finalSkills = [...skills];
-
-  if (
-    pendingSkill &&
-    !finalSkills.some(
-      (skill) => skill.toLowerCase() === pendingSkill.toLowerCase()
-    )
-  ) {
-    finalSkills.push(pendingSkill);
-  }
-
-  const finalFormData = {
-    ...formData,
-    requiredSkills: finalSkills.join(", "),
-  };
-
-  setSkills(finalSkills);
-  setSkillInput("");
-  setFormData(finalFormData);
-  setMessage("");
-
-  const validationErrors =
-    activeStep === 2
-      ? validateProject(finalFormData)
-      : validateProjectStep(finalFormData, activeStep);
-
-  setErrors(validationErrors);
-
-  const fieldOrder =
-    activeStep === 0
-      ? ["title", "goal", "description"]
-      : activeStep === 1
-        ? ["requiredSkills", "capacity"]
-        : ["title", "goal", "description", "requiredSkills", "capacity"];
-
-  const firstInvalidField = fieldOrder.find(
-    (fieldName) => validationErrors[fieldName]
+  const input = (name, label, placeholder, limit, extra = {}) => (
+    <Box key={name}>
+      <Typography component="label" htmlFor={`project-${name}`} sx={fieldLabelSx}>
+        {label} <Box component="span" sx={{ color: "#A68868" }}>*</Box>
+      </Typography>
+      <TextField
+        id={`project-${name}`}
+        name={name}
+        placeholder={placeholder}
+        value={form[name]}
+        onChange={change}
+        error={Boolean(errors[name])}
+        helperText={errors[name] || `${fa(form[name].length)}/${fa(limit)} کاراکتر`}
+        inputRef={(node) => { refs.current[name] = node; }}
+        slotProps={{ htmlInput: { maxLength: limit } }}
+        required
+        sx={fieldStyle}
+        {...extra}
+      />
+    </Box>
   );
 
-  if (firstInvalidField) {
-    fieldRefs.current[firstInvalidField]?.focus();
-    return;
-  }
-
-  if (activeStep < 2) {
-    setActiveStep((previousStep) => previousStep + 1);
-    return;
-  }
-
-  try {
-    await createProject({
-      ...finalFormData,
-      requiredSkills: finalSkills,
-      capacity: Number(finalFormData.capacity),
-    });
-
-    setMessage("");
-    setIsSubmitted(true);
-
-  } catch (error) {
-    setMessage(
-      error.message || "هنگام ساخت پروژه مشکلی پیش آمد."
-    );
-  }
-}
-
-  function handleBackStep() {
-    setErrors({});
-    setMessage("");
-    setActiveStep((previousStep) => Math.max(previousStep - 1, 0));
-  }
-
-  const progress = ((activeStep + 1) / STEPS.length) * 100;
-
   return (
-    <Box sx={{ width: "100%", minWidth: 0, px: { xs: 0, sm: 1 } }}>
-      <Box sx={{ width: "100%", maxWidth: 1200, mx: "auto", minWidth: 0 }}>
-        <Button
-          component={Link}
-          to="/my-projects"
-          startIcon={<ArrowBackRoundedIcon />}
-          color="primary"
-          sx={{ mb: 3 }}
-        >
-          بازگشت به پروژه‌های من
-        </Button>
-
-        <Stack spacing={1} sx={{ mb: 3 }}>
-          <Chip
-            icon={<AutoAwesomeRoundedIcon />}
-            label="چیز بزرگی بساز"
-            sx={{
-              alignSelf: "flex-start",
-              bgcolor: "#E3C39D33",
-              color: "#A68868",
-              fontWeight: 700,
-              letterSpacing: 1,
-              fontSize: 11,
-            }}
-          />
-          <Typography
-            component="h1"
-            sx={{
-              fontSize: { xs: "30px", sm: "36px" },
-              fontWeight: 800,
-              letterSpacing: "-1px",
-              lineHeight: 1.2,
-              color: "#071739",
-            }}
-          >
-            ساخت پروژه جدید
-          </Typography>
-        </Stack>
-
-        {/* Step progress */}
-        <Box sx={{ mb: 3 }}>
-          <Stack direction="row" spacing={1} sx={{ justifyContent: "space-between", mb: 1 }}>
-            {STEPS.map((step, index) => (
-              <Box key={step} sx={{ flex: 1, minWidth: 0 }}>
-                <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-                  <Chip
-                    size="small"
-                    label={fa(index + 1)}
-                    color={index <= activeStep ? "primary" : "default"}
-                    variant={index === activeStep ? "filled" : "outlined"}
-                  />
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      display: { xs: index === activeStep ? "block" : "none", sm: "block" },
-                      fontWeight: index === activeStep ? 700 : 400,
-                      color: index === activeStep ? "primary.main" : "text.secondary",
-                      overflowWrap: "anywhere",
-                    }}
-                  >
-                    {step}
-                  </Typography>
-                </Stack>
-              </Box>
-            ))}
-          </Stack>
-          <Box sx={{ height: 6, bgcolor: "action.hover", borderRadius: "8px", overflow: "hidden" }}>
-            <Box
-              sx={{
-                height: "100%",
-                width: `${progress}%`,
-                bgcolor: "primary.main",
-                borderRadius: "8px",
-                transition: "width 180ms ease",
-              }}
-            />
+    <>
+      <Dialog
+        open={open}
+        onClose={requestClose}
+        className="tribe-create-project-dialog"
+        fullWidth
+        maxWidth={false}
+        aria-labelledby="create-project-dialog-title"
+        slotProps={{
+          backdrop: { sx: { bgcolor: "rgba(11,27,59,0.46)", backdropFilter: "blur(7px)" } },
+          paper: {
+            sx: {
+              width: "min(790px, calc(100% - 24px))",
+              maxHeight: "calc(100dvh - 40px)",
+              m: 1.5,
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+              borderRadius: "18px",
+              border: `1px solid ${BORDER}`,
+              boxShadow: "0 24px 70px rgba(11,27,59,.18)",
+            },
+          },
+        }}
+      >
+        {/* Simple, shared Tribe visual language; header stays visible on scroll. */}
+        <Box sx={{ px: { xs: 2.5, sm: 4 }, pt: { xs: 2.5, sm: 3 }, pb: 2.5, flexShrink: 0,
+          bgcolor: "#FFFFFF", borderBottom: `1px solid ${BORDER}` }}>
+          <Box sx={{ display: "flex", gap: 1.8, alignItems: "center" }}>
+            <Box sx={{ width: 43, height: 43, borderRadius: "11px", bgcolor: "#EDF1F5",
+              display: "grid", placeItems: "center", color: NAVY, flexShrink: 0 }}>
+              <FolderOutlinedIcon sx={{ fontSize: 23 }} />
+            </Box>
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <Typography id="create-project-dialog-title" sx={{
+                fontSize: { xs: 20, sm: 24 }, fontWeight: 700, color: NAVY, lineHeight: 1.4,
+              }}>ایجاد پروژه جدید</Typography>
+              <Typography sx={{ color: BLUE, fontSize: 12.5, mt: 0.4 }}>
+                ایده‌تان را مرحله‌به‌مرحله به یک پروژه واقعی تبدیل کنید.
+              </Typography>
+            </Box>
+            <IconButton onClick={requestClose} disabled={submitting} aria-label="بستن فرم ایجاد پروژه"
+              sx={{ color: BLUE, bgcolor: SOFT, "&:hover": { bgcolor: "#E9EEF5" } }}>
+              <CloseRoundedIcon />
+            </IconButton>
           </Box>
         </Box>
 
-        <Box sx={{ display: "grid", gap: 3, gridTemplateColumns: { xs: "minmax(0,1fr)", lg: "minmax(0,1fr) 320px" }, alignItems: "start" }}>
-        <Box component="form" onSubmit={handleSubmit} noValidate>
-          <Stack spacing={3}>
-            {activeStep === 0 && (
-              <Card sx={{ width: "100%", minWidth: 0, borderRadius: "16px" }}>
-                <CardContent sx={{ p: { xs: 3, md: 5 } }}>
-                  <Stack spacing={3}>
-                    <Box>
-                      <Typography variant="h6" sx={{ mb: 0.5 }}>
-                        جزئیات پروژه
-                      </Typography>
-                    </Box>
-                    <Divider />
-
-                    <TextField
-                      label="عنوان پروژه"
-                      name="title"
-                      placeholder="مثلاً دستیار هوشمند مطالعه"
-                      value={formData.title}
-                      onChange={handleChange}
-                      error={Boolean(errors.title)}
-                      required
-                      inputRef={(element) => { fieldRefs.current.title = element; }}
-                      slotProps={{ htmlInput: { maxLength: 80 } }}
-                      helperText={errors.title || `${fa(formData.title.length)}/${fa(80)} کاراکتر`}
-                    />
-
-                    <TextField
-                      label="هدف پروژه"
-                      name="goal"
-                      placeholder="هدف اصلی چیست؟"
-                      value={formData.goal}
-                      onChange={handleChange}
-                      error={Boolean(errors.goal)}
-                      required
-                      inputRef={(element) => { fieldRefs.current.goal = element; }}
-                      slotProps={{ htmlInput: { maxLength: 160 } }}
-                      helperText={errors.goal || `${fa(formData.goal.length)}/${fa(160)} کاراکتر`}
-                    />
-
-                    <TextField
-                      label="توضیحات"
-                      name="description"
-                      multiline
-                      minRows={4}
-                      placeholder="ایده‌تان را شرح دهید..."
-                      value={formData.description}
-                      onChange={handleChange}
-                      error={Boolean(errors.description)}
-                      required
-                      inputRef={(element) => { fieldRefs.current.description = element; }}
-                      slotProps={{ htmlInput: { maxLength: 1000 } }}
-                      helperText={errors.description || `${fa(formData.description.length)}/${fa(1000)} کاراکتر`}
-                    />
-                  </Stack>
-                </CardContent>
-              </Card>
-            )}
-
-            {activeStep === 1 && (
-              <Card sx={{ width: "100%", minWidth: 0, borderRadius: "16px" }}>
-                <CardContent sx={{ p: { xs: 3, md: 5 } }}>
-                  <Stack spacing={3}>
-                    <Box>
-                      <Typography variant="h6" sx={{ mb: 0.5 }}>
-                        نیازهای تیم
-                      </Typography>
-                    </Box>
-                    <Divider />
-
-                    <Box>
-                      <TextField
-                        label="مهارت‌های لازم"
-                        placeholder="یک مهارت بنویسید و Enter بزنید"
-                        value={skillInput}
-                        onChange={(event) => {
-                          setSkillInput(event.target.value);
-                          clearFieldError("requiredSkills");
-                        }}
-                        onKeyDown={handleSkillKeyDown}
-                        onBlur={() => addSkill()}
-                        error={Boolean(errors.requiredSkills)}
-                        helperText={errors.requiredSkills || "برای افزودن مهارت، Enter یا ویرگول بزنید."}
-                        inputRef={(element) => { fieldRefs.current.requiredSkills = element; }}
-                        required
-                      />
-
-                      {skills.length > 0 && (
-                        <Stack
-                          direction="row"
-                          spacing={1}
-                          useFlexGap
-                          sx={{ flexWrap: "wrap", mt: 2, maxWidth: "100%", overflowWrap: "anywhere" }}
-                        >
-                          {skills.map((skill) => (
-                            <Chip
-                              key={skill}
-                              label={skill}
-                              onDelete={() => removeSkill(skill)}
-                              sx={{ bgcolor: "#F0F3F8", color: "#4B6382", fontWeight: 600 }}
-                            />
-                          ))}
-                        </Stack>
-                      )}
-                    </Box>
-
-                    <TextField
-                      label="ظرفیت تیم"
-                      name="capacity"
-                      type="text"
-                      slotProps={{ htmlInput: { inputMode: "numeric", pattern: "[0-9]*", maxLength: 5 } }}
-                      value={formData.capacity}
-                      onChange={(event) => {
-                        const numericValue = event.target.value.replace(/\D/g, "");
-                        setFormData((previousData) => ({ ...previousData, capacity: numericValue }));
-                        clearFieldError("capacity");
-                      }}
-                      error={Boolean(errors.capacity)}
-                      helperText={errors.capacity || "تعداد اعضای تیم را به صورت عدد صحیح مثبت وارد کنید."}
-                      inputRef={(element) => { fieldRefs.current.capacity = element; }}
-                      required
-                    />
-                  </Stack>
-                </CardContent>
-              </Card>
-            )}
-
-            {activeStep === 2 && (
-              <Card sx={{ width: "100%", minWidth: 0, borderRadius: "16px" }}>
-                <CardContent sx={{ p: { xs: 3, md: 5 } }}>
-                  <Stack spacing={3}>
-                    <Box>
-                      <Typography variant="h6">بازبینی پروژه</Typography>
-                    </Box>
-                    <Divider />
-
-                    <Box>
-                      <Typography variant="subtitle2" color="text.secondary">عنوان پروژه</Typography>
-                      <Typography sx={{ overflowWrap: "anywhere" }}>{formData.title}</Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="subtitle2" color="text.secondary">هدف پروژه</Typography>
-                      <Typography sx={{ overflowWrap: "anywhere" }}>{formData.goal}</Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="subtitle2" color="text.secondary">توضیحات</Typography>
-                      <Typography sx={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>{formData.description}</Typography>
-                    </Box>
-                    <Divider />
-                    <Box>
-                      <Typography variant="subtitle2" color="text.secondary">مهارت‌های لازم</Typography>
-                      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap", mt: 1 }}>
-                        {skills.map((skill) => <Chip key={skill} label={skill} size="small" />)}
-                      </Stack>
-                    </Box>
-                    <Box>
-                      <Typography variant="subtitle2" color="text.secondary">ظرفیت تیم</Typography>
-                      <Typography>{fa(formData.capacity)} عضو</Typography>
-                    </Box>
-                  </Stack>
-                </CardContent>
-              </Card>
-            )}
-
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "column-reverse", sm: "row" },
-                alignItems: { xs: "stretch", sm: "center" },
-                justifyContent: "space-between",
-                gap: 1.5,
-                pt: 1,
-              }}
-            >
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                <Button
-                  type="button"
-                  variant="outlined"
-                  onClick={handleBackStep}
-                  disabled={activeStep === 0}
-                  sx={{ whiteSpace: "nowrap", flex: { xs: 1, sm: "none" } }}
-                >
-                  قبلی
-                </Button>
-                <Button
-                  type="button"
-                  variant="outlined"
-                  color="secondary"
-                  onClick={handleOpenResetDialog}
-                  sx={{ whiteSpace: "nowrap", flex: { xs: 1, sm: "none" } }}
-                >
-                  بازنشانی
-                </Button>
-                <Button
-                  component={Link}
-                  to="/my-projects"
-                  variant="text"
-                  sx={{ whiteSpace: "nowrap", flex: { xs: 1, sm: "none" } }}
-                >
-                  انصراف
-                </Button>
+        {/* Four-step indicator */}
+        <Box sx={{ px: { xs: 2, sm: 4 }, py: 2.3, bgcolor: "#FFFFFF", borderBottom: `1px solid ${BORDER}`, flexShrink: 0 }}>
+          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0,1fr))" }}>
+            {STEPS.map((label, index) => (
+              <Box key={label} sx={{ position: "relative", display: "flex", alignItems: "center",
+                flexDirection: "column", gap: .9, minWidth: 0, zIndex: 0 }}>
+                {index < 3 && <Box sx={{ position: "absolute", top: 16, left: "50%", width: "100%", height: 2,
+                  bgcolor: index < step ? NAVY : BORDER, zIndex: -1 }} />}
+                <Box sx={{ width: 34, height: 34, borderRadius: "50%", display: "grid", placeItems: "center",
+                  fontWeight: 700, fontSize: 13, border: index <= step ? "none" : `1px solid ${BORDER}`,
+                  bgcolor: index <= step ? NAVY : SOFT, color: index <= step ? "white" : "#7E91A6" }}>
+                  {index < step ? <CheckRoundedIcon fontSize="small" /> : fa(index + 1)}
+                </Box>
+                <Typography sx={{ fontSize: { xs: 9, sm: 11.5 }, fontWeight: index === step ? 700 : 500,
+                  color: index === step ? NAVY : BLUE, textAlign: "center" }}>{label}</Typography>
               </Box>
-
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={isSubmitted}
-                startIcon={activeStep === 2 ? <AddRoundedIcon /> : undefined}
-                sx={{ px: 4, whiteSpace: "nowrap" }}
-              >
-                {isSubmitted ? "در حال ثبت..." : activeStep === 2 ? "ثبت پروژه" : "بعدی"}
-              </Button>
-            </Box>
-
-            {message && !isSubmitted && (
-              <Box
-                role="status"
-                sx={{
-                  bgcolor: "rgba(232, 245, 237, 0.75)",
-                  border: "1px solid rgba(46, 125, 80, 0.20)",
-                  px: 2.5,
-                  py: 2,
-                  borderRadius: "16px",
-                  backdropFilter: "blur(10px)",
-                }}
-              >
-                <Stack spacing={0.5}>
-                  <Typography sx={{ color: "#17603D", fontWeight: 700, fontSize: 15 }}>
-                    ساخت پروژه انجام نشد
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: "#397354", lineHeight: 1.7 }}>
-                    {message}
-                  </Typography>
-                </Stack>
-              </Box>
-            )}
-          </Stack>
+            ))}
+          </Box>
         </Box>
 
-        <Card sx={{ display: { xs: "none", lg: "block" }, position: "sticky", top: 88, borderRadius: "16px" }} aria-label="پیش‌نمایش پروژه">
-          <CardContent sx={{ p: 3 }}>
-            <Typography variant="overline" color="text.secondary">پیش‌نمایش</Typography>
-            <Typography variant="h6" sx={{ fontWeight: 700, mt: 0.5, wordBreak: "break-word", color: formData.title ? "text.primary" : "text.disabled" }}>
-              {formData.title || "عنوان پروژه شما"}
-            </Typography>
-            <Typography color="text.secondary" sx={{ mt: 0.5, wordBreak: "break-word" }}>
-              {formData.goal || "هدف شما اینجا نمایش داده می‌شود"}
-            </Typography>
-            <Stack direction="row" sx={{ gap: 0.75, flexWrap: "wrap", mt: 2 }}>
-              {String(formData.requiredSkills).split(",").map((x) => x.trim()).filter(Boolean).slice(0, 8).map((x) => (
-                <Chip key={x} size="small" label={x} sx={{ bgcolor: "#F0F3F8", color: "#4B6382" }} />
-              ))}
-            </Stack>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-              ظرفیت تیم: {formData.capacity ? fa(formData.capacity) : "–"}
-            </Typography>
-          </CardContent>
-        </Card>
-        </Box>
-      </Box>
-
-      <Snackbar
-        open={isSubmitted}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        sx={{ mt: 1, mr: { xs: 1, sm: 2 }, maxWidth: { xs: "calc(100% - 16px)", sm: 420 } }}
-      >
-        <Alert
-          severity="success"
-          variant="filled"
-          icon={false}
+        <Box
+          component="form"
+          onSubmit={next}
+          noValidate
           sx={{
-            position: "relative",
-            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            flex: "1 1 auto",
+            minHeight: 0,
             overflow: "hidden",
-            alignItems: "center",
-            borderRadius: "16px",
-            bgcolor: "#218653",
-            color: "#FFFFFF",
-            boxShadow: "0 10px 30px rgba(7, 23, 57, 0.18)",
-            pb: 2.2,
-            "& .MuiAlert-message": { width: "100%" },
           }}
         >
-          <Stack spacing={0.35}>
-            <Typography sx={{ fontWeight: 700, fontSize: 14 }}>
-              پروژه با موفقیت ساخته شد!
-            </Typography>
-            <Typography sx={{ fontSize: 12, opacity: 0.9 }}>
-              در حال انتقال به پروژه‌های من...
-            </Typography>
-          </Stack>
-          <Box
+          <DialogContent
             sx={{
-              position: "absolute",
-              left: 0,
-              bottom: 0,
-              width: "100%",
-              height: 4,
-              bgcolor: "rgba(255,255,255,0.28)",
-              "&::after": {
-                content: '""',
-                display: "block",
-                height: "100%",
-                width: "100%",
-                bgcolor: "#FFFFFF",
-                transformOrigin: "right center",
-                animation: "toast-countdown 2s linear forwards",
-              },
-              "@keyframes toast-countdown": {
-                from: { transform: "scaleX(1)" },
-                to: { transform: "scaleX(0)" },
-              },
+              px: { xs: 2.5, sm: 4 },
+              pt: "25px !important",
+              pb: 3,
+              bgcolor: "#FFFFFF",
+              flex: "1 1 auto",
+              minHeight: 0,
+              overflowY: "auto",
+              overscrollBehavior: "contain",
+              scrollbarWidth: "thin",
+              scrollbarColor: "#CDD5DB transparent",
             }}
-          />
-        </Alert>
-      </Snackbar>
+          >
+            <Stack spacing={2.5}>
+              <Box>
+                <Typography sx={{ fontWeight: 700, color: NAVY, fontSize: 18 }}>
+                  {step === 0 ? "اطلاعات اولیه" : step === 1 ? "درباره پروژه‌تان بگویید"
+                    : step === 2 ? "نیازهای تیم" : "بازبینی پروژه"}
+                </Typography>
+                <Typography sx={{ fontSize: 12.5, color: BLUE, mt: .6 }}>
+                  {step === 0 ? "با نام پروژه و هدف اصلی آن شروع کنیم."
+                    : step === 1 ? "به همکاران کمک کنید تا با ایده و جزئیات پروژه آشنا شوند."
+                    : step === 2 ? "مهارت‌های موردنیاز و ظرفیت تیم را مشخص کنید."
+                    : "پیش از ایجاد پروژه، اطلاعات واردشده را بررسی کنید."}
+                </Typography>
+              </Box>
 
-      {/* Unsaved changes dialog */}
-      <Dialog
-        open={blocker.state === "blocked"}
-        onClose={handleStayOnPage}
-        fullWidth
-        maxWidth="xs"
-        aria-labelledby="unsaved-changes-title"
-        slotProps={{
-          paper: {
-            sx: {
-              backgroundColor: "rgba(255, 255, 255, 0.68)",
-              backdropFilter: "blur(18px)",
-              WebkitBackdropFilter: "blur(18px)",
-              border: "1px solid rgba(255, 255, 255, 0.65)",
-              borderRadius: "16px",
-              boxShadow: "0 24px 70px rgba(7, 23, 57, 0.20)",
-              mx: 2,
-            },
-          },
-          backdrop: { sx: { backgroundColor: "rgba(7, 23, 57, 0.28)" } },
-        }}
-      >
-        <DialogTitle id="unsaved-changes-title">
-          <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
-            <Box sx={{ width: 48, height: 48, borderRadius: 3, bgcolor: "rgba(227, 195, 157, 0.30)", display: "grid", placeItems: "center", flexShrink: 0 }}>
-              <WarningAmberRoundedIcon sx={{ color: "#A68868", fontSize: 27 }} />
-            </Box>
-            <Typography component="span" sx={{ fontSize: 21, fontWeight: 800, color: "#071739" }}>
-              این صفحه را ترک می‌کنید؟
-            </Typography>
-          </Stack>
-        </DialogTitle>
-        <DialogContent>
-          <Typography sx={{ fontSize: 14, lineHeight: 1.8, color: "#4B6382" }}>
-            تغییرات فرم ذخیره نشده‌اند. اگر صفحه را ترک کنید، اطلاعات شما از بین می‌رود.
-          </Typography>
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 3, pt: 1, flexWrap: "wrap", gap: 1 }}>
-          <Button variant="outlined" onClick={handleStayOnPage}>ماندن</Button>
-          <Button variant="contained" onClick={handleLeavePage} sx={{ bgcolor: "#071739", "&:hover": { bgcolor: "#4B6382" } }}>
-            ترک صفحه
-          </Button>
-        </DialogActions>
+              {step === 0 && <>
+                {input("title", "عنوان پروژه", "مثلاً: دستیار هوشمند مطالعه", 80)}
+                {input("goal", "هدف پروژه", "می‌خواهید به چه هدفی برسید؟", 160)}
+              </>}
+              {step === 1 && input("description", "توضیحات پروژه", "ایده و جزئیات پروژه خود را شرح دهید...", 1000,
+                { multiline: true, minRows: 4, maxRows: 7 })}
+              {step === 2 && <>
+                <Box>
+                  <Typography component="label" htmlFor="project-skills" sx={fieldLabelSx}>
+                    مهارت‌های موردنیاز <Box component="span" sx={{ color: "#A68868" }}>*</Box>
+                  </Typography>
+                  <TextField id="project-skills" placeholder="نام مهارت را وارد کنید"
+                    value={skillInput} onChange={(e) => { setSkillInput(e.target.value);
+                      setErrors((old) => ({ ...old, requiredSkills: "" })); }}
+                    onKeyDown={(e) => { if (["Enter", ",", "،"].includes(e.key)) { e.preventDefault(); addSkill(); }
+                      if (e.key === "Backspace" && !skillInput && skills.length) removeSkill(skills.at(-1)); }}
+                    onBlur={() => addSkill()} inputRef={(node) => { refs.current.requiredSkills = node; }}
+                    error={Boolean(errors.requiredSkills)} helperText={errors.requiredSkills || "برای افزودن مهارت، کلید Enter را فشار دهید"}
+                    required sx={fieldStyle} />
+                </Box>
+                {skills.length > 0 && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      alignItems: "center",
+                      columnGap: "12px",
+                      rowGap: "10px",
+                      mt: 1,
+                    }}
+                  >
+                    {skills.map((skill) => (
+                      <Chip
+                        key={skill}
+                        label={skill}
+                        onDelete={() => removeSkill(skill)}
+                        sx={{
+                          height: 32,
+                          borderRadius: "10px",
+                          bgcolor: NAVY,
+                          color: "#FFFFFF",
+                          fontWeight: 600,
+                          fontSize: 12,
+                          "& .MuiChip-label": { px: 1.3 },
+                          "& .MuiChip-deleteIcon": {
+                            ml: 0.5,
+                            mr: 0.75,
+                            color: "rgba(255,255,255,0.85)",
+                            "&:hover": { color: "#FFFFFF" },
+                          },
+                        }}
+                      />
+                    ))}
+                  </Box>
+                )}
+                <Box>
+                  <Typography component="label" htmlFor="project-capacity" sx={fieldLabelSx}>
+                    ظرفیت تیم <Box component="span" sx={{ color: "#A68868" }}>*</Box>
+                  </Typography>
+                  <TextField id="project-capacity" name="capacity" value={form.capacity}
+                    placeholder="تعداد اعضای تیم"
+                    onChange={(e) => change({ target: { name: "capacity", value: e.target.value.replace(/\D/g, "").slice(0, 5) } })}
+                    inputRef={(node) => { refs.current.capacity = node; }}
+                    slotProps={{ htmlInput: { inputMode: "numeric" } }}
+                    error={Boolean(errors.capacity)} helperText={errors.capacity || "تعداد اعضای تیم"}
+                    required sx={fieldStyle} />
+                </Box>
+              </>}
+              {step === 3 && <Box sx={{ p: { xs: 2, sm: 2.5 }, bgcolor: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: 2 }}>
+                {[["عنوان پروژه", form.title], ["هدف پروژه", form.goal], ["توضیحات", form.description],
+                  ["مهارت‌های موردنیاز", skills.join("، ")], ["ظرفیت تیم", form.capacity ? `${fa(form.capacity)} عضو` : ""]].map(([label, value], index) => (
+                  <Box key={label} sx={{ py: 1.1, borderBottom: index === 4 ? 0 : `1px solid ${BORDER}` }}>
+                    <Typography sx={{ fontSize: 11, color: BLUE, fontWeight: 600 }}>{label}</Typography>
+                    <Typography sx={{ fontSize: 13.5, color: NAVY, mt: .3, whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>
+                      {value || "—"}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>}
+              {message && <Alert severity="error">{message}</Alert>}
+            </Stack>
+          </DialogContent>
+          <Divider sx={{ flexShrink: 0, borderColor: BORDER }} />
+          <DialogActions sx={{ px: { xs: 2.5, sm: 4 }, py: 2, display: "flex", gap: 1, flexShrink: 0, bgcolor: "#FFFFFF" }}>
+            <Button type="button" onClick={requestClose} disabled={submitting} variant="outlined"
+              sx={{ mr: "auto", color: NAVY, borderColor: BORDER, borderRadius: "9px",
+                fontSize: 13, "&:hover": { bgcolor: SOFT, borderColor: "#A4B5C4" } }}>انصراف</Button>
+            {step > 0 && <Button type="button" onClick={() => { setStep(step - 1); setErrors({}); setMessage(""); }}
+              startIcon={<ArrowBackRoundedIcon />} variant="outlined"
+              sx={{ color: NAVY, borderColor: BORDER, borderRadius: "9px", fontSize: 13,
+                "&:hover": { bgcolor: SOFT, borderColor: "#A4B5C4" } }}>قبلی</Button>}
+            <Button type="submit" variant="contained" disabled={submitting}
+              endIcon={step === 3 ? <AutoAwesomeRoundedIcon /> : <ArrowForwardRoundedIcon />}
+              sx={{ minWidth: { xs: 100, sm: 135 }, borderRadius: "9px", bgcolor: NAVY, fontSize: 13,
+                "&:hover": { bgcolor: "#14285A" } }}>
+              {submitting ? "در حال ایجاد..." : step === 3 ? "ایجاد پروژه" : "بعدی"}
+            </Button>
+          </DialogActions>
+        </Box>
       </Dialog>
 
-      {/* Reset confirmation dialog */}
-      <Dialog
-        open={resetDialogOpen}
-        onClose={handleCancelReset}
-        fullWidth
-        maxWidth="xs"
-        aria-labelledby="reset-form-dialog-title"
-        slotProps={{
-          paper: {
-            sx: {
-              backgroundColor: "rgba(255, 255, 255, 0.68)",
-              backdropFilter: "blur(18px)",
-              WebkitBackdropFilter: "blur(18px)",
-              border: "1px solid rgba(255, 255, 255, 0.65)",
-              borderRadius: "16px",
-              boxShadow: "0 24px 70px rgba(7, 23, 57, 0.20)",
-              mx: 2,
-            },
-          },
-          backdrop: { sx: { backgroundColor: "rgba(7, 23, 57, 0.28)" } },
-        }}
-      >
-        <DialogTitle id="reset-form-dialog-title" sx={{ fontWeight: 800, color: "#071739" }}>
-          فرم پروژه بازنشانی شود؟
-        </DialogTitle>
-        <DialogContent>
-          <Typography sx={{ color: "#4B6382", fontSize: 14, lineHeight: 1.8 }}>
-            همه اطلاعات واردشده و مهارت‌های انتخاب‌شده پاک می‌شوند. این کار قابل بازگشت نیست.
-          </Typography>
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 3, pt: 1, gap: 1, flexWrap: "wrap" }}>
-          <Button variant="outlined" onClick={handleCancelReset}>ادامه ویرایش</Button>
-          <Button variant="contained" color="error" onClick={handleConfirmReset}>بازنشانی فرم</Button>
+      <Dialog open={confirmClose} onClose={() => setConfirmClose(false)} maxWidth="xs" fullWidth
+        slotProps={{ paper: { sx: { borderRadius: "14px" } } }}>
+        <DialogTitle sx={{ fontWeight: 700, color: NAVY }}>صرف‌نظر از تغییرات؟</DialogTitle>
+        <DialogContent><Typography sx={{ color: BLUE, fontSize: 14 }}>
+          اطلاعات پروژه هنوز ذخیره نشده است.
+        </Typography></DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2.5 }}>
+          <Button onClick={() => setConfirmClose(false)}>ادامه ویرایش</Button>
+          <Button color="error" variant="contained" onClick={finishClose}>صرف‌نظر</Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </>
   );
 }
 

@@ -138,15 +138,15 @@ function EditProject() {
     const nextErrors = {};
 
     if (!formData.title.trim()) {
-      nextErrors.title = "عنوان پروژه الزامی است.";
+      nextErrors.title = "وارد کردن عنوان پروژه الزامی است.";
     }
 
     if (!formData.goal.trim()) {
-      nextErrors.goal = "هدف پروژه الزامی است.";
+      nextErrors.goal = "وارد کردن هدف پروژه الزامی است.";
     }
 
     if (!formData.description.trim()) {
-      nextErrors.description = "توضیحات الزامی است.";
+      nextErrors.description = "وارد کردن توضیحات پروژه الزامی است.";
     }
 
     if (finalSkills.length === 0) {
@@ -160,7 +160,7 @@ function EditProject() {
       !Number.isInteger(capacity) ||
       capacity < 1
     ) {
-      nextErrors.capacity = "یک عدد صحیح مثبت وارد کنید.";
+      nextErrors.capacity = "یک عدد صحیح بزرگ‌تر از صفر وارد کنید.";
     }
 
     setErrors(nextErrors);
@@ -251,7 +251,10 @@ function EditProject() {
             >
               <Stack spacing={0.5}>
                 <Typography variant="h6" sx={{ fontWeight: 700, color: "#071739" }}>
-                  جزئیات پروژه
+                  اطلاعات پروژه
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  اطلاعات پروژه و نیازمندی‌های تیم را به‌روزرسانی کنید.
                 </Typography>
               </Stack>
 
@@ -292,7 +295,7 @@ function EditProject() {
 
               <Box>
                 <TextField
-                  label="مهارت‌های لازم"
+                  label="مهارت‌های موردنیاز"
                   value={skillInput}
                   onChange={(event) => setSkillInput(event.target.value)}
                   onKeyDown={handleSkillKeyDown}
@@ -300,7 +303,7 @@ function EditProject() {
                   error={Boolean(errors.requiredSkills)}
                   helperText={
                     errors.requiredSkills ||
-                    "برای افزودن مهارت، Enter یا ویرگول بزنید."
+                    "برای افزودن هر مهارت، کلید Enter یا ویرگول را فشار دهید."
                   }
                 />
 
@@ -370,7 +373,7 @@ function EditProject() {
                     "&:hover": { bgcolor: "#142A50" },
                   }}
                 >
-                  {saving ? "در حال ذخیره..." : "ذخیره تغییرات"}
+                  {saving ? "در حال ذخیره‌سازی..." : "ذخیره تغییرات"}
                 </Button>
               </Stack>
             </Stack>
