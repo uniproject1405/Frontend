@@ -102,8 +102,8 @@ export async function createJoinRequest(projectId, message = "") {
   writeRequests([...readRequests(), request]);
   addNotification({
     type: "request_sent",
-    title: `Request sent to ${project.title}`,
-    body: `Waiting for a reply from ${getOwner(project.id).name}`,
+    title: `درخواست عضویت به «${project.title}» ارسال شد`,
+    body: `در انتظار پاسخ از ${getOwner(project.id).name}`,
     link: "/my-projects?tab=requests",
   });
   return request;

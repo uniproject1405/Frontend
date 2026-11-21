@@ -101,15 +101,14 @@ function ProjectsSection({ title, projects }) {
     <Box>
       <Stack
         direction="row"
-        justifyContent="space-between"
-        alignItems="baseline"
-        mb={2}
+        spacing={2}
+        sx={{ justifyContent: 'space-between', alignItems: 'baseline', mb: 2 }}
       >
-        <Typography variant="h5" fontWeight={800} color={NAVY}>
+        <Typography variant="h5" color={NAVY} sx={{ fontWeight: 800 }}>
           {title}
         </Typography>
 
-        <Typography color="text.secondary" fontSize={14}>
+        <Typography color="text.secondary" sx={{ fontSize: 14, flexShrink: 0 }}>
           {fa(projects.length)} پروژه
         </Typography>
       </Stack>
@@ -287,8 +286,7 @@ export default function Profile() {
             <Stack
               direction={{ xs: 'column', sm: 'row' }}
               spacing={3}
-              alignItems="flex-start"
-              mb={5}
+              sx={{ alignItems: 'flex-start', mb: 5 }}
             >
               <Avatar
                 src={p.avatarUrl || undefined}
@@ -318,8 +316,7 @@ export default function Profile() {
                 {p.summary && (
                   <Typography
                     color="text.secondary"
-                    mt={1.5}
-                    lineHeight={1.9}
+                    sx={{ mt: 1.5, lineHeight: 1.9 }}
                   >
                     {p.summary}
                   </Typography>
@@ -330,9 +327,7 @@ export default function Profile() {
                     direction="row"
                     spacing={1.5}
                     useFlexGap
-                    flexWrap="wrap"
-                    alignItems="center"
-                    mt={2}
+                    sx={{ flexWrap: 'wrap', alignItems: 'center', mt: 2 }}
                   >
                     {links.map(([label, href]) => (
                       <Button
@@ -370,8 +365,7 @@ export default function Profile() {
                     direction="row"
                     spacing={1.5}
                     useFlexGap
-                    flexWrap="wrap"
-                    mt={2.5}
+                    sx={{ flexWrap: 'wrap', mt: 2.5 }}
                   >
                     {p.openToCollab.enabled && (
                       <StatusBadge color={BADGE_COLLAB}>
@@ -424,13 +418,12 @@ export default function Profile() {
                 alignItems: 'start',
               }}
             >
-              <Stack spacing={3} minWidth={0}>
+              <Stack spacing={3} sx={{ minWidth: 0 }}>
                 <Section title="کمی درباره‌ی من">
                   {p.about ? (
                     <Typography
                       color="text.secondary"
-                      lineHeight={2}
-                      sx={{ whiteSpace: 'pre-line' }}
+                      sx={{ whiteSpace: 'pre-line', lineHeight: 2 }}
                     >
                       {p.about}
                     </Typography>
@@ -448,7 +441,7 @@ export default function Profile() {
                       direction="row"
                       spacing={1}
                       useFlexGap
-                      flexWrap="wrap"
+                      sx={{ flexWrap: 'wrap' }}
                     >
                       {p.skills.map(skill => (
                         <Box
@@ -487,7 +480,7 @@ export default function Profile() {
                 />
               </Stack>
 
-              <Stack spacing={3} minWidth={0}>
+              <Stack spacing={3} sx={{ minWidth: 0 }}>
                 <Section title="بیایید با هم بسازیم یا یاد بگیریم.">
                   {!p.openToCollab.enabled &&
                   !p.availableToHelp.enabled ? (
@@ -496,7 +489,7 @@ export default function Profile() {
                       می‌توانید آن را فعال کنید.
                     </Typography>
                   ) : (
-                    <Stack spacing={2.5} alignItems="flex-start">
+                    <Stack spacing={2.5} sx={{ alignItems: 'flex-start' }}>
                       {p.openToCollab.enabled && (
                         <Box>
                           <StatusBadge color={BADGE_COLLAB}>
@@ -507,8 +500,7 @@ export default function Profile() {
                             <Typography
                               variant="body2"
                               color="text.secondary"
-                              lineHeight={1.9}
-                              mt={1.25}
+                              sx={{ lineHeight: 1.9, mt: 1.25 }}
                             >
                               {p.openToCollab.note}
                             </Typography>
@@ -526,8 +518,7 @@ export default function Profile() {
                             <Typography
                               variant="body2"
                               color="text.secondary"
-                              lineHeight={1.9}
-                              mt={1.25}
+                              sx={{ lineHeight: 1.9, mt: 1.25 }}
                             >
                               {p.availableToHelp.note}
                             </Typography>
@@ -558,7 +549,7 @@ export default function Profile() {
                     <Typography
                       variant="body2"
                       color="text.secondary"
-                      mt={2}
+                      sx={{ mt: 2 }}
                     >
                       یک سؤال دقیق، بهترین نقطه‌ی شروع است.
                     </Typography>
@@ -575,8 +566,7 @@ export default function Profile() {
                 >
                   <Typography
                     variant="h6"
-                    fontWeight={800}
-                    lineHeight={1.7}
+                    sx={{ fontWeight: 800, lineHeight: 1.7 }}
                   >
                     یک سؤال خوب.
                     <br />
@@ -585,9 +575,7 @@ export default function Profile() {
 
                   <Typography
                     variant="body2"
-                    lineHeight={1.9}
-                    mt={1.5}
-                    sx={{ color: 'rgba(255,255,255,.75)' }}
+                    sx={{ lineHeight: 1.9, mt: 1.5, color: 'rgba(255,255,255,.75)' }}
                   >
                     تبادل مهارت برای راهنمایی عملی است، نه یک مسیر طولانی.
                     آنچه امتحان کرده‌اید و جایی که گیر کرده‌اید را بنویسید.

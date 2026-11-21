@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { emitChange, useStoredJson } from "./store";
+import { fa } from "../utils/fa";
 
 const KEY = "tribe_notifications";
 const NONE = [];
@@ -47,11 +48,11 @@ export function useNotifications() {
 
 export function timeAgo(iso) {
   const mins = Math.max(1, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
-  if (mins < 60) return `${mins} دقیقه پیش`;
+  if (mins < 60) return `${fa(mins)} دقیقه پیش`;
   const hours = Math.round(mins / 60);
-  if (hours < 24) return `${hours} ساعت پیش`;
+  if (hours < 24) return `${fa(hours)} ساعت پیش`;
   const days = Math.round(hours / 24);
-  return days < 30 ? `${days} روز پیش` : new Date(iso).toLocaleDateString("fa-IR");
+  return days < 30 ? `${fa(days)} روز پیش` : new Date(iso).toLocaleDateString("fa-IR");
 }
 
 // Filter tab a notification belongs to.

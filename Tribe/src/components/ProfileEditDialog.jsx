@@ -84,7 +84,7 @@ export default function ProfileEditDialog({ open, profile, onClose, onSave }) {
         <DialogContent dividers>
           <Stack spacing={3} pt={0.5}>
             {/* Avatar */}
-            <Stack direction="row" spacing={2} alignItems="center">
+            <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
               <Avatar src={form.avatarUrl || undefined} sx={{ width: 72, height: 72, fontSize: 24, bgcolor: '#CDD5DB', color: NAVY }}>
                 {initials(form.name)}
               </Avatar>
