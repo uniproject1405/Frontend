@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router";
 
-import { useAuth } from "../auth/useAuth.js";
+import { useAuth } from "./useAuth.js";
 
 /*
   خروج از حساب برای هر جای برنامه:

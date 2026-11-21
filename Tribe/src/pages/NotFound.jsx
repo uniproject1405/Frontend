@@ -1,12 +1,13 @@
 import { Link } from "react-router";
 
-import "./not-found.css";
+import "../styles/not-found.css";
+import logo from "../assets/logo/tribe-logo.svg";
 
 export default function NotFound() {
   return (
     <main className="nf-page">
       <Link to="/" className="nf-logo" aria-label="Tribe">
-        <img src="/tribe-logo.svg" alt="Tribe" />
+        <img src={logo} alt="Tribe" />
       </Link>
 
       <p className="nf-code" aria-hidden="true">۴۰۴</p>

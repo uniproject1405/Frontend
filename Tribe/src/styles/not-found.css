@@ -1,4 +1,4 @@
-/* صفحه ۴۰۴؛ رنگ‌ها از src/styles/tokens.css */
+/* صفحه ۴۰۴؛ رنگ‌ها از src/index.css */
 .nf-page {
   position: relative;
   min-height: 100vh;
@@ -43,7 +43,7 @@
   .nf-logo img { width: 96px; }
 }
 
-/* ---------- حرکت‌ها (keyframes در styles/motion.css) ---------- */
+/* ---------- حرکت‌ها (keyframes در src/index.css) ---------- */
 .nf-code { animation: fade-up .6s ease-out both; }
 .nf-page h1 { animation: fade-up .5s .08s ease-out both; }
 .nf-text { animation: fade-up .5s .14s ease-out both; }

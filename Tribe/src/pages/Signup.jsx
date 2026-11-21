@@ -10,11 +10,12 @@ import {
   Typography,
 } from "@mui/material";
 
-import { useAuth } from "../useAuth.js";
-import { getErrorMessage } from "../../../api/index.js";
-import { EMAIL_RE, EMPTY_MSG, useFieldError } from "../validation.js";
+import { useAuth } from "../hooks/useAuth.js";
+import { getErrorMessage } from "../utils/errorMessages.js";
+import { EMAIL_RE, EMPTY_MSG } from "../utils/validation.js";
+import { useFieldError } from "../hooks/useFieldError.js";
 
-import AuthLayout from "../components/AuthLayout.jsx";
+import AuthLayout from "../layouts/AuthLayout.jsx";
 import EmailField from "../components/EmailField.jsx";
 import FormField, { FieldBubble } from "../components/FormField.jsx";
 import FormMessage from "../components/FormMessage.jsx";

@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 
-import { useAuth } from "../auth/useAuth.js";
-import { LogoutButton } from "../logout/index.js";
+import { useAuth } from "../hooks/useAuth.js";
+import LogoutButton from "../components/LogoutButton.jsx";
 
 export default function Dashboard() {
   const { user } = useAuth();

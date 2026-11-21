@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import LogoutOutlined from "@mui/icons-material/LogoutOutlined";
 
-import { useLogout } from "./useLogout.js";
+import { useLogout } from "../hooks/useLogout.js";
 
 /*
   دکمه آماده خروج؛ در هر صفحه یا نوار بالایی بدون تنظیم قابل استفاده است.

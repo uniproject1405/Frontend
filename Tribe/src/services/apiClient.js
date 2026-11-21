@@ -1,4 +1,4 @@
-import { getToken } from "../lib/tokenStorage.js";
+import { getToken } from "../utils/tokenStorage.js";
 
 // خالی = درخواست‌ها از طریق پروکسی Vite (vite.config.js) به بک‌اند می‌روند
 const BASE_URL = import.meta.env.VITE_API_URL ?? "";

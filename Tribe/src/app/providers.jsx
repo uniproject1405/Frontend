@@ -5,7 +5,7 @@ import { prefixer } from "stylis";
 import rtlPlugin from "stylis-plugin-rtl";
 
 import tribeTheme from "../theme/tribeTheme";
-import { AuthProvider } from "../features/auth/AuthProvider.jsx";
+import { AuthProvider } from "../context/AuthProvider.jsx";
 
 // RTL: MUI styles are flipped by stylis-plugin-rtl; theme.direction handles the rest.
 const rtlCache = createCache({ key: "mui-rtl", stylisPlugins: [prefixer, rtlPlugin] });

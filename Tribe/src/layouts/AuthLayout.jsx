@@ -2,8 +2,9 @@ import { Link as RouterLink } from "react-router";
 
 import { Box, Link, Paper, Typography } from "@mui/material";
 
-import HeroVisual from "./HeroVisual.jsx";
-import "../auth.css";
+import HeroVisual from "../components/HeroVisual.jsx";
+import "../styles/auth.css";
+import logo from "../assets/logo/tribe-logo.svg";
 
 /*
   showcase = { kicker, line1, line2 }
@@ -22,7 +23,7 @@ export default function AuthLayout({
     <Box className="auth-page">
       {/* لوگو در گوشه بالا سمت چپ */}
       <Box component={RouterLink} to="/" className="auth-logo" aria-label="Tribe">
-        <img src="/tribe-logo.svg" alt="Tribe" />
+        <img src={logo} alt="Tribe" />
       </Box>
 
       {/* بخش معرفی (سمت چپ) */}

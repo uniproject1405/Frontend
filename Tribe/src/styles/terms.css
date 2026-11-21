@@ -1,6 +1,6 @@
 /*
   صفحه قوانین و حریم خصوصی.
-  رنگ‌ها از src/styles/tokens.css می‌آیند تا با صفحه‌های ورود و ثبت‌نام یکی باشند.
+  رنگ‌ها از src/index.css می‌آیند تا با صفحه‌های ورود و ثبت‌نام یکی باشند.
 */
 
 .terms-page {
@@ -202,6 +202,6 @@
   .terms-footer { flex-direction: column; text-align: center; padding: 20px 0; }
 }
 
-/* ---------- حرکت‌ها (keyframes در styles/motion.css) ---------- */
+/* ---------- حرکت‌ها (keyframes در src/index.css) ---------- */
 .terms-heading { animation: fade-up .5s ease-out both; }
 .terms-document { animation: fade-in .6s .1s ease-out both; }

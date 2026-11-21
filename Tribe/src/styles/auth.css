@@ -3,7 +3,7 @@
   همه اندازه‌ها بر پایه em هستند و با پهنای صفحه تنظیم می‌شوند:
   برای بزرگ/کوچک کردن کل صفحه فقط font-size در .auth-page را عوض کنید.
 
-  رنگ‌ها از src/styles/tokens.css می‌آیند
+  رنگ‌ها از src/index.css می‌آیند
 */
 
 /* ---------- صفحه ---------- */
@@ -424,7 +424,7 @@
   .auth-form-box { max-width: 26em; }
 }
 
-/* ---------- حرکت‌ها (کم و ملایم؛ keyframes در styles/motion.css) ---------- */
+/* ---------- حرکت‌ها (کم و ملایم؛ keyframes در src/index.css) ---------- */
 
 /* ورود صفحه */
 .auth-form-box { animation: fade-up .5s ease-out both; }

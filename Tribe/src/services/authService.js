@@ -1,5 +1,5 @@
-import { ApiError, request } from "./client.js";
-import { readStored } from "../lib/tokenStorage.js";
+import { ApiError, request } from "./apiClient.js";
+import { readStored } from "../utils/tokenStorage.js";
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
 
@@ -12,7 +12,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // ----- حالت ساختگی (VITE_USE_MOCK=true) -----
 // ورود: هر ایمیلی با رمز 12345678 · ثبت‌نام: همه‌چیز جز taken@example.com
-const mockAuthApi = {
+const mockAuthService = {
   async login({ email, password }) {
     await sleep(700);
     if (password === "12345678") {
@@ -37,7 +37,7 @@ const mockAuthApi = {
 };
 
 // ----- حالت واقعی: آدرس‌ها طبق مستندات بک‌اند -----
-const realAuthApi = {
+const realAuthService = {
   // POST /api/users/login/
   async login({ email, password }) {
     const data = await request("/api/users/login/", {
@@ -70,4 +70,4 @@ const realAuthApi = {
   },
 };
 
-export const authApi = USE_MOCK ? mockAuthApi : realAuthApi;
+export const authService = USE_MOCK ? mockAuthService : realAuthService;

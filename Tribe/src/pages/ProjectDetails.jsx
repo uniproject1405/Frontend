@@ -6,7 +6,7 @@ import {
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 import { LOGIN_PATH } from "../services/currentUser";
-import { useAuth } from "../features/auth/useAuth.js";
+import { useAuth } from "../hooks/useAuth.js";
 import { getProjectDetails } from "../services/membershipService";
 import JoinRequestDialog from "../components/JoinRequestDialog";
 import { CapacityMeter, CreatorRow, SkillChips, StatusChip } from "../components/projectParts";

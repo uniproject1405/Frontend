@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation } from "react-router";
-import { useAuth } from "./useAuth.js";
+import { useAuth } from "../hooks/useAuth.js";
 
 // Signed-out visitors go to /login; the page they wanted is passed as ?next=
 export default function ProtectedRoute() {

@@ -2,13 +2,13 @@ import { createBrowserRouter, Navigate } from "react-router";
 
 import PublicLayout from "../layouts/PublicLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
-import ProtectedRoute from "../features/auth/ProtectedRoute.jsx";
-import PublicOnlyRoute from "../features/auth/PublicOnlyRoute.jsx";
-import Login from "../features/auth/pages/Login.jsx";
-import Signup from "../features/auth/pages/Signup.jsx";
-import ForgotPassword from "../features/auth/pages/ForgotPassword.jsx";
-import TermsPage from "../features/legal/TermsPage.jsx";
-import NotFound from "../features/not-found/NotFound.jsx";
+import ProtectedRoute from "../components/ProtectedRoute.jsx";
+import PublicOnlyRoute from "../components/PublicOnlyRoute.jsx";
+import Login from "../pages/Login.jsx";
+import Signup from "../pages/Signup.jsx";
+import ForgotPassword from "../pages/ForgotPassword.jsx";
+import TermsPage from "../pages/TermsPage.jsx";
+import NotFound from "../pages/NotFound.jsx";
 
 import Home from "../pages/Home";
 import ExploreProjects from "../pages/ExploreProjects";

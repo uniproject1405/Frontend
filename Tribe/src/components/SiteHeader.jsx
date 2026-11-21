@@ -14,8 +14,8 @@ import NotificationRow from './NotificationRow';
 import { useMyStats } from '../services/membershipService';
 import { useStoredJson } from '../services/store';
 import { fa } from '../utils/fa';
-import { useAuth } from '../features/auth/useAuth.js';
-import { useLogout } from '../features/logout/index.js';
+import { useAuth } from '../hooks/useAuth.js';
+import { useLogout } from '../hooks/useLogout.js';
 
 const NAVY = '#071739';
 

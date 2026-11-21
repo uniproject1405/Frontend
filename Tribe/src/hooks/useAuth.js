@@ -1,6 +1,6 @@
-import { createContext, useContext } from "react";
+import { useContext } from "react";
 
-export const AuthContext = createContext(null);
+import { AuthContext } from "../context/AuthContext.js";
 
 // دسترسی به وضعیت ورود در هر کامپوننت: const { user, isAuthenticated, login, logout } = useAuth();
 export function useAuth() {

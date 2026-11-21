@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation } from "react-router";
-import { useAuth } from "./useAuth.js";
+import { useAuth } from "../hooks/useAuth.js";
 
 // Only internal paths are allowed as ?next= (blocks https://evil.example and //evil.example)
 const safeNext = (value) => (value && value.startsWith("/") && !value.startsWith("//") ? value : null);

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 
 import {
@@ -7,11 +6,12 @@ import {
 } from "@mui/material";
 
 
-import AuthLayout from "../components/AuthLayout.jsx";
+import AuthLayout from "../layouts/AuthLayout.jsx";
 import EmailField from "../components/EmailField.jsx";
 import SubmitButton from "../components/SubmitButton.jsx";
 import FormMessage from "../components/FormMessage.jsx";
-import { EMAIL_RE, EMPTY_MSG, useFieldError } from "../validation.js";
+import { EMAIL_RE, EMPTY_MSG } from "../utils/validation.js";
+import { useFieldError } from "../hooks/useFieldError.js";
 
 export default function ForgotPassword() {
   const [loading, setLoading] = useState(false);

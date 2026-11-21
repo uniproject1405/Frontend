@@ -2,7 +2,7 @@ import { Link as RouterLink } from "react-router";
 import { Button, Card, Stack, Typography } from "@mui/material";
 
 import NewestProjects from "../components/NewestProjects";
-import { useAuth } from "../features/auth/useAuth.js";
+import { useAuth } from "../hooks/useAuth.js";
 
 // Front page: hero panel + the newest projects.
 export default function Home() {

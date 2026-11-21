@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { authApi, setUnauthorizedHandler } from "../../api/index.js";
-import { clearStored, readStored, saveStored } from "../../lib/tokenStorage.js";
-import { AuthContext } from "./useAuth.js";
+import { authService } from "../services/authService.js";
+import { setUnauthorizedHandler } from "../services/apiClient.js";
+import { clearStored, readStored, saveStored } from "../utils/tokenStorage.js";
+import { AuthContext } from "./AuthContext.js";
 
 /*
   وضعیت ورود کل برنامه:
@@ -20,14 +21,14 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(
     async (email, password, remember = true) => {
-      save(await authApi.login({ email, password }), remember);
+      save(await authService.login({ email, password }), remember);
     },
     [save]
   );
 
   const register = useCallback(
     async (name, email, password) => {
-      save(await authApi.register({ name, email, password }), true);
+      save(await authService.register({ name, email, password }), true);
     },
     [save]
   );
@@ -41,7 +42,7 @@ export function AuthProvider({ children }) {
   // خروج کاربر: درخواست به سرور (توکن همین حالا خوانده می‌شود) و بعد پاک کردن محلی.
   // اگر درخواست شکست بخورد هم کاربر خارج می‌شود.
   const logout = useCallback(() => {
-    authApi.logout().catch(() => {});
+    authService.logout().catch(() => {});
     clearSession();
   }, [clearSession]);
 
@@ -54,7 +55,7 @@ export function AuthProvider({ children }) {
   // توکن باطل ← ۴۰۱ ← نشست پاک می‌شود و کاربر به صفحه ورود می‌رود.
   useEffect(() => {
     if (!readStored().token) return;
-    authApi
+    authService
       .me()
       .then((user) => user && setAuth((prev) => (prev.token ? { ...prev, user } : prev)))
       .catch(() => {});
