@@ -103,10 +103,10 @@ export default function SiteHeader() {
     <Box component="header" sx={{ bgcolor: '#fff', borderBottom: '1px solid #E3E8EF' }}>
       <Container
         maxWidth="lg"
-        sx={{ py: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1, flexWrap: 'nowrap' }}
+        sx={{ py: 0.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1, flexWrap: 'nowrap' }}
       >
         <Box component={Link} to="/" aria-label="صفحه اصلی Tribe" sx={{ textDecoration: 'none' }}>
-          <TribeLogo height={72} />
+          <TribeLogo height={64} />
         </Box>
 
         <Stack direction="row" spacing={3} sx={{ alignItems: 'center', display: { xs: 'none', md: 'flex' } }}>
