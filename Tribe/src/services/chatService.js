@@ -97,7 +97,28 @@ function getLocalConversations() {
       localStorage.setItem(CHAT_CONVERSATIONS_KEY, JSON.stringify(SEED_CONVERSATIONS));
       return SEED_CONVERSATIONS;
     }
-    return JSON.parse(stored) || [];
+    const list = JSON.parse(stored) || [];
+    // Clean up phantom duplicates created by previous bug
+    const seen = new Set();
+    const cleaned = [];
+    for (const c of list) {
+      if (
+        (String(c.other_participant?.id) === "101" || c.other_participant?.username === "user_101") &&
+        (!c.last_message || !c.last_message.content)
+      ) {
+        continue;
+      }
+      const key = `${c.other_participant?.id || ""}_${c.project?.id || ""}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        cleaned.push(c);
+      }
+    }
+    const result = cleaned.length > 0 ? cleaned : SEED_CONVERSATIONS;
+    if (result.length !== list.length) {
+      localStorage.setItem(CHAT_CONVERSATIONS_KEY, JSON.stringify(result));
+    }
+    return result;
   } catch {
     return SEED_CONVERSATIONS;
   }
@@ -116,7 +137,7 @@ function getLocalMessages(convId) {
   try {
     const stored = localStorage.getItem(CHAT_MESSAGES_KEY);
     const all = stored ? JSON.parse(stored) : SEED_MESSAGES;
-    return all[convId] || [];
+    return all[convId] || all[String(convId)] || [];
   } catch {
     return SEED_MESSAGES[convId] || [];
   }
@@ -126,6 +147,7 @@ function setLocalMessages(convId, msgs) {
   try {
     const stored = localStorage.getItem(CHAT_MESSAGES_KEY);
     const all = stored ? JSON.parse(stored) : { ...SEED_MESSAGES };
+    all[String(convId)] = msgs;
     all[convId] = msgs;
     localStorage.setItem(CHAT_MESSAGES_KEY, JSON.stringify(all));
     emitChange();
@@ -155,7 +177,7 @@ export async function fetchMessages(conversationId) {
     const msgs = getLocalMessages(conversationId).map((m) => ({ ...m, is_read: true }));
     setLocalMessages(conversationId, msgs);
     const list = getLocalConversations().map((c) =>
-      c.id === Number(conversationId) ? { ...c, unread_count: 0 } : c
+      String(c.id) === String(conversationId) ? { ...c, unread_count: 0 } : c
     );
     setLocalConversations(list);
     return msgs;
@@ -165,7 +187,7 @@ export async function fetchMessages(conversationId) {
     if (Array.isArray(data)) {
       setLocalMessages(conversationId, data);
       const list = getLocalConversations().map((c) =>
-        c.id === Number(conversationId) ? { ...c, unread_count: 0 } : c
+        String(c.id) === String(conversationId) ? { ...c, unread_count: 0 } : c
       );
       setLocalConversations(list);
       return data;
@@ -177,7 +199,7 @@ export async function fetchMessages(conversationId) {
   const msgs = getLocalMessages(conversationId).map((m) => ({ ...m, is_read: true }));
   setLocalMessages(conversationId, msgs);
   const list = getLocalConversations().map((c) =>
-    c.id === Number(conversationId) ? { ...c, unread_count: 0 } : c
+    String(c.id) === String(conversationId) ? { ...c, unread_count: 0 } : c
   );
   setLocalConversations(list);
   return msgs;
@@ -217,7 +239,7 @@ export async function sendMessage(conversationId, content) {
 
   // Update conversation last message
   const list = getLocalConversations().map((c) =>
-    c.id === Number(conversationId)
+    String(c.id) === String(conversationId)
       ? {
           ...c,
           last_message: {
@@ -235,6 +257,8 @@ export async function sendMessage(conversationId, content) {
 }
 
 export async function startOrGetConversation(recipientId, projectId = null, recipientInfo = null, projectInfo = null) {
+  if (!recipientId) return null;
+
   if (!USE_MOCK) {
     try {
       const res = await request("/api/chat/conversations/", {
@@ -246,7 +270,7 @@ export async function startOrGetConversation(recipientId, projectId = null, reci
       });
       if (res && res.id) {
         const current = getLocalConversations();
-        const existing = current.find((c) => c.id === res.id);
+        const existing = current.find((c) => String(c.id) === String(res.id));
         if (!existing) {
           setLocalConversations([res, ...current]);
         }
@@ -260,8 +284,8 @@ export async function startOrGetConversation(recipientId, projectId = null, reci
   const current = getLocalConversations();
   const existing = current.find(
     (c) =>
-      c.other_participant?.id === Number(recipientId) &&
-      (!projectId || c.project?.id === Number(projectId))
+      String(c.other_participant?.id) === String(recipientId) &&
+      (!projectId || String(c.project?.id) === String(projectId))
   );
 
   if (existing) return existing;
@@ -269,12 +293,14 @@ export async function startOrGetConversation(recipientId, projectId = null, reci
   const newConv = {
     id: Date.now(),
     other_participant: recipientInfo || {
-      id: Number(recipientId),
+      id: recipientId,
       username: `user_${recipientId}`,
-      display_name: `کاربر شماره ${fa(recipientId)}`,
+      display_name: `کاربر ${fa(recipientId)}`,
     },
     project: projectInfo
       ? { id: projectInfo.id, title: projectInfo.title, status: "open" }
+      : projectId
+      ? { id: projectId, title: "پروژه", status: "open" }
       : null,
     last_message: null,
     unread_count: 0,

@@ -55,7 +55,9 @@ export default function Chat() {
   const messagesEndRef = useRef(null);
 
   const targetUserId = searchParams.get("user");
+  const targetUserName = searchParams.get("userName");
   const targetProjectId = searchParams.get("project");
+  const targetProjectTitle = searchParams.get("projectTitle");
 
   const activeConvId =
     selectedConvId ?? (!isMobile && conversations.length > 0 ? conversations[0].id : null);
@@ -69,7 +71,24 @@ export default function Chat() {
   useEffect(() => {
     if (!targetUserId) return;
     let cancelled = false;
-    startOrGetConversation(targetUserId, targetProjectId).then((conv) => {
+    startOrGetConversation(
+      targetUserId,
+      targetProjectId,
+      targetUserName
+        ? {
+            id: targetUserId,
+            username: targetUserId,
+            display_name: targetUserName,
+          }
+        : null,
+      targetProjectTitle
+        ? {
+            id: targetProjectId,
+            title: targetProjectTitle,
+            status: "open",
+          }
+        : null
+    ).then((conv) => {
       if (!cancelled && conv) {
         setSelectedConvId(conv.id);
         setShowMobileList(false);
@@ -78,7 +97,7 @@ export default function Chat() {
     return () => {
       cancelled = true;
     };
-  }, [targetUserId, targetProjectId]);
+  }, [targetUserId, targetProjectId, targetUserName, targetProjectTitle]);
 
   // Load messages when active conversation changes
   useEffect(() => {
@@ -100,7 +119,7 @@ export default function Chat() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const activeConversation = conversations.find((c) => c.id === activeConvId);
+  const activeConversation = conversations.find((c) => String(c.id) === String(activeConvId));
 
   const filteredConversations = conversations.filter((c) => {
     if (!searchQuery.trim()) return true;
@@ -216,7 +235,7 @@ export default function Chat() {
                 </Box>
               ) : (
                 filteredConversations.map((conv) => {
-                  const isSelected = conv.id === activeConvId;
+                  const isSelected = String(conv.id) === String(activeConvId);
                   const name = conv.other_participant?.display_name || conv.other_participant?.username || "همکار";
                   const initial = name.trim()[0] || "ت";
                   const lastMsg = conv.last_message?.content || "مکالمه آغاز نشده است";

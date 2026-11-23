@@ -18,7 +18,7 @@ const MEMBERS_SHOWN = 5;
 const panel = { borderRadius: 3, p: { xs: 2.5, sm: 3 } };
 
 function JoinArea({ details, relation, signedIn, onJoin }) {
-  const { project, spotsLeft } = details;
+  const { project, owner, spotsLeft } = details;
   const closed = project.status !== "open";
   const full = spotsLeft === 0;
 
@@ -47,6 +47,9 @@ function JoinArea({ details, relation, signedIn, onJoin }) {
   else if (!signedIn) hint = "برای ارسال درخواست باید وارد شوید.";
   const disabled = relation !== "none" || closed || full;
 
+  const chatOwnerId = owner?.id || project.creator?.id || 101;
+  const chatOwnerName = owner?.name || project.creator?.display_name || "مالک پروژه";
+
   return (
     <>
       <Button fullWidth variant="contained" disabled={disabled} onClick={onJoin}>{label}</Button>
@@ -55,7 +58,7 @@ function JoinArea({ details, relation, signedIn, onJoin }) {
           fullWidth
           variant="outlined"
           component={RouterLink}
-          to={`/chat?user=${project.creator?.id || project.ownerId || 101}&project=${project.id}`}
+          to={`/chat?user=${encodeURIComponent(chatOwnerId)}&userName=${encodeURIComponent(chatOwnerName)}&project=${encodeURIComponent(project.id)}&projectTitle=${encodeURIComponent(project.title)}`}
           sx={{
             mt: 1.5,
             borderColor: "#CDD5DB",
@@ -65,7 +68,7 @@ function JoinArea({ details, relation, signedIn, onJoin }) {
           }}
           startIcon={<ForumOutlinedIcon />}
         >
-          گفت‌وگو و مذاکره با مالک
+          گفت‌وگو و مذاکره با {chatOwnerName}
         </Button>
       )}
       {hint && (
