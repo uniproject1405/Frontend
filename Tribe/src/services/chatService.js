@@ -2,6 +2,8 @@ import { emitChange, useStoredJson } from "./store";
 import { request } from "../api/client.js";
 import { fa } from "../utils/fa";
 
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
+
 const CHAT_CONVERSATIONS_KEY = "tribe_chat_conversations";
 const CHAT_MESSAGES_KEY = "tribe_chat_messages";
 
@@ -133,6 +135,9 @@ function setLocalMessages(convId, msgs) {
 }
 
 export async function fetchConversations() {
+  if (USE_MOCK) {
+    return getLocalConversations();
+  }
   try {
     const data = await request("/api/chat/conversations/");
     if (Array.isArray(data)) {
@@ -146,11 +151,19 @@ export async function fetchConversations() {
 }
 
 export async function fetchMessages(conversationId) {
+  if (USE_MOCK) {
+    const msgs = getLocalMessages(conversationId).map((m) => ({ ...m, is_read: true }));
+    setLocalMessages(conversationId, msgs);
+    const list = getLocalConversations().map((c) =>
+      c.id === Number(conversationId) ? { ...c, unread_count: 0 } : c
+    );
+    setLocalConversations(list);
+    return msgs;
+  }
   try {
     const data = await request(`/api/chat/conversations/${conversationId}/messages/`);
     if (Array.isArray(data)) {
       setLocalMessages(conversationId, data);
-      // Mark as read in local conversation list
       const list = getLocalConversations().map((c) =>
         c.id === Number(conversationId) ? { ...c, unread_count: 0 } : c
       );
@@ -174,18 +187,20 @@ export async function sendMessage(conversationId, content) {
   const clean = content.trim();
   if (!clean) return null;
 
-  try {
-    const res = await request(`/api/chat/conversations/${conversationId}/messages/`, {
-      method: "POST",
-      body: { content: clean },
-    });
-    if (res && res.id) {
-      const msgs = [...getLocalMessages(conversationId), res];
-      setLocalMessages(conversationId, msgs);
-      return res;
+  if (!USE_MOCK) {
+    try {
+      const res = await request(`/api/chat/conversations/${conversationId}/messages/`, {
+        method: "POST",
+        body: { content: clean },
+      });
+      if (res && res.id) {
+        const msgs = [...getLocalMessages(conversationId), res];
+        setLocalMessages(conversationId, msgs);
+        return res;
+      }
+    } catch {
+      /* Local optimistic send */
     }
-  } catch {
-    /* Local optimistic send */
   }
 
   const newMsg = {
@@ -220,24 +235,26 @@ export async function sendMessage(conversationId, content) {
 }
 
 export async function startOrGetConversation(recipientId, projectId = null, recipientInfo = null, projectInfo = null) {
-  try {
-    const res = await request("/api/chat/conversations/", {
-      method: "POST",
-      body: {
-        recipient_id: recipientId,
-        project_id: projectId,
-      },
-    });
-    if (res && res.id) {
-      const current = getLocalConversations();
-      const existing = current.find((c) => c.id === res.id);
-      if (!existing) {
-        setLocalConversations([res, ...current]);
+  if (!USE_MOCK) {
+    try {
+      const res = await request("/api/chat/conversations/", {
+        method: "POST",
+        body: {
+          recipient_id: recipientId,
+          project_id: projectId,
+        },
+      });
+      if (res && res.id) {
+        const current = getLocalConversations();
+        const existing = current.find((c) => c.id === res.id);
+        if (!existing) {
+          setLocalConversations([res, ...current]);
+        }
+        return res;
       }
-      return res;
+    } catch {
+      /* Fallback */
     }
-  } catch {
-    /* Fallback */
   }
 
   const current = getLocalConversations();

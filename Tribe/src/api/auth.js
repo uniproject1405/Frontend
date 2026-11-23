@@ -14,9 +14,10 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 // ورود: هر ایمیلی با رمز 12345678 · ثبت‌نام: همه‌چیز جز taken@example.com
 const mockAuthApi = {
   async login({ email, password }) {
-    await sleep(700);
-    if (password === "12345678" || password === "password123") {
-      return { token: "mock-token", user: { id: 1, email, username: email } };
+    await sleep(400);
+    if (password === "12345678" || password === "password123" || password.length >= 6) {
+      const username = email.split("@")[0] || email;
+      return { token: "mock-token", user: { id: 1, email, username } };
     }
     throw new ApiError(400, { non_field_errors: ["Invalid credentials."] });
   },

@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link as RouterLink } from "react-router";
+import { Link as RouterLink, useNavigate } from "react-router";
 import {
   Box,
   Divider,
@@ -20,6 +20,7 @@ import PasswordField from "../components/PasswordField.jsx";
 import SubmitButton from "../components/SubmitButton.jsx";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("error");
@@ -50,7 +51,8 @@ export default function Login() {
 
     try {
       await login(email, password);
-      // بعد از موفقیت، PublicOnlyRoute کاربر را خودکار منتقل می‌کند
+      const next = new URLSearchParams(window.location.search).get("next");
+      navigate(next ? decodeURIComponent(next) : "/chat", { replace: true });
     } catch (error) {
       showError(getErrorMessage(error, "login"));
       setLoading(false);
