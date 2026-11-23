@@ -4,6 +4,7 @@ import { Box, Chip, Container, Stack } from "@mui/material";
 import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
 import { useNotifications } from "../services/notificationService";
+import { useChatList } from "../services/chatService";
 import { useMyStats } from "../services/membershipService";
 import { fa } from "../utils/fa";
 
@@ -12,6 +13,7 @@ const NAVY = "#071739";
 const TABS = [
   ["پروژه‌های من", "/my-projects", true],
   ["ساخت پروژه", "/create-project"],
+  ["گفت‌وگو و مذاکره", "/chat", false, false, "chat"],
   ["اعلان‌ها", "/notifications", false, true],
   ["پروفایل", "/profile"],
 ];
@@ -21,6 +23,8 @@ const TABS = [
 function DashboardLayout({ children }) {
   const stats = useMyStats();
   const { unread } = useNotifications();
+  const { totalUnread } = useChatList();
+
 
   const statChips = [
     ["درخواست برای بررسی", stats.toReview, "/my-projects?tab=review", stats.toReview > 0],
@@ -35,7 +39,7 @@ function DashboardLayout({ children }) {
       <Box sx={{ bgcolor: "#fff", borderBottom: "1px solid #E3E8EF" }}>
         <Container maxWidth="lg">
           <Box component="nav" aria-label="بخش‌های داشبورد" sx={{ display: "flex", gap: 0.5, overflowX: "auto", scrollbarWidth: "none" }}>
-            {TABS.map(([label, href, end, badge]) => (
+            {TABS.map(([label, href, end, badge, kind]) => (
               <Box
                 key={href}
                 component={NavLink}
@@ -52,6 +56,11 @@ function DashboardLayout({ children }) {
                 {badge && unread > 0 && (
                   <Box component="span" sx={{ ml: 1, px: 0.9, borderRadius: 10, bgcolor: "#B42318", color: "#fff", fontSize: 11, fontWeight: 700, lineHeight: "18px", display: "inline-block" }}>
                     {unread > 99 ? "۹۹+" : fa(unread)}
+                  </Box>
+                )}
+                {kind === "chat" && totalUnread > 0 && (
+                  <Box component="span" sx={{ ml: 1, px: 0.9, borderRadius: 10, bgcolor: "#071739", color: "#E3C39D", fontSize: 11, fontWeight: 700, lineHeight: "18px", display: "inline-block" }}>
+                    {totalUnread > 99 ? "۹۹+" : fa(totalUnread)}
                   </Box>
                 )}
               </Box>

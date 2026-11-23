@@ -4,6 +4,7 @@ import {
   Alert, Avatar, Box, Button, Card, Chip, CircularProgress, Snackbar, Stack, Typography,
 } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import ForumOutlinedIcon from "@mui/icons-material/ForumOutlined";
 
 import { LOGIN_PATH } from "../services/currentUser";
 import { useAuth } from "../features/auth/useAuth.js";
@@ -49,6 +50,24 @@ function JoinArea({ details, relation, signedIn, onJoin }) {
   return (
     <>
       <Button fullWidth variant="contained" disabled={disabled} onClick={onJoin}>{label}</Button>
+      {relation !== "owner" && (
+        <Button
+          fullWidth
+          variant="outlined"
+          component={RouterLink}
+          to={`/chat?user=${project.creator?.id || project.ownerId || 101}&project=${project.id}`}
+          sx={{
+            mt: 1.5,
+            borderColor: "#CDD5DB",
+            color: NAVY,
+            fontWeight: 600,
+            "&:hover": { borderColor: NAVY, bgcolor: "rgba(7, 23, 57, 0.04)" },
+          }}
+          startIcon={<ForumOutlinedIcon />}
+        >
+          گفت‌وگو و مذاکره با مالک
+        </Button>
+      )}
       {hint && (
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1, textAlign: "center" }}>{hint}</Typography>
       )}
