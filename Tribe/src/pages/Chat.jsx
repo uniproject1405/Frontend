@@ -7,7 +7,6 @@ import {
   Button,
   Card,
   Chip,
-  Divider,
   IconButton,
   InputAdornment,
   Stack,
@@ -46,7 +45,7 @@ export default function Chat() {
   const navigate = useNavigate();
 
   const { conversations, totalUnread } = useChatList();
-  const [activeConvId, setActiveConvId] = useState(null);
+  const [selectedConvId, setSelectedConvId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -55,6 +54,12 @@ export default function Chat() {
 
   const messagesEndRef = useRef(null);
 
+  const targetUserId = searchParams.get("user");
+  const targetProjectId = searchParams.get("project");
+
+  const activeConvId =
+    selectedConvId ?? (!isMobile && conversations.length > 0 ? conversations[0].id : null);
+
   // Initial load of conversations
   useEffect(() => {
     fetchConversations();
@@ -62,30 +67,32 @@ export default function Chat() {
 
   // Handle URL query parameters (?user=...&project=...)
   useEffect(() => {
-    const targetUserId = searchParams.get("user");
-    const targetProjectId = searchParams.get("project");
-
-    if (targetUserId) {
-      startOrGetConversation(targetUserId, targetProjectId).then((conv) => {
-        if (conv) {
-          setActiveConvId(conv.id);
-          setShowMobileList(false);
-        }
-      });
-    } else if (conversations.length > 0 && !activeConvId && !isMobile) {
-      setActiveConvId(conversations[0].id);
-    }
-  }, [searchParams, conversations.length]);
+    if (!targetUserId) return;
+    let cancelled = false;
+    startOrGetConversation(targetUserId, targetProjectId).then((conv) => {
+      if (!cancelled && conv) {
+        setSelectedConvId(conv.id);
+        setShowMobileList(false);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [targetUserId, targetProjectId]);
 
   // Load messages when active conversation changes
   useEffect(() => {
     if (!activeConvId) return;
-
-    setLoadingMessages(true);
+    let cancelled = false;
     fetchMessages(activeConvId).then((data) => {
-      setMessages(data || []);
-      setLoadingMessages(false);
+      if (!cancelled) {
+        setMessages(data || []);
+        setLoadingMessages(false);
+      }
     });
+    return () => {
+      cancelled = true;
+    };
   }, [activeConvId]);
 
   // Scroll to bottom when messages update
@@ -124,7 +131,8 @@ export default function Chat() {
   };
 
   const handleSelectConv = (id) => {
-    setActiveConvId(id);
+    setSelectedConvId(id);
+    setLoadingMessages(true);
     if (isMobile) {
       setShowMobileList(false);
     }
