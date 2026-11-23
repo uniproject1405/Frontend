@@ -15,7 +15,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const mockAuthApi = {
   async login({ email, password }) {
     await sleep(700);
-    if (password === "12345678") {
+    if (password === "12345678" || password === "password123") {
       return { token: "mock-token", user: { id: 1, email, username: email } };
     }
     throw new ApiError(400, { non_field_errors: ["Invalid credentials."] });
