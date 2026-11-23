@@ -1,3 +1,4 @@
+
 import { Link } from 'react-router';
 import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import TribeLogo from './TribeLogo';
@@ -21,12 +22,9 @@ export default function SiteHeader() {
         maxWidth="lg"
         sx={{ py: 0.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap' }}
       >
-        <Stack direction="row" spacing={1.5} alignItems="center">
-          <Button sx={{ color: NAVY, fontWeight: 600, textTransform: 'none' }}>ورود</Button>
-          <Button variant="contained" sx={{ bgcolor: NAVY, textTransform: 'none', '&:hover': { bgcolor: '#0E2452' } }}>
-            عضویت در Tribe
-          </Button>
-        </Stack>
+        <Box component={Link} to="/explore" sx={{ textDecoration: 'none' }}>
+          <TribeLogo height={64} />
+        </Box>
 
         <Stack direction="row" spacing={3} alignItems="center" sx={{ display: { xs: 'none', md: 'flex' } }}>
           {NAV.map(([label, to]) => (
@@ -40,9 +38,12 @@ export default function SiteHeader() {
           ))}
         </Stack>
 
-        <Box component={Link} to="/explore" sx={{ textDecoration: 'none' }}>
-          <TribeLogo height={64} />
-        </Box>
+        <Stack direction="row" spacing={1.5} alignItems="center">
+          <Button sx={{ color: NAVY, fontWeight: 600, textTransform: 'none' }}>ورود</Button>
+          <Button variant="contained" sx={{ bgcolor: NAVY, textTransform: 'none', '&:hover': { bgcolor: '#0E2452' } }}>
+            عضویت در Tribe
+          </Button>
+        </Stack>
       </Container>
     </Box>
   );
