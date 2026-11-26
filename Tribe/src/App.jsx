@@ -1,9 +1,4 @@
-
-import {
-  createBrowserRouter,
-  Navigate,
-} from "react-router";
-
+import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 
 import DashboardLayout from "./layouts/DashboardLayout";
@@ -13,15 +8,25 @@ import MyProjects from "./pages/MyProjects";
 import EditProject from "./pages/EditProject";
 import ProjectRequests from "./pages/ProjectRequests";
 import Home from "./pages/Home";
+import ExploreProjects from "./pages/ExploreProjects";
+import ProjectDetailsStub from "./pages/ProjectDetailsStub";
 
 const router = createBrowserRouter([
   {
-  path: "/",
-  element: (
-    <DashboardLayout pageTitle="خانه">
-      <Home />
-    </DashboardLayout>
+    path: "/",
+    element: (
+      <DashboardLayout pageTitle="خانه">
+        <Home />
+      </DashboardLayout>
     ),
+  },
+  {
+    path: "/explore",
+    element: <ExploreProjects />,
+  },
+  {
+    path: "/projects/:projectId",
+    element: <ProjectDetailsStub />,
   },
   {
     path: "/my-projects",

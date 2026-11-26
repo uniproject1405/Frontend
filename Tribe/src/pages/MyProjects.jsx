@@ -37,7 +37,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import {
   closeProject,
   getMyProjects,
-} from "../services/mockProjectService";
+} from "../services/projectService";
 import ProjectCard from "../components/ProjectCard";
 
 const COLORS = {
@@ -682,9 +682,12 @@ function MyProjects() {
             minWidth: 0,
           }}
         >
-          <CreateProjectPanel
-            onOpen={() => setCreateModalOpen(true)}
-          />
+          {/* Show the sidebar create-project panel only after the user has a project. */}
+          {isConnected && projects.length > 0 && (
+            <CreateProjectPanel
+              onOpen={() => setCreateModalOpen(true)}
+            />
+          )}
 
           {/* Project summary â€” matching the team's understated white cards */}
           <Box sx={{ ...panelStyle, p: { xs: 2.5, lg: 2.7 } }}>
