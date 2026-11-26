@@ -237,15 +237,12 @@ export default function Profile() {
   const p = data?.profile;
 
   const links = p
-    ? [
-        ['GitHub', p.links.github],
-        ['LinkedIn', p.links.linkedin],
-        [
-          'Telegram',
-          p.links.telegram && telegramHref(p.links.telegram),
-        ],
-      ].filter(([, href]) => href)
-    : [];
+  ? [
+      ['GitHub', p.links.github],
+      ['LinkedIn', p.links.linkedin],
+      ['Email', p.links.email && `mailto:${p.links.email}`],
+    ].filter(([, href]) => href)
+  : [];
 
   return (
     <Box
@@ -308,6 +305,21 @@ export default function Profile() {
                 <Typography variant="h4" fontWeight={800} color={NAVY}>
                   {p.name}
                 </Typography>
+
+                {p.username && (
+                  <Typography
+                    dir="ltr"
+                    sx={{
+                      color: '#7A899B',
+                      fontSize: 14,
+                      mt: 0.5,
+                      textAlign: 'left',
+                      width: 'fit-content',
+                    }}
+                  >
+                    @{p.username}
+                  </Typography>
+                )}
 
                 {p.headline && (
                   <Typography color="#4B6382" mt={0.75}>

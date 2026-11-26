@@ -13,6 +13,7 @@ const initials = (name = '') => name.trim().split(/\s+/).map(w => w[0]).join('')
 
 const toForm = p => ({
   ...p,
+  username: p.username || '',
   links: { ...p.links },
   openToCollab: { ...p.openToCollab },
   availableToHelp: { ...p.availableToHelp },
@@ -109,6 +110,20 @@ export default function ProfileEditDialog({ open, profile, onClose, onSave }) {
               onChange={e => set('name', e.target.value)} slotProps={{ htmlInput: { maxLength: 60 } }}
             />
             <TextField
+              label="نام کاربری"
+              value={form.username}
+              onChange={e => set('username', e.target.value)}
+              placeholder="مثلاً: niusha_dev"
+              helperText="نام کاربری شما در Tribe (حداکثر ۲۰ کاراکتر)"
+              slotProps={{
+                htmlInput: {
+                  dir: 'ltr',
+                  style: { textAlign: 'left' },
+                  maxLength: 20,
+                },
+              }}
+            />
+            <TextField
               label="عنوان کوتاه" value={form.headline} onChange={e => set('headline', e.target.value)}
               helperText="مثلاً: توسعه‌دهنده‌ی فول‌استک · در حال ساخت وبی دسترس‌پذیرتر"
               slotProps={{ htmlInput: { maxLength: 100 } }}
@@ -149,8 +164,12 @@ export default function ProfileEditDialog({ open, profile, onClose, onSave }) {
                   slotProps={ltrInput}
                 />
                 <TextField
-                  label="تلگرام" placeholder="@username" value={form.links.telegram}
-                  onChange={e => setIn('links', 'telegram', e.target.value)} error={!!errors.telegram} helperText={errors.telegram}
+                  label="ایمیل"
+                  placeholder="example@gmail.com"
+                  value={form.links.email}
+                  onChange={e => setIn('links', 'email', e.target.value)}
+                  error={!!errors.email}
+                  helperText={errors.email}
                   slotProps={ltrInput}
                 />
               </Stack>

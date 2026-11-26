@@ -6,6 +6,7 @@ export const PROFILE_KEY = "tribe_profile";
 
 export const defaultProfile = {
   name: "نیوشا گیلانی",
+  username: "",
   headline: "توسعه‌دهنده فرانت‌اند",
   bio: "عاشق ساخت رابط‌های ساده و آرام و یادگرفتن از هم‌تیمی‌هایم هستم.",
   skills: [],
@@ -18,7 +19,7 @@ export const defaultProfile = {
   links: {
     github: "",
     linkedin: "",
-    telegram: "",
+    email: "",
   },
 
   openToCollab: {
@@ -74,6 +75,7 @@ export function getProfile() {
 export function saveProfile(profile) {
   const clean = {
     name: (profile.name || "").trim().slice(0, 40) || defaultProfile.name,
+    username: (profile.username || "").trim().replace(/^@/, "").slice(0, 20),
     headline: (profile.headline || "").trim().slice(0, 60),
     bio: (profile.bio || "").trim().slice(0, 300),
 
@@ -89,7 +91,7 @@ export function saveProfile(profile) {
     links: {
       github: (profile.links?.github || "").trim(),
       linkedin: (profile.links?.linkedin || "").trim(),
-      telegram: (profile.links?.telegram || "").trim(),
+      email: (profile.links?.email || "").trim(),
     },
 
     openToCollab: {
@@ -118,6 +120,10 @@ const currentUser = {
 
   get name() {
     return getProfile().name;
+  },
+
+  get username() {
+    return getProfile().username;
   },
 };
 
