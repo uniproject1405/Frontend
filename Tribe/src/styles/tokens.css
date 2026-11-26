@@ -1,0 +1,13 @@
+/* رنگ‌های مشترک همه صفحه‌ها (هماهنگ با طراحی صفحه اصلی Tribe) */
+:root {
+  --navy: #0b1b3d;
+  --navy-hover: #17295a;
+  --bg: #f4f6fa;
+  --surface: #ffffff;
+  --line: #dfe5ee;
+  --line-soft: #e6ebf2;
+  --text-muted: #4a5870;
+  --text-faint: #5f6f8a;
+  --beige: #ecdcc4;
+  --brown: #8a5f2a;
+}
