@@ -56,7 +56,8 @@ export default function ExploreProjects() {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#F4F6F8', display: 'flex', flexDirection: 'column' }}>
+    <Box dir="rtl" 
+    sx={{ minHeight: '100vh', bgcolor: '#F4F6F8', display: 'flex', flexDirection: 'column' }}>
       <SiteHeader />
 
       <Container maxWidth="lg" sx={{ py: 4, flex: 1 }}>
