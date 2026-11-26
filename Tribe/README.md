@@ -1,16 +1,22 @@
-# React + Vite
+# Tribe — صفحه درخواست‌های همکاری من
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+این پروژه فقط شامل صفحه «درخواست‌های همکاری من» و فایل‌هایی است که همین صفحه به آن‌ها نیاز دارد. صفحه مستقیماً در آدرس ریشه (`/`) نمایش داده می‌شود و هیچ مسیر یا صفحه‌ی دیگری وجود ندارد.
 
-Currently, two official plugins are available:
+## اجرا
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+npm run dev
+```
 
-## React Compiler
+ساخت نسخه نهایی: `npm run build`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ساختار
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- `src/main.jsx` — نقطه ورود؛ مستقیم صفحه را رندر می‌کند
+- `src/pages/MyRequestsPage.jsx` — صفحه
+- `src/layouts/DashboardLayout.jsx` و `src/components/SiteHeader.jsx` — هدر و قالب صفحه
+- `src/components/requests/` — اجزای صفحه
+- `src/services/` — خواندن درخواست‌ها و پس‌گرفتن درخواست (Local Storage)
+- `src/mocks/seedData.js` — داده نمونه
+- `src/utils/`, `src/theme/` — ابزارها و تم
