@@ -41,8 +41,18 @@ export default function ExploreProjectCard({ project }) {
               {initials(creator.name)}
             </Avatar>
             <Box minWidth={0}>
-              <Typography fontWeight={600} fontSize={14} noWrap>{creator.name}</Typography>
-              <Typography variant="caption" color="text.secondary">{creator.role}</Typography>
+              <Typography fontWeight={600} fontSize={14} noWrap>
+                {creator.name}
+              </Typography>
+
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                dir="ltr"
+                sx={{ textAlign: 'left', display: 'block' }}
+              >
+                @{creator.username}
+              </Typography>
             </Box>
           </Stack>
           <Chip

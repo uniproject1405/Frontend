@@ -11,7 +11,7 @@ const exploreProjects = [
     accepted: 3,
     openRoles: ['توسعه‌دهنده‌ی فرانت‌اند', 'طراح UI'],
     status: 'open',
-    creator: { name: 'مریم احمدی', role: 'ایجادکننده‌ی پروژه' },
+    creator: { name: 'مریم احمدی', username: 'maryam_ahmadi' },
   },
   {
     id: 'project-2',
@@ -23,7 +23,7 @@ const exploreProjects = [
     accepted: 3,
     openRoles: ['مهندس یادگیری ماشین', 'همکاران پژوهشی'],
     status: 'open',
-    creator: { name: 'دانیال رحیمی', role: 'ایجادکننده‌ی پروژه' },
+    creator: { name: 'دانیال رحیمی', username: 'danial_rahimi' },
   },
   {
     id: 'project-3',
@@ -35,7 +35,7 @@ const exploreProjects = [
     accepted: 3,
     openRoles: ['توسعه‌دهنده‌ی فول‌استک', 'پژوهشگر'],
     status: 'open',
-    creator: { name: 'عمر حسینی', role: 'ایجادکننده‌ی پروژه' },
+    creator: { name: 'عمر حسینی', username: 'omar_hoseini' },
   },
   {
     id: 'project-4',
@@ -47,7 +47,7 @@ const exploreProjects = [
     accepted: 2,
     openRoles: ['توسعه‌دهنده‌ی فرانت‌اند', 'توسعه‌دهنده‌ی بک‌اند'],
     status: 'open',
-    creator: { name: 'سارا محمدی', role: 'ایجادکننده‌ی پروژه' },
+    creator: { name: 'سارا محمدی', username: 'sara_mohamadi'},
   },
   {
     id: 'project-5',
@@ -59,7 +59,7 @@ const exploreProjects = [
     accepted: 4,
     openRoles: ['مهندس داده', 'طراح نقشه'],
     status: 'open',
-    creator: { name: 'دانیال رحیمی', role: 'ایجادکننده‌ی پروژه' },
+    creator: { name: 'دانیال رحیمی', username: 'danial_rahimi' },
   },
   {
     id: 'project-6',
@@ -71,7 +71,7 @@ const exploreProjects = [
     accepted: 5,
     openRoles: [],
     status: 'closed',
-    creator: { name: 'مریم احمدی', role: 'ایجادکننده‌ی پروژه' },
+    creator: { name: 'مریم احمدی', username: 'maryam_ahmadi' },
   },
 ];
 
