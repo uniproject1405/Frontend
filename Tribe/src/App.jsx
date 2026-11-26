@@ -1,122 +1,39 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { createBrowserRouter, Navigate } from 'react-router';
+import { RouterProvider } from 'react-router/dom';
 
-function App() {
-  const [count, setCount] = useState(0)
+import ExploreProjects from './pages/ExploreProjects';
+import ProjectDetailsStub from './pages/ProjectDetailsStub';
+import PublicOnlyRoute from './components/PublicOnlyRoute.jsx';
+import Login from './pages/Login.jsx';
+import Signup from './pages/Signup.jsx';
+import ForgotPassword from './pages/ForgotPassword.jsx';
+import ResetPassword from './pages/ResetPassword.jsx';
+import TermsPage from './pages/TermsPage.jsx';
+import NotFound from './pages/NotFound.jsx';
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Tribe</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+// In your repo, add these routes to the existing router instead of replacing it.
+const router = createBrowserRouter([
+  { path: '/', element: <Navigate to="/explore" replace /> },
+  { path: '/explore', element: <ExploreProjects /> },
+  { path: '/projects/:projectId', element: <ProjectDetailsStub /> },
 
-      <div className="ticks"></div>
+  // فقط برای کاربران وارد‌نشده؛ کاربر واردشده به کاوش پروژه‌ها می‌رود
+  {
+    element: <PublicOnlyRoute />,
+    children: [
+      { path: '/signup', element: <Signup /> },
+      { path: '/login', element: <Login /> },
+    ],
+  },
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+  // همه می‌توانند ببینند
+  { path: '/forgot-password', element: <ForgotPassword /> },
+  { path: '/reset-password', element: <ResetPassword /> },
+  { path: '/terms', element: <TermsPage /> },
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+  { path: '*', element: <NotFound /> },
+]);
+
+export default function App() {
+  return <RouterProvider router={router} />;
 }
-
-export default App
