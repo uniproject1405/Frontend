@@ -6,6 +6,7 @@ import {
 } from "@mui/material";
 
 import ExploreProjectCard from "./ExploreProjectCard";
+import { formatDate } from "../utils/requestStatus";
 import { fa } from "../utils/fa";
 import { getJoinedProjects, getMyRequests, useMyStats, withdrawRequest } from "../services/membershipService";
 
@@ -89,10 +90,11 @@ function MembershipTabs({ tab, onToast }) {
     // Same card as Explore: a joined team looks the same everywhere, and opens its project page.
     return (
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)" }, gap: 2.5 }}>
-        {items.map(({ project, owner, memberCount }) => (
+        {items.map(({ project, owner, memberCount, joinedAt }) => (
           <ExploreProjectCard
             key={project.id}
             project={{ ...project, accepted: memberCount, creator: { name: owner.name, username: owner.username, role: owner.headline } }}
+            note={`عضو از ${formatDate(joinedAt)}`}
           />
         ))}
       </Box>

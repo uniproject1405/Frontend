@@ -21,7 +21,6 @@ import {
   normalizeText,
 } from "../../utils/requestStatus";
 import { withdrawRequest } from "../../services/membershipService";
-import RequestStats from "./RequestStats";
 import RequestFilters from "./RequestFilters";
 import RequestCard from "./RequestCard";
 import RequestCardSkeleton from "./RequestCardSkeleton";
@@ -115,7 +114,6 @@ export default function MyRequestsPanel({
   if (loading) {
     return (
       <Box>
-        <RequestStats counts={null} />
         <Box
           component="ul"
           aria-busy="true"
@@ -192,10 +190,9 @@ export default function MyRequestsPanel({
 
   return (
     <Box>
-      {/* My Projects already shows the page title; this tab starts at its stats. */}
-      <RequestStats counts={counts} />
-
+      {/* My Projects already shows the title and stats; the counts live on the filter buttons. */}
       <RequestFilters
+        counts={counts}
         filter={filter}
         onFilterChange={setFilter}
         query={query}

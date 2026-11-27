@@ -1,7 +1,9 @@
 import { Box, Button, InputBase } from "@mui/material";
 import { FILTERS } from "../../utils/requestStatus";
+import { fa } from "../../utils/fa";
 
-export default function RequestFilters({ filter, onFilterChange, query, onQueryChange, onSearch }) {
+// Each filter shows its own count, so the tab needs no separate stat boxes.
+export default function RequestFilters({ filter, onFilterChange, query, onQueryChange, onSearch, counts }) {
   return (
     <Box
       sx={{
@@ -79,6 +81,7 @@ export default function RequestFilters({ filter, onFilterChange, query, onQueryC
               onClick={() => onFilterChange(value)}
               sx={{
                 minWidth: 0,
+                gap: 0.8,
                 minHeight: { xs: 38, md: 40 },
                 flex: { xs: "1 1 auto", md: "0 0 auto" },
                 px: 2.2,
@@ -97,6 +100,11 @@ export default function RequestFilters({ filter, onFilterChange, query, onQueryC
               }}
             >
               {label}
+              {counts && (
+                <Box component="span" sx={{ opacity: 0.7, fontWeight: 700 }}>
+                  {fa(counts[value === "all" ? "total" : value] ?? 0)}
+                </Box>
+              )}
             </Button>
           );
         })}

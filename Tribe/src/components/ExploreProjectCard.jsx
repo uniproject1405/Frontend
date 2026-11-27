@@ -14,7 +14,8 @@ const TYPES = {
 };
 
 // Whole card is a link to the project details page
-export default function ExploreProjectCard({ project }) {
+// `note` is an optional extra line above the capacity bar, e.g. the join date on My Projects.
+export default function ExploreProjectCard({ project, note }) {
   const { id, title, type, description = '', requiredSkills = [], capacity = 0, accepted = 0, openRoles = [], status, creator } = project;
   const available = Math.max(capacity - accepted, 0);
   const typeInfo = TYPES[type];
@@ -57,6 +58,7 @@ export default function ExploreProjectCard({ project }) {
         <SkillChips skills={requiredSkills} max={4} />
 
         <Box sx={{ mt: 'auto', pt: 2 }}>
+          {note && <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>{note}</Typography>}
           <CapacityMeter accepted={accepted} capacity={capacity} sx={{ mb: 2 }} />
           {/* The meter already shows free seats; only add the open roles when there are any. */}
           {available > 0 && openRoles.length > 0 && (
