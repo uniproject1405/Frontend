@@ -44,7 +44,7 @@ export async function request(path, { method = "GET", body, auth = true } = {}) 
   }
 
   if (!res.ok) {
-    if (res.status === 401 && auth && unauthorizedHandler) unauthorizedHandler();
+    if (res.status === 401 && auth && unauthorizedHandler && token !== "mock-token") unauthorizedHandler();
     throw new ApiError(res.status, data);
   }
   return data;

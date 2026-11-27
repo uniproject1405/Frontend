@@ -6,11 +6,14 @@ import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
+import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import TribeLogo from './TribeLogo';
 import SiteLink from './SiteLink';
 import { LOGIN_PATH, PROFILE_KEY, getProfile } from '../services/currentUser';
 import { useNotifications, markAllRead, markRead } from '../services/notificationService';
+import { useChatList } from '../services/chatService';
 import NotificationRow from './NotificationRow';
+
 import { useMyStats } from '../services/membershipService';
 import { useStoredJson } from '../services/store';
 import { fa } from '../utils/fa';
@@ -21,6 +24,7 @@ const NAVY = '#071739';
 
 const NAV = [
   ['کاوش پروژه‌ها', '/explore'],
+  ['گفت‌وگو و مذاکره', '/chat'],
   ['یافتن افراد', null],
   ['تبادل مهارت', null],
   ['راهنمای استفاده', null],
@@ -38,7 +42,9 @@ function UserMenu() {
   const navigate = useNavigate();
   const stats = useMyStats();
   const { items: notes, unread } = useNotifications();
+  const { totalUnread: chatUnread } = useChatList();
   useStoredJson(PROFILE_KEY, EMPTY); // re-render when the profile name changes
+
   const profile = getProfile();
   const closeBell = () => setBell(null);
   const close = () => setAnchor(null);
@@ -51,11 +57,17 @@ function UserMenu() {
   );
   return (
     <>
+      <IconButton onClick={() => navigate('/chat')} aria-label="گفت‌وگو و مذاکره" sx={{ color: '#4B6382' }}>
+        <Badge badgeContent={chatUnread} max={99} color="primary">
+          <ForumOutlinedIcon />
+        </Badge>
+      </IconButton>
       <IconButton onClick={(e) => setBell(e.currentTarget)} aria-label="اعلان‌ها" sx={{ color: '#4B6382' }}>
         <Badge badgeContent={unread} max={99} color="error">
           <NotificationsNoneIcon />
         </Badge>
       </IconButton>
+
       <IconButton onClick={(e) => setAnchor(e.currentTarget)} aria-label="منوی کاربر" size="small">
         <Avatar sx={{ width: 36, height: 36, fontSize: 14, bgcolor: '#E3C39D', color: NAVY }}>
           {profile.name.trim()[0]}
@@ -86,7 +98,9 @@ function UserMenu() {
         <Divider />
         {item('/my-projects', FolderOpenOutlinedIcon, 'پروژه‌های من', stats.toReview > 0 ? `${fa(stats.toReview)} درخواست برای بررسی` : '')}
         {item('/my-projects?tab=requests', SendOutlinedIcon, 'درخواست‌های ارسالی', stats.waiting > 0 ? `${fa(stats.waiting)} در انتظار` : '')}
+        {item('/chat', ForumOutlinedIcon, 'گفت‌وگو و مذاکره', chatUnread > 0 ? `${fa(chatUnread)} پیام جدید` : '')}
         {item('/profile', PersonOutlineIcon, 'پروفایل')}
+
         <Divider />
         <MenuItem onClick={() => { close(); logout(); }}>
           <ListItemIcon><LogoutIcon fontSize="small" /></ListItemIcon>

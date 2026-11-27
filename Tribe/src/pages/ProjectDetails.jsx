@@ -4,6 +4,7 @@ import {
   Alert, Avatar, Box, Button, Card, Chip, CircularProgress, Snackbar, Stack, Typography,
 } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import ForumOutlinedIcon from "@mui/icons-material/ForumOutlined";
 
 import { LOGIN_PATH } from "../services/currentUser";
 import { useAuth } from "../hooks/useAuth.js";
@@ -17,7 +18,7 @@ const MEMBERS_SHOWN = 5;
 const panel = { borderRadius: 3, p: { xs: 2.5, sm: 3 } };
 
 function JoinArea({ details, relation, signedIn, onJoin }) {
-  const { project, spotsLeft } = details;
+  const { project, owner, spotsLeft } = details;
   const closed = project.status !== "open";
   const full = spotsLeft === 0;
 
@@ -46,9 +47,30 @@ function JoinArea({ details, relation, signedIn, onJoin }) {
   else if (!signedIn) hint = "برای ارسال درخواست باید وارد شوید.";
   const disabled = relation !== "none" || closed || full;
 
+  const chatOwnerId = owner?.id || project.creator?.id || 101;
+  const chatOwnerName = owner?.name || project.creator?.display_name || "مالک پروژه";
+
   return (
     <>
       <Button fullWidth variant="contained" disabled={disabled} onClick={onJoin}>{label}</Button>
+      {relation !== "owner" && (
+        <Button
+          fullWidth
+          variant="outlined"
+          component={RouterLink}
+          to={`/chat?user=${encodeURIComponent(chatOwnerId)}&userName=${encodeURIComponent(chatOwnerName)}&project=${encodeURIComponent(project.id)}&projectTitle=${encodeURIComponent(project.title)}`}
+          sx={{
+            mt: 1.5,
+            borderColor: "#CDD5DB",
+            color: NAVY,
+            fontWeight: 600,
+            "&:hover": { borderColor: NAVY, bgcolor: "rgba(7, 23, 57, 0.04)" },
+          }}
+          startIcon={<ForumOutlinedIcon />}
+        >
+          گفت‌وگو و مذاکره با {chatOwnerName}
+        </Button>
+      )}
       {hint && (
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1, textAlign: "center" }}>{hint}</Typography>
       )}

@@ -19,6 +19,8 @@ import CreateProject from "../pages/CreateProject";
 import EditProject from "../pages/EditProject";
 import Notifications from "../pages/Notifications";
 import Profile from "../pages/Profile";
+import Chat from "../pages/Chat";
+
 
 // The ONE route table. Add a page here and nowhere else.
 const router = createBrowserRouter([
@@ -52,6 +54,7 @@ const router = createBrowserRouter([
       { path: "/my-projects/:projectId/requests", element: <DashboardLayout><ProjectRequests /></DashboardLayout> },
       { path: "/my-projects/:projectId/edit", element: <DashboardLayout><EditProject /></DashboardLayout> },
       { path: "/create-project", element: <DashboardLayout><CreateProject /></DashboardLayout> },
+      { path: "/chat", element: <DashboardLayout><Chat /></DashboardLayout> },
       { path: "/notifications", element: <DashboardLayout><Notifications /></DashboardLayout> },
       { path: "/profile", element: <DashboardLayout><Profile /></DashboardLayout> },
     ],
