@@ -90,7 +90,6 @@ export default function LatestProjects() {
         mb: 0,
         width: "100%",
         minWidth: 0,
-        textAlign: "right",
       }}
     >
       <Box
@@ -104,7 +103,6 @@ export default function LatestProjects() {
         <Box
           sx={{
             display: "flex",
-            direction: "rtl",
             justifyContent: "space-between",
             alignItems: { xs: "flex-start", sm: "center" },
             gap: 2,

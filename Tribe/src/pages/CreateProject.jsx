@@ -369,11 +369,11 @@ function CreateProject({ open = true, onClose, onCreated }) {
               sx={{ mr: "auto", color: NAVY, borderColor: BORDER, borderRadius: "9px",
                 fontSize: 13, "&:hover": { bgcolor: SOFT, borderColor: "#A4B5C4" } }}>انصراف</Button>
             {step > 0 && <Button type="button" onClick={() => { setStep(step - 1); setErrors({}); setMessage(""); }}
-              startIcon={<ArrowBackRoundedIcon />} variant="outlined"
+              startIcon={<ArrowForwardRoundedIcon />} variant="outlined"
               sx={{ color: NAVY, borderColor: BORDER, borderRadius: "9px", fontSize: 13,
                 "&:hover": { bgcolor: SOFT, borderColor: "#A4B5C4" } }}>قبلی</Button>}
             <Button type="submit" variant="contained" disabled={submitting}
-              endIcon={step === 3 ? <AutoAwesomeRoundedIcon /> : <ArrowForwardRoundedIcon />}
+              endIcon={step === 3 ? <AutoAwesomeRoundedIcon /> : <ArrowBackRoundedIcon />}
               sx={{ minWidth: { xs: 100, sm: 135 }, borderRadius: "9px", bgcolor: NAVY, fontSize: 13,
                 "&:hover": { bgcolor: "#14285A" } }}>
               {submitting ? "در حال ایجاد..." : step === 3 ? "ایجاد پروژه" : "بعدی"}

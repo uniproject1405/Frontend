@@ -1,4 +1,4 @@
-import { NavLink } from "react-router";
+import { NavLink, useLocation } from "react-router";
 import { Box, Container } from "@mui/material";
 
 import SiteHeader from "../components/SiteHeader";
@@ -22,6 +22,7 @@ const TABS = [
 function DashboardLayout({ children }) {
   const { unread } = useNotifications();
   const { totalUnread } = useChatList();
+  const onChat = useLocation().pathname.startsWith("/chat");
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#F4F6F8", display: "flex", flexDirection: "column" }}>
@@ -64,7 +65,10 @@ function DashboardLayout({ children }) {
         {children}
       </Container>
 
-      <SiteFooter />
+      {/* On a phone the chat fills the screen like a messaging app, so the footer is hidden there. */}
+      <Box sx={{ display: { xs: onChat ? "none" : "block", md: "block" } }}>
+        <SiteFooter />
+      </Box>
     </Box>
   );
 }

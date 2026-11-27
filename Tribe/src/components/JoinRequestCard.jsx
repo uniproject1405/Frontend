@@ -12,7 +12,7 @@ export default function JoinRequestCard({ request, busy, canAccept, onDecide }) 
     <Box component="article" sx={{ bgcolor: '#fff', border: '1px solid #E3E8EF', borderRadius: 3, p: 3 }}>
       <Typography variant="h6" color={NAVY} sx={{ fontWeight: 700, lineHeight: 1.5 }}>{name}</Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25 }}>
-        {role} · {timeAgo(appliedAt)} درخواست داد
+        {role}، {timeAgo(appliedAt)} درخواست داد
       </Typography>
 
       {skills.length > 0 && (

@@ -12,7 +12,8 @@ export function StatusChip({ status, full = false, sx }) {
     <Chip
       size="small"
       variant="outlined"
-      label={isOpen ? 'در حال جذب عضو' : 'تیم تکمیل است'}
+      // Closed with free seats is "not recruiting", not "full".
+      label={isOpen ? 'در حال جذب عضو' : full ? 'تیم تکمیل است' : 'جذب عضو بسته است'}
       color={isOpen ? 'success' : 'default'}
       sx={{ flexShrink: 0, ...sx }}
     />
@@ -21,12 +22,14 @@ export function StatusChip({ status, full = false, sx }) {
 
 export function SkillChips({ skills = [], max }) {
   const list = max ? skills.slice(0, max) : skills;
+  const hidden = skills.length - list.length;
   if (!list.length) return null;
   return (
     <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
       {list.map(skill => (
         <Chip key={skill} label={skill} size="small" sx={{ bgcolor: '#F0F3F8', color: '#4B6382' }} />
       ))}
+      {hidden > 0 && <Chip label={`+${fa(hidden)}`} size="small" sx={{ bgcolor: '#F0F3F8', color: '#4B6382' }} />}
     </Stack>
   );
 }
@@ -42,7 +45,7 @@ export function CreatorRow({ creator }) {
         <Typography noWrap sx={{ fontWeight: 600, fontSize: 14 }}>{name}</Typography>
         {/* Azin: show the owner's @handle when they have one */}
         {username ? (
-          <Typography variant="caption" color="text.secondary" dir="ltr" sx={{ display: 'block', textAlign: 'right' }}>@{username}</Typography>
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}><bdi dir="ltr">@{username}</bdi></Typography>
         ) : (
           <Typography variant="caption" color="text.secondary">{role}</Typography>
         )}

@@ -12,7 +12,7 @@ const NAVY = '#071739';
 const STATUS_OPTIONS = [
   { value: '', label: 'همه وضعیت‌ها' },
   { value: 'open', label: 'در حال جذب عضو' },
-  { value: 'closed', label: 'جذب عضو تکمیل شده' },
+  { value: 'closed', label: 'جذب عضو بسته' },
 ];
 
 // Filters live in the URL (?search=&skill=&status=) so the back button and shared links work.

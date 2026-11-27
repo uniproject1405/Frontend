@@ -35,7 +35,6 @@ export default function HowTribeWorks() {
         boxSizing: "border-box",
         borderRadius: { xs: 3, md: 4 },
         bgcolor: "#F7F8FA",
-        textAlign: "right",
       }}
     >
       <Box sx={{ mb: { xs: 3, md: 5 } }}>
@@ -102,7 +101,6 @@ export default function HowTribeWorks() {
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-start",
-              textAlign: "right",
               transition:
                 "border-color .2s ease, box-shadow .2s ease, transform .2s ease",
               "&:hover": {

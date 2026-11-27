@@ -103,7 +103,7 @@ function MembershipTabs({ tab, onToast }) {
               )}
               <SkillChips skills={(project.requiredSkills || []).slice(0, 4)} />
               <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
-                {fa(memberCount)} عضو · {left === 0 ? "ظرفیت تکمیل" : `${fa(left)} جای خالی`} · عضویت از {new Date(joinedAt).toLocaleDateString("fa-IR", { month: "short", day: "numeric" })}
+                {fa(memberCount)} عضو، {left === 0 ? "ظرفیت تکمیل" : `${fa(left)} جای خالی`}، عضویت از {new Date(joinedAt).toLocaleDateString("fa-IR", { month: "short", day: "numeric" })}
               </Typography>
             </Row>
           );

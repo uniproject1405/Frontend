@@ -56,7 +56,6 @@ export default function ProjectCallout() {
           zIndex: 1,
           maxWidth: 720,
           alignItems: "flex-start",
-          textAlign: "right",
         }}
       >
         <Typography

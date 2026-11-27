@@ -138,7 +138,11 @@ export default function SiteHeader() {
           ) : (
             <>
               <Button component={Link} to={LOGIN_PATH} sx={{ color: NAVY, fontWeight: 600, textTransform: 'none' }}>ورود</Button>
-              <Button component={Link} to="/signup" variant="contained" sx={filled}>عضویت در Tribe</Button>
+              <Button component={Link} to="/signup" variant="contained" sx={{ ...filled, whiteSpace: 'nowrap' }}>
+                {/* Short label on phones so the button stays on one line */}
+                <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>عضویت در Tribe</Box>
+                <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>عضویت</Box>
+              </Button>
             </>
           )}
         </Stack>

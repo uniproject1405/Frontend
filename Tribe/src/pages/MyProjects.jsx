@@ -31,7 +31,7 @@ import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import LaptopMacRoundedIcon from "@mui/icons-material/LaptopMacRounded";
 import CreateProject from "./CreateProject";
 
@@ -830,7 +830,7 @@ function MyProjects() {
                         مشاهده درخواست‌ها
                       </Typography>
                     </Box>
-                    <ArrowForwardRoundedIcon sx={{ color: "#FFFFFF", fontSize: 20, flexShrink: 0 }} />
+                    <ArrowBackRoundedIcon sx={{ color: "#FFFFFF", fontSize: 20, flexShrink: 0 }} />
                   </Box>
                 ))}
               </Stack>

@@ -42,7 +42,7 @@ export default function ExploreProjectCard({ project }) {
           </Stack>
         )}
 
-        <Typography variant="h6" sx={{ fontWeight: 700, color: NAVY, lineHeight: 1.5, mb: 1 }}>
+        <Typography variant="h6" sx={{ fontWeight: 700, color: NAVY, lineHeight: 1.5, mb: 1, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
           {title}
         </Typography>
 
@@ -54,13 +54,13 @@ export default function ExploreProjectCard({ project }) {
           {description}
         </Typography>
 
-        <SkillChips skills={requiredSkills} />
+        <SkillChips skills={requiredSkills} max={4} />
 
         <Box sx={{ mt: 'auto', pt: 2 }}>
           <CapacityMeter accepted={accepted} capacity={capacity} sx={{ mb: 2 }} />
           {/* The meter already shows free seats; only add the open roles when there are any. */}
           {available > 0 && openRoles.length > 0 && (
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            <Typography variant="body2" color="text.secondary" noWrap sx={{ mb: 2 }}>
               {openRoles.join('، ')}
             </Typography>
           )}

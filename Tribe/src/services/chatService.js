@@ -7,88 +7,146 @@ const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
 const CHAT_CONVERSATIONS_KEY = "tribe_chat_conversations";
 const CHAT_MESSAGES_KEY = "tribe_chat_messages";
 
-// Initial seed conversations matching Tribe projects
-const SEED_CONVERSATIONS = [
+// Seed threads: [isMine, text] pairs, oldest first. Long enough to show scrolling and dates.
+// Bump SEED_VERSION when this changes so browsers that already stored the old seed reload it.
+const SEED_VERSION = "3";
+const SEED_VERSION_KEY = "tribe_chat_seed_version";
+const ME = { id: 999, username: "me", display_name: "من" };
+
+const THREADS = [
   {
     id: 1,
-    other_participant: {
-      id: 101,
-      username: "arash_dev",
-      display_name: "آرش حسینی",
-      avatar_display: null,
-    },
-    project: {
-      id: 1,
-      title: "پلتفرم یادگیری ماشین پزشکی",
-      status: "open",
-    },
-    last_message: {
-      id: 1,
-      content: "سلام، رزومه شما رو دیدم. مایلید درباره نقش توسعه‌دهنده پایتون در پروژه مذاکره کنیم؟",
-      created_at: new Date(Date.now() - 35 * 60000).toISOString(),
-      is_read: false,
-    },
-    unread_count: 1,
-    updated_at: new Date(Date.now() - 35 * 60000).toISOString(),
+    other: { id: "user-sara", username: "sara", display_name: "سارا م." },
+    project: { id: "project-1", title: "دستیار هوشمند مطالعه", status: "open" },
+    endMinutesAgo: 35, stepMinutes: 95, unread: 2,
+    lines: [
+      [false, "سلام وقت بخیر! درخواست عضویت شما در تیم دستیار مطالعه رو دیدم."],
+      [true, "سلام سارا، ممنون که پیام دادید. خوشحال می‌شم بیشتر درباره پروژه بدونم."],
+      [false, "دستیار سرفصل‌ها رو می‌خونه و یه برنامه‌ی هفتگی می‌سازه. الان حدود چهل دانشجو تستش می‌کنن."],
+      [true, "عالیه. سؤال‌های آزمون رو چطوری می‌سازید؟"],
+      [false, "از روی یادداشت‌های درس، با یه مدل متن‌باز کوچک. ولی کیفیت سؤال‌ها هنوز یکدست نیست."],
+      [true, "پس بخش ارزیابی کیفیت سؤال‌ها کار زیادی داره."],
+      [false, "دقیقاً. برای همین دنبال کسی هستیم که با PyTorch و ارزیابی مدل تجربه داشته باشه."],
+      [true, "من دو سال روی مدل‌های متنی کار کردم. نمونه‌کارهام توی پروفایلم هست."],
+      [false, "دیدمشون، پروژه‌ی خلاصه‌ساز مقاله‌ها خیلی تمیز بود."],
+      [true, "ممنون! هفته‌ای چند ساعت وقت لازمه؟"],
+      [false, "حدود ۶ ساعت. یه تماس ۴۵ دقیقه‌ای هم چهارشنبه عصرها داریم."],
+      [true, "چهارشنبه‌ها برام خوبه. ۶ ساعت هم شدنیه."],
+      [false, "نقش‌ها رو اینطوری دیدیم: من زمان‌بندی، علی رابط کاربری، و شما کیفیت سؤال‌ها."],
+      [true, "منطقیه. کیفیت سؤال رو با چه معیاری می‌سنجیم؟"],
+      [false, "فعلاً دانشجوها به هر سؤال از ۱ تا ۵ امتیاز می‌دن."],
+      [true, "یه پیشنهاد: یه مجموعه‌ی ثابت از ۲۰۰ سؤال نگه داریم که هر نسخه‌ی مدل روش سنجیده بشه."],
+      [false, "ایده‌ی خوبیه، توی سند پروژه اضافه‌اش می‌کنم."],
+      [true, "کد متن‌باز منتشر می‌شه؟"],
+      [false, "بله، با مجوز MIT. یادداشت‌های دانشجوها نه."],
+      [true, "روشنه. من آماده‌ام شروع کنم."],
+      [false, "عالی! درخواستت رو تأیید می‌کنم. لینک مخزن رو همین‌جا می‌فرستم."],
+      [false, "لینک مخزن و سند پروژه رو فرستادم. اگه سؤالی بود همین‌جا بپرس."],
+    ],
   },
   {
     id: 2,
-    other_participant: {
-      id: 102,
-      username: "sara_design",
-      display_name: "سارا راد",
-      avatar_display: null,
-    },
-    project: {
-      id: 2,
-      title: "سامانه رزرو بلیت همایش",
-      status: "open",
-    },
-    last_message: {
-      id: 2,
-      content: "طرح‌های اولیه فیگما آماده شده، خوشحال میشم نظرت رو بگی.",
-      created_at: new Date(Date.now() - 3 * 3600000).toISOString(),
-      is_read: true,
-    },
-    unread_count: 0,
-    updated_at: new Date(Date.now() - 3 * 3600000).toISOString(),
+    other: { id: "user-ali", username: "ali", display_name: "علی ر." },
+    project: { id: "project-2", title: "پلتفرم جامعه", status: "open" },
+    endMinutesAgo: 180, stepMinutes: 140, unread: 0,
+    lines: [
+      [true, "سلام علی، من برای نقش طراح UI/UX درخواست دادم."],
+      [false, "سلام! آره دیدم. قبلاً برای جامعه‌ها طراحی کردی؟"],
+      [true, "بله، برای اپ باشگاه کتاب‌خوانی دانشگاهمون."],
+      [false, "عالیه. صفحه‌ی رویداد سخت‌ترین بخش ماست."],
+      [true, "مشکل اصلی‌اش چیه؟"],
+      [false, "برگزارکننده‌ها می‌گن ساختن رویداد خیلی طول می‌کشه."],
+      [true, "شاید بشه با یه الگوی آماده شروع کرد: عنوان، زمان، مکان و تمام."],
+      [false, "قانع‌کننده‌ست. بقیه‌ی جزئیات اختیاری بشه."],
+      [true, "طرح فعلی آماده‌ست که ببینم؟"],
+      [false, "نسخه‌ی اول رو تا آخر هفته تموم می‌کنم."],
+      [true, "باشه، منتظرم."],
+      [false, "راستی فونت رو وزیرمتن گذاشتیم، اعداد هم فارسی."],
+      [true, "عالیه. تاریخ‌ها هم شمسی باشه دیگه؟"],
+      [false, "حتماً. بیشتر کاربرها دانشجو هستن."],
+      [true, "برای فهرست اعضا جست‌وجو هم لازمه؟"],
+      [false, "برای گروه‌های بالای ۵۰ نفر آره."],
+      [true, "پس من از صفحه‌ی رویداد و فهرست اعضا شروع می‌کنم."],
+      [false, "طرح‌های اولیه فیگما آماده شده، خوشحال میشم نظرت رو بگی."],
+    ],
+  },
+  {
+    id: 3,
+    other: { id: "user-mina", username: "mina", display_name: "مینا ک." },
+    project: { id: "project-3", title: "ردیاب اکو", status: "closed" },
+    endMinutesAgo: 60 * 26, stepMinutes: 50, unread: 0,
+    lines: [
+      [false, "سلام! ممنون که به ردیاب اکو علاقه نشون دادی."],
+      [true, "سلام مینا، ایده‌ی جالبیه. چطوری ردپای کربن رو حساب می‌کنید؟"],
+      [false, "از ضریب‌های استاندارد برای غذا، حمل‌ونقل و خرید استفاده می‌کنیم."],
+      [true, "کاربر باید همه‌چیز رو دستی وارد کنه؟"],
+      [false, "فعلاً آره، ولی می‌خوایم وارد کردن سریع با چند دکمه باشه."],
+      [true, "برای نگه داشتن کاربر، یه چالش هفتگی خیلی کمک می‌کنه."],
+      [false, "دقیقاً همینو می‌خواستیم! تو روی این بخش کار می‌کنی؟"],
+      [true, "حتماً. فقط من هفته‌ای ۶ ساعت بیشتر وقت ندارم."],
+      [false, "مشکلی نیست، کار رو کوچیک تقسیم می‌کنیم."],
+      [true, "پس یه لیست کار برای هفته‌ی اول بفرست."],
+      [false, "فرستادم توی Trello. سه کارت به اسم تو هست."],
+      [true, "دیدم، از کارت «صفحه‌ی چالش» شروع می‌کنم."],
+      [false, "عالیه، پنجشنبه با هم مرورش کنیم؟"],
+      [true, "پنجشنبه ساعت ۶ عصر خوبه."],
+    ],
+  },
+  {
+    id: 4,
+    other: { id: "user-kian", username: "kian", display_name: "کیان ب." },
+    project: { id: "other-8", title: "مرور حال روزانه", status: "open" },
+    endMinutesAgo: 8, stepMinutes: 4, unread: 3,
+    lines: [
+      [true, "سلام کیان، درخواستم برای نقش طراح محصول رو دیدی؟"],
+      [false, "سلام! آره، همین الان تأییدش کردم."],
+      [true, "خیلی ممنون! از کجا شروع کنم؟"],
+      [false, "اول یه نگاه به جریان ثبت حال روزانه بنداز. الان چهار مرحله‌ست."],
+      [true, "به نظرم چهار مرحله برای کاری که هر روز انجام می‌شه زیاده."],
+      [false, "موافقم. هدف اینه که زیر ۱۰ ثانیه تموم بشه."],
+      [true, "یه پیشنهاد: انتخاب حال و یادداشت توی یه صفحه باشه."],
+      [false, "جلسه‌ی شروع فردا ساعت ۱۰ صبحه."],
+      [false, "لینک جلسه رو توی گروه گذاشتم."],
+      [false, "اگه وقت داشتی قبلش اسکیس‌هات رو بفرست."],
+    ],
   },
 ];
 
-const SEED_MESSAGES = {
-  1: [
-    {
-      id: 101,
-      sender: { id: 101, username: "arash_dev", display_name: "آرش حسینی" },
-      content: "سلام وقت بخیر! درخواست عضویت شما در تیم پلتفرم پزشکی رو بررسی کردیم.",
-      is_mine: false,
-      created_at: new Date(Date.now() - 60 * 60000).toISOString(),
-    },
-    {
-      id: 102,
-      sender: { id: 999, username: "me", display_name: "من" },
-      content: "سلام آرش عزیز، ممنون از توجهتون. برای بخش معماری داده‌ها و مدل‌های PyTorch کاملاً آماده‌ام.",
-      is_mine: true,
-      created_at: new Date(Date.now() - 45 * 60000).toISOString(),
-    },
-    {
-      id: 103,
-      sender: { id: 101, username: "arash_dev", display_name: "آرش حسینی" },
-      content: "سلام، رزومه شما رو دیدم. مایلید درباره نقش توسعه‌دهنده پایتون در پروژه مذاکره کنیم؟",
-      is_mine: false,
-      created_at: new Date(Date.now() - 35 * 60000).toISOString(),
-    },
-  ],
-  2: [
-    {
-      id: 201,
-      sender: { id: 102, username: "sara_design", display_name: "سارا راد" },
-      content: "طرح‌های اولیه فیگما آماده شده، خوشحال میشم نظرت رو بگی.",
-      is_mine: false,
-      created_at: new Date(Date.now() - 3 * 3600000).toISOString(),
-    },
-  ],
-};
+const minutesAgo = (m) => new Date(Date.now() - m * 60000).toISOString();
+
+const SEED_MESSAGES = {};
+const SEED_CONVERSATIONS = THREADS.map((t) => {
+  const n = t.lines.length;
+  SEED_MESSAGES[t.id] = t.lines.map(([mine, content], i) => ({
+    id: t.id * 1000 + i,
+    sender: mine ? ME : t.other,
+    content,
+    is_mine: mine,
+    // Last message ends at endMinutesAgo; earlier ones step back in time.
+    created_at: minutesAgo(t.endMinutesAgo + (n - 1 - i) * t.stepMinutes),
+    is_read: i < n - t.unread,
+  }));
+  const last = SEED_MESSAGES[t.id][n - 1];
+  return {
+    id: t.id,
+    other_participant: { ...t.other, avatar_display: null },
+    project: t.project,
+    last_message: { id: last.id, content: last.content, created_at: last.created_at, is_read: t.unread === 0 },
+    unread_count: t.unread,
+    updated_at: last.created_at,
+  };
+});
+
+// Replace an older stored seed once, so everyone sees the longer threads.
+try {
+  if (localStorage.getItem(SEED_VERSION_KEY) !== SEED_VERSION) {
+    localStorage.setItem(CHAT_CONVERSATIONS_KEY, JSON.stringify(SEED_CONVERSATIONS));
+    localStorage.setItem(CHAT_MESSAGES_KEY, JSON.stringify(SEED_MESSAGES));
+    localStorage.setItem(SEED_VERSION_KEY, SEED_VERSION);
+  }
+} catch {
+  /* storage blocked: the in-memory seed is used */
+}
 
 function getLocalConversations() {
   try {
@@ -334,7 +392,5 @@ export function formatChatTime(iso) {
   if (diffHours < 48) {
     return `دیروز ${timeStr}`;
   }
-  const month = fa(d.getMonth() + 1);
-  const day = fa(d.getDate());
-  return `${month}/${day}`;
+  return new Intl.DateTimeFormat("fa-IR", { day: "numeric", month: "long" }).format(d);
 }
