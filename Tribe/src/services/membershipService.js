@@ -79,6 +79,7 @@ export async function getMyRequests() {
       project: projects.find((p) => String(p.id) === String(request.projectId)),
     }))
     .filter((x) => x.project)
+    .map((x) => ({ ...x, owner: getOwner(x.project.id) }))
     .sort((a, b) => String(b.request.createdAt).localeCompare(String(a.request.createdAt)));
 }
 

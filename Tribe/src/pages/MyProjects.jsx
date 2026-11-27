@@ -43,6 +43,7 @@ import {
 import { fa } from "../utils/fa";
 import ProjectCard from "../components/ProjectCard";
 import MembershipTabs from "../components/MembershipTabs";
+import MyRequestsSection from "../components/requests/MyRequestsSection";
 import CloseProjectDialog from "../components/CloseProjectDialog";
 
 const COLORS = {
@@ -355,7 +356,7 @@ function MyProjects() {
         <Alert
           onClose={() => setToast("")}
           severity={
-            /نمی‌توان|امکان‌پذیر نبود|ناموفق|خطا|could not|failed|unable/i.test(toast)
+            /نمی‌توان|امکان‌پذیر نبود|ناموفق|نشد|خطا|could not|failed|unable/i.test(toast)
               ? "error"
               : "success"
           }
@@ -417,7 +418,9 @@ function MyProjects() {
         <Tab value="requests" label="درخواست‌های ارسالی" />
       </Tabs>
 
-      {tab !== "created" ? (
+      {tab === "requests" ? (
+        <MyRequestsSection onToast={setToast} />
+      ) : tab !== "created" ? (
         <MembershipTabs key={tab} tab={tab} onToast={setToast} />
       ) : (
       <>
