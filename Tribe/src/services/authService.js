@@ -35,6 +35,18 @@ const mockAuthService = {
   async me() {
     return readStored().user;
   },
+  async requestPasswordReset() {
+    await sleep(700);
+  },
+  // Mock: token "invalid" plays an expired link
+  async validateResetToken({ token }) {
+    await sleep(400);
+    if (token === "invalid") throw new ApiError(400, { valid: false });
+  },
+  async confirmPasswordReset() {
+    await sleep(700);
+  },
+  googleLoginUrl: () => null, // no Google in mock mode
 };
 
 // ----- حالت واقعی: آدرس‌ها طبق مستندات بک‌اند -----
@@ -69,6 +81,32 @@ const realAuthService = {
   async me() {
     return request("/api/users/me/");
   },
+
+  // POST /api/users/password-reset/ ← always 200; the email links to /reset-password?uid=..&token=..
+  async requestPasswordReset(email) {
+    await request("/api/users/password-reset/", {
+      method: "POST",
+      body: { email, redirect_url: `${window.location.origin}/reset-password` },
+      auth: false,
+    });
+  },
+
+  // POST /api/users/password-reset/validate/ ← 400 means the link is invalid or expired
+  async validateResetToken({ uid, token }) {
+    await request("/api/users/password-reset/validate/", { method: "POST", body: { uid, token }, auth: false });
+  },
+
+  // POST /api/users/password-reset/confirm/
+  async confirmPasswordReset({ uid, token, password }) {
+    await request("/api/users/password-reset/confirm/", {
+      method: "POST",
+      body: { uid, token, new_password: password, confirm_password: password },
+      auth: false,
+    });
+  },
+
+  // The backend sends Google back to /login or /signup with ?token=&email=&username= (or ?error=)
+  googleLoginUrl: (mode) => `/api/users/google/login/?mode=${mode}`,
 };
 
 export const authService = USE_MOCK ? mockAuthService : realAuthService;

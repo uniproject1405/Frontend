@@ -1,7 +1,8 @@
 import { getToken } from "../utils/tokenStorage.js";
 
 // خالی = درخواست‌ها از طریق پروکسی Vite (vite.config.js) به بک‌اند می‌روند
-const BASE_URL = import.meta.env.VITE_API_URL ?? "";
+// Paths already start with /api, so a trailing slash or /api is trimmed (no /api/api).
+const BASE_URL = (import.meta.env.VITE_API_URL ?? "").trim().replace(/\/+$/, "").replace(/\/api$/, "");
 
 // طبق مستندات بک‌اند فرمت هدر باید Token باشد، نه Bearer
 const AUTH_SCHEME = "Token";

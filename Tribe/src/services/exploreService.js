@@ -1,8 +1,36 @@
 import { getMyProjects } from './mockProjectService';
 import { getOwner, readRequests } from './membershipService';
 
-// Set VITE_API_URL (e.g. in .env) to switch from mock data to the real API.
-const API_URL = import.meta.env.VITE_API_URL || '';
+import { ApiError, request } from './apiClient.js';
+
+// VITE_USE_MOCK=false switches Explore to the real backend (Negar's mapping below).
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
+
+const asList = (data) => (Array.isArray(data) ? data : Array.isArray(data?.results) ? data.results : []);
+
+function toError(error, fallback) {
+  if (error instanceof ApiError && error.status === 404) return new Error('اطلاعات موردنظر پیدا نشد.');
+  return new Error(fallback);
+}
+
+// Backend project -> the shape our cards use. Skills come back as names or { name } objects.
+function toProject(project) {
+  const creator = project.creator && typeof project.creator === 'object' ? project.creator : {};
+  return {
+    id: project.public_id,
+    title: project.title || '',
+    goal: project.goal || '',
+    description: project.description || project.goal || '',
+    type: project.project_type || 'development',
+    requiredSkills: (project.skills || []).map((skill) => (typeof skill === 'object' ? skill?.name || String(skill?.id ?? '') : String(skill))),
+    capacity: Number(project.capacity) || 0,
+    accepted: Number(project.accepted_count) || 0,
+    openRoles: [],
+    status: project.status || 'open',
+    createdAt: project.created_at || null,
+    creator: { name: creator.name || creator.username || 'عضو Tribe', username: creator.username || '' },
+  };
+}
 
 // Mock mode reads the same stored projects as the dashboard and details page,
 // so a card on Explore always opens the matching project.
@@ -21,13 +49,16 @@ const wait = (ms = 300) => new Promise(resolve => setTimeout(resolve, ms));
 
 // GET list. Filters: { search, skill, status }
 export async function getExploreProjects({ search = '', skill = '', status = '' } = {}) {
-  if (API_URL) {
+  if (!USE_MOCK) {
     const params = new URLSearchParams(
-      Object.entries({ search, skill, status }).filter(([, value]) => value)
+      Object.entries({ search: search.trim(), skill, status }).filter(([, value]) => value)
     );
-    const res = await fetch(`${API_URL}/projects?${params}`);
-    if (!res.ok) throw new Error('دریافت پروژه‌ها با خطا مواجه شد.');
-    return res.json();
+    try {
+      const data = await request(`/api/projects/explore/${params.size ? `?${params}` : ''}`, { auth: false });
+      return asList(data).map(toProject);
+    } catch (error) {
+      throw toError(error, 'دریافت پروژه‌ها با خطا مواجه شد.');
+    }
   }
 
   await wait();
@@ -41,10 +72,12 @@ export async function getExploreProjects({ search = '', skill = '', status = '' 
 
 // GET one project
 export async function getExploreProjectById(projectId) {
-  if (API_URL) {
-    const res = await fetch(`${API_URL}/projects/${projectId}`);
-    if (!res.ok) throw new Error('پروژه پیدا نشد.');
-    return res.json();
+  if (!USE_MOCK) {
+    try {
+      return toProject(await request(`/api/projects/${projectId}/`, { auth: false }));
+    } catch (error) {
+      throw toError(error, 'پروژه پیدا نشد.');
+    }
   }
 
   await wait(150);

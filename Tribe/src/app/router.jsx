@@ -7,6 +7,7 @@ import PublicOnlyRoute from "../components/PublicOnlyRoute.jsx";
 import Login from "../pages/Login.jsx";
 import Signup from "../pages/Signup.jsx";
 import ForgotPassword from "../pages/ForgotPassword.jsx";
+import ResetPassword from "../pages/ResetPassword.jsx";
 import TermsPage from "../pages/TermsPage.jsx";
 import NotFound from "../pages/NotFound.jsx";
 
@@ -43,6 +44,7 @@ const router = createBrowserRouter([
     ],
   },
   { path: "/forgot-password", element: <ForgotPassword /> },
+  { path: "/reset-password", element: <ResetPassword /> },
   { path: "/terms", element: <TermsPage /> },
 
   // Signed-in pages: need a login, otherwise redirected to /login
