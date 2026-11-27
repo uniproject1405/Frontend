@@ -30,17 +30,12 @@ export default function ProjectCard({ project, onEdit, onClose, onRequests, dens
       >
         ویرایش
       </Button>
-      {/* The red count says how many people are waiting for an answer. */}
+      {/* The count in brackets is how many people are waiting for an answer. */}
       <Button
         variant="outlined" size="small" color="secondary" onClick={() => onRequests?.(project)}
         startIcon={<PeopleOutlineRoundedIcon />}
-        endIcon={pending ? (
-          <Box component="span" sx={{ bgcolor: "error.main", color: "#fff", borderRadius: 5, px: 0.8, fontSize: 11, lineHeight: "18px" }}>
-            {fa(pending)}
-          </Box>
-        ) : null}
       >
-        درخواست‌ها
+        درخواست‌ها{pending ? ` (${fa(pending)})` : ""}
       </Button>
       {/* A closed project cannot be closed again, so the action disappears. */}
       {!isClosed && (
