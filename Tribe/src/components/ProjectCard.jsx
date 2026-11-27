@@ -141,7 +141,8 @@ export default function ProjectCard({ project, onEdit, onClose, onRequests }) {
             sx={{ height: 6, borderRadius: 3, bgcolor: "#EDF1F5", mb: 2.4,
               "& .MuiLinearProgress-bar": { bgcolor: "#9EB1C1", borderRadius: 3 } }}
           />
-          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 0.9 }}>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.9,
+            "& .MuiButton-root": { flex: "1 1 auto", whiteSpace: "nowrap", px: 1 } }}>
             <Button variant="outlined" size="small" onClick={() => onEdit?.(project)}
               disabled={typeof onEdit !== "function"} startIcon={<EditOutlinedIcon />}
               sx={{ minWidth: 0, minHeight: 38, px: 0.5, borderRadius: "9px", bgcolor: "#FFFFFF", color: NAVY,
