@@ -190,7 +190,7 @@ export default function ProjectRequests() {
 
       <Button
         component={Link}
-        to="/my-projects"
+        to="/my-projects?tab=review"
         startIcon={<ArrowForwardIcon />}
         sx={{
           mb: 3,
@@ -198,7 +198,7 @@ export default function ProjectRequests() {
           fontWeight: 700,
         }}
       >
-        بازگشت به پروژه‌های من
+        بازگشت به درخواست‌های بررسی
       </Button>
 
       <Box sx={{ mb: 4 }}>

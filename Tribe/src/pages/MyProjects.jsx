@@ -582,7 +582,7 @@ function MyProjects() {
                         sm: "repeat(2, minmax(0, 1fr))",
                         lg: "repeat(3, minmax(0, 1fr))",
                       },
-                gap: { xs: 2, lg: 2 },
+                gap: viewMode === "list" ? 1.5 : 2,
                 alignItems: "stretch",
               }}
             >
@@ -593,6 +593,7 @@ function MyProjects() {
                   onEdit={handleEdit}
                   onClose={handleClose}
                   onRequests={handleRequests}
+                  dense={viewMode === "list"}
                 />
               ))}
             </Box>
