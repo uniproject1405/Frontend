@@ -54,7 +54,7 @@ const OutArrow = props => (
 function Section({ title, children }) {
   return (
     <Box sx={cardSx}>
-      <Typography variant="h6" fontWeight={800} color={NAVY} mb={2}>
+      <Typography variant="h6" color={NAVY} sx={{ fontWeight: 800, mb: 2 }}>
         {title}
       </Typography>
       {children}
@@ -299,7 +299,7 @@ export default function Profile() {
               </Avatar>
 
               <Box sx={{ flex: 1, minWidth: 0 }}>
-                <Typography variant="h4" fontWeight={800} color={NAVY}>
+                <Typography variant="h4" color={NAVY} sx={{ fontWeight: 800 }}>
                   {p.name}
                 </Typography>
 
@@ -319,7 +319,7 @@ export default function Profile() {
                 )}
 
                 {p.headline && (
-                  <Typography color="#4B6382" mt={0.75}>
+                  <Typography color="#4B6382" sx={{ mt: 0.75 }}>
                     {p.headline}
                   </Typography>
                 )}

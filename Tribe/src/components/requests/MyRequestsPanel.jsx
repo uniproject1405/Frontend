@@ -21,7 +21,6 @@ import {
   normalizeText,
 } from "../../utils/requestStatus";
 import { withdrawRequest } from "../../services/membershipService";
-import RequestStats from "./RequestStats";
 import RequestFilters from "./RequestFilters";
 import RequestCard from "./RequestCard";
 import RequestCardSkeleton from "./RequestCardSkeleton";
@@ -115,7 +114,6 @@ export default function MyRequestsPanel({
   if (loading) {
     return (
       <Box>
-        <RequestStats counts={null} />
         <Box
           component="ul"
           aria-busy="true"
@@ -192,24 +190,9 @@ export default function MyRequestsPanel({
 
   return (
     <Box>
-      <Box sx={{ mb: { xs: 2.5, md: 3.5 }, textAlign: "start" }}>
-        <Typography sx={{ color: "#718198", fontSize: { xs: 11, md: 12 }, mb: 0.7 }}>
-          فضای همکاری شما
-        </Typography>
-        <Typography
-          variant="h5"
-          sx={{ fontWeight: 800, color: "#071739", mb: 0.45, fontSize: { xs: 22, sm: 26, md: 30 } }}
-        >
-          درخواست‌های همکاری من
-        </Typography>
-        <Typography sx={{ color: "#637791", lineHeight: 1.8, fontSize: { xs: 12, md: 13 } }}>
-          مسیر پیوستن به تیم‌های دیگر را دنبال کنید؛ همه درخواست‌های ارسالی شما، در یک جا.
-        </Typography>
-      </Box>
-
-      <RequestStats counts={counts} />
-
+      {/* My Projects already shows the title and stats; the counts live on the filter buttons. */}
       <RequestFilters
+        counts={counts}
         filter={filter}
         onFilterChange={setFilter}
         query={query}
@@ -267,7 +250,7 @@ export default function MyRequestsPanel({
           <SearchOffRoundedIcon sx={{ fontSize: 40, color: "text.secondary" }} />
           <Typography variant="h6">درخواستی پیدا نشد</Typography>
           <Typography color="text.secondary">
-            با این جستجو یا فیلتر، درخواستی وجود ندارد.
+            با این جست‌وجو یا فیلتر، درخواستی وجود ندارد.
           </Typography>
           <Button variant="outlined" onClick={clearFilters}>
             پاک کردن فیلترها
@@ -301,7 +284,7 @@ export default function MyRequestsPanel({
         <DialogActions>
           <Button onClick={() => setToWithdraw(null)}>نگه داشتن</Button>
           <Button color="error" onClick={confirmWithdraw}>
-            بله، پس بگیر
+            بله، پس می‌گیرم
           </Button>
         </DialogActions>
       </Dialog>

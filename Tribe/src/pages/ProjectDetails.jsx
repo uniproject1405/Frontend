@@ -165,7 +165,7 @@ function ProjectDetailsView({ projectId }) {
       <Card variant="outlined" sx={{ ...panel, mb: 3 }}>
         <Stack direction="row" spacing={1} sx={{ justifyContent: "space-between", alignItems: "center", mb: 2 }}>
           <CreatorRow creator={{ name: owner.name, role: "ایجادکننده‌ی پروژه" }} />
-          <StatusChip status={project.status} />
+          <StatusChip status={project.status} full={spotsLeft === 0} />
         </Stack>
         <Typography variant="h4" component="h1" sx={{ fontWeight: 800, color: NAVY, wordBreak: "break-word", lineHeight: 1.5 }}>
           {project.title}

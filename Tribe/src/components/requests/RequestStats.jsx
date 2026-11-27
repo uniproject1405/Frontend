@@ -4,7 +4,7 @@ import { fa } from "../../utils/fa";
 const CARDS = [
   { key: "total", label: "کل درخواست‌ها", accent: "#071739" },
   { key: "pending", label: "در انتظار بررسی", accent: "#D7A36B" },
-  { key: "accepted", label: "پذیرفته شده", accent: "#4FA67F" },
+  { key: "accepted", label: "پذیرفته‌شده", accent: "#4FA67F" },
   { key: "rejected", label: "رد شده", accent: "#D9857B" },
 ];
 

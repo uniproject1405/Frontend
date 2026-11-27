@@ -10,7 +10,7 @@ export const REQUEST_STATUS = {
     color: "warning",
   },
   accepted: {
-    label: "پذیرفته شده",
+    label: "پذیرفته‌شده",
     short: "پذیرفته شد",
     message: "درخواست شما پذیرفته شده است. برای شروع همکاری با صاحب پروژه هماهنگ کنید.",
     color: "success",
@@ -47,7 +47,7 @@ export function formatDate(iso) {
   }
 }
 
-/** برای جستجو: ی/ک عربی و فارسی یکسان */
+/** برای جست‌وجو: ی/ک عربی و فارسی یکسان */
 export function normalizeText(text) {
   return String(text || "")
     .replace(/ي/g, "ی")

@@ -5,7 +5,8 @@ import {
   DialogContentText, DialogTitle, Stack, Typography,
 } from "@mui/material";
 
-import { SkillChips } from "./projectParts";
+import ExploreProjectCard from "./ExploreProjectCard";
+import { formatDate } from "../utils/requestStatus";
 import { fa } from "../utils/fa";
 import { getJoinedProjects, getMyRequests, useMyStats, withdrawRequest } from "../services/membershipService";
 
@@ -73,7 +74,7 @@ function MembershipTabs({ tab, onToast }) {
             key={project.id}
             to={`/my-projects/${project.id}/requests`}
             title={project.title}
-            meta={`${fa(count)} نفر می‌خواهند عضو شوند`}
+            meta={`${fa(count)} نفر ${count === 1 ? "می‌خواهد عضو شود" : "می‌خواهند عضو شوند"}`}
             action={<Button variant="contained" sx={{ position: "relative", zIndex: 1 }} component={RouterLink} to={`/my-projects/${project.id}/requests`}>بررسی {fa(count)}</Button>}
           />
         ))}
@@ -86,29 +87,17 @@ function MembershipTabs({ tab, onToast }) {
 
   if (tab === "joined") {
     if (items.length === 0) return <Empty text="تیم‌هایی که عضو می‌شوید اینجا نمایش داده می‌شوند." />;
+    // Same card as Explore: a joined team looks the same everywhere, and opens its project page.
     return (
-      <Stack spacing={1.5}>
-        {items.map(({ project, owner, memberCount, joinedAt }) => {
-          const left = Math.max(project.capacity - memberCount, 0);
-          return (
-            <Row
-              key={project.id}
-              to={`/projects/${project.id}`}
-              title={project.title}
-              meta={`مالک: ${owner.name}${owner.headline ? ` · ${owner.headline}` : ""}`}
-              action={project.status !== "open" ? <Chip size="small" variant="outlined" label="بسته" /> : null}
-            >
-              {project.goal && (
-                <Typography variant="body2" sx={{ mt: 0.75, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{project.goal}</Typography>
-              )}
-              <SkillChips skills={(project.requiredSkills || []).slice(0, 4)} />
-              <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
-                {fa(memberCount)} عضو · {left === 0 ? "ظرفیت تکمیل" : `${fa(left)} جای خالی`} · عضویت از {new Date(joinedAt).toLocaleDateString("fa-IR", { month: "short", day: "numeric" })}
-              </Typography>
-            </Row>
-          );
-        })}
-      </Stack>
+      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)" }, gap: 2.5 }}>
+        {items.map(({ project, owner, memberCount, joinedAt }) => (
+          <ExploreProjectCard
+            key={project.id}
+            project={{ ...project, accepted: memberCount, creator: { name: owner.name, username: owner.username, role: owner.headline } }}
+            note={`عضو از ${formatDate(joinedAt)}`}
+          />
+        ))}
+      </Box>
     );
   }
 
@@ -133,7 +122,7 @@ function MembershipTabs({ tab, onToast }) {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setToWithdraw(null)}>نگه داشتن</Button>
-          <Button color="error" onClick={confirmWithdraw}>بله، پس بگیر</Button>
+          <Button color="error" onClick={confirmWithdraw}>بله، پس می‌گیرم</Button>
         </DialogActions>
       </Dialog>
     </>

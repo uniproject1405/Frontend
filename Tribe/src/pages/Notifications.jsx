@@ -55,7 +55,7 @@ function Notifications() {
         <Box>
           <Typography variant="h4" component="h1" sx={{ fontWeight: 800, color: "#071739" }}>اعلان‌ها</Typography>
           <Typography color="text.secondary">
-            {unread === 0 ? "اعلان تازه‌ای ندارید" : `${fa(unread)} خوانده‌نشده`} · {fa(items.length)} اعلان
+            {unread === 0 ? "اعلان تازه‌ای ندارید" : `${fa(unread)} خوانده‌نشده`}، {fa(items.length)} اعلان
           </Typography>
         </Box>
         <Button variant="outlined" disabled={unread === 0} onClick={markAllRead}>خواندن همه</Button>

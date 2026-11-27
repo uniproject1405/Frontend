@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 
 import { Link, useNavigate, useParams } from "react-router";
@@ -211,7 +211,7 @@ function EditProject() {
       <Button
         component={Link}
         to="/my-projects"
-        startIcon={<ArrowBackRoundedIcon />}
+        startIcon={<ArrowForwardRoundedIcon />}
         sx={{ mb: 2.5, borderRadius: "8px", fontWeight: 600 }}
       >
         بازگشت به پروژه‌های من

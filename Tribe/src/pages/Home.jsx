@@ -1,7 +1,7 @@
 import { Box, Button, Chip, Stack, Typography } from "@mui/material";
 import { Link } from "react-router";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
+import TravelExploreRoundedIcon from "@mui/icons-material/TravelExploreRounded";
 import DesignServicesOutlinedIcon from "@mui/icons-material/DesignServicesOutlined";
 import CodeRoundedIcon from "@mui/icons-material/CodeRounded";
 import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
@@ -12,6 +12,7 @@ import LatestProjects from "../components/LatestProjects";
 import ProjectCallout from "../components/ProjectCallout";
 import HowTribeWorks from "../components/HowTribeWorks";
 import heroNetworkImage from "../assets/tribe-home-hero-network.jpg";
+import { useAuth } from "../hooks/useAuth.js";
 
 const COLORS = {
   navy: "#071739",
@@ -44,14 +45,12 @@ const categories = [
 ];
 
 export default function Home() {
+  // Signed-in visitors get "create a project"; everyone else gets "log in / sign up".
+  const { isAuthenticated } = useAuth();
   return (
     <Box
       dir="rtl"
       sx={{
-        // Mabina's arrows already point the RTL way; skip the global flip from index.css.
-        "& [data-testid=ArrowBackRoundedIcon]": { transform: "none" },
-        direction: "rtl",
-        textAlign: "right",
         width: "100%",
         minWidth: 0,
         display: "flex",
@@ -74,25 +73,13 @@ export default function Home() {
       >
         {/* top badge */}
         <Chip
-          icon={
-            <AutoAwesomeRoundedIcon
-              sx={{
-                color: "#1E4C9A !important",
-                fontSize: 17,
-                mr: 0,
-                ml: 0.75,
-              }}
-            />
-          }
-          label="۴۲ پروژه در جست‌وجوی هم‌تیمی"
+          icon={<GroupsOutlinedIcon sx={{ color: "#1E4C9A !important", fontSize: 18 }} />}
+          label="۴۲ پروژه‌ی فعال به دنبال هم‌تیمی هستند"
           sx={{
             mb: 3,
-            ml: "auto",
-            mr: 0,
             display: "flex",
             width: "fit-content",
             height: 34,
-            direction: "rtl",
             bgcolor: COLORS.paleBlue,
             color: COLORS.navy,
             borderRadius: "999px",
@@ -114,15 +101,14 @@ export default function Home() {
         <Box
           sx={{
             display: "grid",
-            // RTL grid: Persian content on the RIGHT, visual on the LEFT.
-            direction: "rtl",
+            // RTL grid: the first area sits on the right, so text is right and the picture left.
             gridTemplateColumns: {
               xs: "minmax(0, 1fr)",
               md: "minmax(0, 1fr) minmax(0, 1fr)",
             },
             gridTemplateAreas: {
               xs: `"content" "visual"`,
-              md: `"visual content"`,
+              md: `"content visual"`,
             },
             gap: { xs: 4, md: 3, lg: 6 },
             alignItems: "center",
@@ -134,40 +120,34 @@ export default function Home() {
             dir="rtl"
             sx={{
               gridArea: "content",
-              direction: "rtl",
-              textAlign: "right",
               minWidth: 0,
               width: "100%",
               justifySelf: "stretch",
-              unicodeBidi: "plaintext",
               display: "flex",
               flexDirection: "column",
-              alignItems: "flex-end",
+              alignItems: "flex-start",
             }}
           >
             <Typography
               component="h1"
               dir="rtl"
               sx={{
-                direction: "rtl",
-                textAlign: "right",
                 m: 0,
                 color: COLORS.navy,
                 fontWeight: 800,
                 lineHeight: 1.32,
                 letterSpacing: 0,
                 fontSize: {
-                  xs: "34px",
-                  sm: "44px",
-                  md: "52px",
-                  lg: "56px",
+                  xs: "30px",
+                  sm: "42px",
+                  md: "46px",
+                  lg: "50px",
                 },
                 width: "100%",
                 maxWidth: "650px",
-                ml: "auto",
               }}
             >
-              هم‌تیمی‌های هم‌مسیرت را پیدا کن؛
+              هم‌تیمی‌های هم‌مسیرتان را پیدا کنید؛
               <Box component="span" sx={{ display: "block" }}>
                 با هم،{" "}
                 <Box
@@ -176,26 +156,22 @@ export default function Home() {
                 >
                   ایده‌های بزرگ
                 </Box>{" "}
-                بساز.
+                بسازید.
               </Box>
             </Typography>
 
             <Typography
               dir="rtl"
               sx={{
-                direction: "rtl",
-                textAlign: "right",
                 mt: 2.5,
                 width: "100%",
                 maxWidth: "610px",
-                ml: "auto",
                 color: COLORS.blue,
                 fontSize: { xs: "14px", sm: "15px", md: "16px" },
                 lineHeight: 2.15,
-                unicodeBidi: "plaintext",
               }}
             >
-              در ترایب، ایده‌ات را با افرادی همراه کن که مهارت و انگیزه‌ی
+              در Tribe، ایده‌تان را با افرادی همراه کنید که مهارت و انگیزه‌ی
               پیش‌بردنش را دارند؛ از اولین گفت‌وگو و تقسیم نقش‌ها تا ساختن
               نتیجه‌ای واقعی و ارزشمند.
             </Typography>
@@ -207,10 +183,9 @@ export default function Home() {
                 mt: 4,
                 alignItems: { xs: "stretch", sm: "center" },
                 justifyContent: "flex-start",
-                direction: "rtl",
-                alignSelf: "flex-end",
-                columnGap: 1.25,
-                rowGap: 1.25,
+                alignSelf: { xs: "stretch", sm: "flex-start" },
+                columnGap: 1.5,
+                rowGap: 1.5,
                 "& .MuiButton-endIcon": {
                   margin: 0,
                   marginInlineStart: "9px",
@@ -219,9 +194,9 @@ export default function Home() {
             >
               <Button
                 component={Link}
-                to="/create-project"
+                to={isAuthenticated ? "/create-project" : "/login"}
                 variant="contained"
-                endIcon={<ArrowBackRoundedIcon sx={{ color: "#071739" }} />}
+                endIcon={<ArrowBackRoundedIcon />}
                 sx={{
                   minHeight: 52,
                   px: 3.2,
@@ -237,7 +212,7 @@ export default function Home() {
                   },
                 }}
               >
-                 ورود / ثبت نام 
+                {isAuthenticated ? "ساخت پروژه" : "ورود / ثبت نام"}
               </Button>
 
               <Button
@@ -269,7 +244,7 @@ export default function Home() {
                 display: "flex",
                 flexWrap: "wrap",
                 alignItems: "center",
-                justifyContent: "flex-end",
+                justifyContent: "flex-start",
                 gap: { xs: 2, md: 3 },
               }}
             >
@@ -308,7 +283,7 @@ export default function Home() {
                 </Typography>
               </Box>
 
-              <Stack direction="row" spacing={{ xs: 2.5, sm: 3.5 }}>
+              <Stack direction="row" spacing={{ xs: 3.5, sm: 3.5 }}>
                 {stats.map((item) => (
                   <Box key={item.label}>
                     <Typography
@@ -342,12 +317,11 @@ export default function Home() {
           <Box
             sx={{
               gridArea: "visual",
-              direction: "rtl",
               minWidth: 0,
               width: "100%",
               justifySelf: "stretch",
               position: "relative",
-              minHeight: { xs: 300, sm: 360, md: 420, lg: 470 },
+              minHeight: { xs: 260, sm: 360, md: 420, lg: 470 },
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -404,7 +378,7 @@ export default function Home() {
               <Box
                 component="img"
                 src={heroNetworkImage}
-                alt="شبکه همکاری ترایب"
+                alt="شبکه همکاری Tribe"
                 sx={{
                   width: "100%",
                   height: "100%",
@@ -442,9 +416,12 @@ export default function Home() {
                   display: "grid",
                   placeItems: "center",
                   flexShrink: 0,
+                  position: "relative",
                 }}
               >
-                <AutoAwesomeRoundedIcon sx={{ fontSize: 19 }} />
+                <GroupsOutlinedIcon sx={{ fontSize: 20 }} />
+                {/* green "online" dot */}
+                <Box sx={{ position: "absolute", top: 5, insetInlineEnd: 5, width: 9, height: 9, borderRadius: "50%", bgcolor: "#12B76A", border: "2px solid #dfe8f0" }} />
               </Box>
               <Box>
                 <Typography
@@ -471,8 +448,9 @@ export default function Home() {
           </Box>
         </Box>
 
-        {/* animated category strip — matched to the reference layout */}
+        {/* animated category strip; left-to-right so the scroll animation lines up */}
         <Box
+          dir="ltr"
           sx={{
             mt: { xs: 6, md: 10 },
             overflow: "hidden",
@@ -512,7 +490,6 @@ export default function Home() {
                   alignItems: "center",
                   gap: 4,
                   pr: 4,
-                  direction: "rtl",
                 }}
               >
                 {categories.map((item) => (
@@ -565,28 +542,23 @@ export default function Home() {
           px: { xs: 1, sm: 1.5, md: 2 },
           pb: 0,
           boxSizing: "border-box",
-          direction: "rtl",
         }}
       >
         <Box
           dir="rtl"
           sx={{
             display: "flex",
-            direction: { xs: "rtl", sm: "ltr" },
             flexDirection: { xs: "column", sm: "row" },
             alignItems: { xs: "stretch", sm: "center" },
             justifyContent: "space-between",
             gap: 2,
             mb: { xs: 2, md: 2.5 },
-            textAlign: "right",
           }}
         >
-          <Box dir="rtl" sx={{ direction: "rtl", textAlign: { xs: "right", sm: "left" }, minWidth: 0 }}>
+          <Box dir="rtl" sx={{ minWidth: 0 }}>
             <Typography
               dir="rtl"
               sx={{
-                direction: "rtl",
-                textAlign: { xs: "right", sm: "left" },
                 color: "#1E4C9A",
                 fontSize: "0.75rem",
                 fontWeight: 800,
@@ -601,8 +573,6 @@ export default function Home() {
               component="h2"
               dir="rtl"
               sx={{
-                direction: "rtl",
-                textAlign: { xs: "right", sm: "left" },
                 color: "#111827",
                 fontSize: { xs: "26px", sm: "30px", md: "38px" },
                 lineHeight: 1.35,
@@ -622,7 +592,6 @@ export default function Home() {
             dir="rtl"
             endIcon={<ArrowBackRoundedIcon />}
             sx={{
-              direction: "rtl",
               alignSelf: { xs: "flex-start", sm: "center" },
               flexShrink: 0,
               color: "#173F91",
@@ -641,7 +610,6 @@ export default function Home() {
           dir="rtl"
           sx={{
             display: "grid",
-            direction: "ltr",
             gridTemplateColumns: {
               xs: "1fr",
               sm: "repeat(2, minmax(0, 1fr))",
@@ -673,7 +641,7 @@ export default function Home() {
               title: "پژوهش و برندینگ",
               description: "واقعیت را کشف کنید و به آن هویت بدهید؛ از مصاحبه و تحقیق تا ساخت و نام‌گذاری برند.",
               members: "۱۹۸ عضو",
-              Icon: AutoAwesomeRoundedIcon,
+              Icon: TravelExploreRoundedIcon,
             },
           ].map(({ title, description, members, Icon }) => (
             <Box
@@ -687,8 +655,6 @@ export default function Home() {
                 bgcolor: "#FFFFFF",
                 display: "flex",
                 flexDirection: "column",
-                direction: "rtl !important",
-                textAlign: "right !important",
                 alignItems: "stretch",
                 justifyContent: "flex-start",
                 '&, & *': { boxSizing: "border-box" },
@@ -710,8 +676,6 @@ export default function Home() {
                   display: "grid",
                   placeItems: "center",
                   mb: 2.2,
-                  marginRight: 0,
-                  marginLeft: "auto",
                 }}
               >
                 <Icon sx={{ fontSize: 27 }} />
@@ -726,11 +690,7 @@ export default function Home() {
                   mb: 1.2,
                   width: "100%",
                   display: "block",
-                  direction: "rtl !important",
-                  textAlign: "right !important",
                   alignSelf: "stretch",
-                  marginRight: 0,
-                  marginLeft: "auto",
                 }}
               >
                 {title}
@@ -744,11 +704,7 @@ export default function Home() {
                   flexGrow: 1,
                   width: "100%",
                   display: "block",
-                  direction: "rtl !important",
-                  textAlign: "right !important",
                   alignSelf: "stretch",
-                  marginRight: 0,
-                  marginLeft: "auto",
                   unicodeBidi: "isolate",
                 }}
               >
@@ -761,16 +717,12 @@ export default function Home() {
                   pt: 1.5,
                   borderTop: "1px solid #DBE5F0",
                   display: "flex",
-                  direction: "rtl !important",
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "flex-start",
-                  marginRight: 0,
-                  marginLeft: "auto",
                   gap: 1,
                   width: "100%",
                   color: "#607795",
-                  textAlign: "right",
                 }}
               >
                 <GroupsOutlinedIcon sx={{ fontSize: 19, color: "#8CA4C8" }} />
@@ -778,8 +730,6 @@ export default function Home() {
                   sx={{
                     fontSize: "13px",
                     fontWeight: 600,
-                    direction: "rtl !important",
-                    textAlign: "right !important",
                   }}
                 >
                   {members}

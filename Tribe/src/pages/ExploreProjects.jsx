@@ -12,7 +12,7 @@ const NAVY = '#071739';
 const STATUS_OPTIONS = [
   { value: '', label: 'همه وضعیت‌ها' },
   { value: 'open', label: 'در حال جذب عضو' },
-  { value: 'closed', label: 'جذب عضو تکمیل شده' },
+  { value: 'closed', label: 'جذب عضو بسته' },
 ];
 
 // Filters live in the URL (?search=&skill=&status=) so the back button and shared links work.
@@ -67,9 +67,9 @@ export default function ExploreProjects() {
 
   return (
     <>
-      <Box mb={3}>
-        <Typography variant="h4" component="h1" fontWeight={800} color={NAVY}>کاوش پروژه‌ها</Typography>
-        <Typography color="text.secondary" mt={0.5}>
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h4" component="h1" color={NAVY} sx={{ fontWeight: 800 }}>کاوش پروژه‌ها</Typography>
+        <Typography color="text.secondary" sx={{ mt: 0.5 }}>
           هدفی مشترک پیدا کنید، مهارت‌هایتان را به اشتراک بگذارید و چیزی ارزشمند بسازید.
         </Typography>
       </Box>
@@ -79,7 +79,7 @@ export default function ExploreProjects() {
           <TextField
             fullWidth
             size="small"
-            placeholder="جستجوی عنوان پروژه"
+            placeholder="جست‌وجوی عنوان پروژه"
             value={input}
             onChange={e => setInput(e.target.value)}
             slotProps={{
@@ -91,7 +91,7 @@ export default function ExploreProjects() {
             variant="contained"
             sx={{ bgcolor: '#E3C39D', color: NAVY, '&:hover': { bgcolor: '#D6B088' }, minWidth: 120, flexShrink: 0 }}
           >
-            جستجو
+            جست‌وجو
           </Button>
         </Stack>
 
@@ -125,7 +125,7 @@ export default function ExploreProjects() {
 
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-      <Box mb={2} sx={{ minHeight: 24 }}>
+      <Box sx={{ mb: 2, minHeight: 24 }}>
         {!loading && !error && (
           <Typography color="text.secondary">{fa(projects.length)} پروژه برای کشف</Typography>
         )}

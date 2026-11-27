@@ -18,7 +18,7 @@ import {
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import ForumOutlinedIcon from "@mui/icons-material/ForumOutlined";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import DoneIcon from "@mui/icons-material/Done";
 import FolderOpenOutlinedIcon from "@mui/icons-material/FolderOpenOutlined";
 
@@ -30,7 +30,7 @@ import {
   startOrGetConversation,
   formatChatTime,
 } from "../services/chatService";
-import { fa } from "../utils/fa";
+import { fa, faCount } from "../utils/fa";
 
 const NAVY = "#071739";
 const NAVY_HOVER = "#0E2452";
@@ -114,12 +114,17 @@ export default function Chat() {
     };
   }, [activeConvId]);
 
-  // Scroll to bottom when messages update
+  // Newest message stays in view: jump straight to it when a chat opens,
+  // glide only when a new message arrives in the chat already open.
+  const lastScrolledConv = useRef(null);
   useEffect(() => {
     // Scroll only the message list, never the whole page.
     const list = messagesEndRef.current?.parentElement;
-    if (list) list.scrollTo({ top: list.scrollHeight, behavior: "smooth" });
-  }, [messages]);
+    if (!list || !messages.length) return;
+    const opened = lastScrolledConv.current !== activeConvId;
+    lastScrolledConv.current = activeConvId;
+    list.scrollTo({ top: list.scrollHeight, behavior: opened ? "auto" : "smooth" });
+  }, [messages, activeConvId]);
 
   const activeConversation = conversations.find((c) => String(c.id) === String(activeConvId));
 
@@ -129,7 +134,9 @@ export default function Chat() {
     const projectTitle = c.project?.title || "";
     const query = searchQuery.toLowerCase();
     return name.toLowerCase().includes(query) || projectTitle.toLowerCase().includes(query);
-  });
+  })
+    // Most recent conversation first, like any messaging app.
+    .sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0));
 
   const handleSend = async (e) => {
     e?.preventDefault();
@@ -152,8 +159,11 @@ export default function Chat() {
   };
 
   const handleSelectConv = (id) => {
-    setSelectedConvId(id);
-    setLoadingMessages(true);
+    // Re-clicking the open chat must not show "loading" (the load effect would not run again).
+    if (String(id) !== String(activeConvId)) {
+      setSelectedConvId(id);
+      setLoadingMessages(true);
+    }
     if (isMobile) {
       setShowMobileList(false);
     }
@@ -169,16 +179,23 @@ export default function Chat() {
           </Typography>
           <Typography color="text.secondary" sx={{ mt: 0.5, fontSize: 14 }}>
             ارتباط مستقیم و تبادل نظر با اعضای تیم و مدیران پروژه‌ها
-            {totalUnread > 0 && ` · ${fa(totalUnread)} پیام خوانده‌نشده`}
           </Typography>
+          {/* Own line: a "·" before Persian digits reads like the digit zero (۰). */}
+          {totalUnread > 0 && (
+            <Typography sx={{ mt: 0.5, fontSize: 14, fontWeight: 600, color: NAVY }}>
+              {fa(totalUnread)} پیام خوانده‌نشده
+            </Typography>
+          )}
         </Box>
       </Stack>
 
       {/* Main Chat Card */}
       <Card
         sx={{
-          height: { xs: "calc(100vh - 200px)", md: 620 },
-          minHeight: 520,
+          // On a phone the list alone needs no fixed height (it left a big empty box).
+          // Phone: one full-height card in both views (list and thread), no footer below it.
+          height: { xs: "calc(100dvh - 190px)", md: 620 },
+          minHeight: { xs: 420, md: 520 },
           display: "flex",
           overflow: "hidden",
           border: `1px solid ${BORDER}`,
@@ -260,8 +277,8 @@ export default function Chat() {
                         },
                       }}
                     >
-                      <Stack direction="row" spacing={1.5} alignItems="flex-start">
-                        <Badge badgeContent={unread} color="error" overlap="circular">
+                      <Stack direction="row" spacing={1.5} sx={{ alignItems: "flex-start" }}>
+                        <Badge badgeContent={faCount(unread)} invisible={!unread} color="error" overlap="circular">
                           <Avatar
                             sx={{
                               width: 44,
@@ -277,7 +294,7 @@ export default function Chat() {
                         </Badge>
 
                         <Box sx={{ flex: 1, minWidth: 0 }}>
-                          <Stack direction="row" justifyContent="space-between" alignItems="baseline" sx={{ mb: 0.4 }}>
+                          <Stack direction="row" spacing={1} sx={{ justifyContent: "space-between", alignItems: "baseline", mb: 0.4 }}>
                             <Typography sx={{ fontWeight: isSelected || unread > 0 ? 700 : 600, fontSize: 14.5, color: NAVY }} noWrap>
                               {name}
                             </Typography>
@@ -287,7 +304,7 @@ export default function Chat() {
                           </Stack>
 
                           {conv.project && (
-                            <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 0.5 }}>
+                            <Stack direction="row" spacing={0.5} sx={{ alignItems: "center", mb: 0.5 }}>
                               <FolderOpenOutlinedIcon sx={{ fontSize: 13, color: "#786045" }} />
                               <Typography sx={{ fontSize: 11.5, color: "#786045", fontWeight: 500 }} noWrap>
                                 {conv.project.title}
@@ -320,7 +337,7 @@ export default function Chat() {
 
         {/* Active Chat Conversation Area */}
         {(!isMobile || !showMobileList) && (
-          <Box sx={{ flex: 1, display: "flex", flexDirection: "column", bgcolor: "#F5F8FA" }}>
+          <Box sx={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", bgcolor: "#F5F8FA" }}>
             {activeConversation ? (
               <>
                 {/* Chat Header */}
@@ -330,14 +347,16 @@ export default function Chat() {
                     bgcolor: "#FFFFFF",
                     borderBottom: `1px solid ${BORDER}`,
                     display: "flex",
+                    flexWrap: "wrap",
+                    gap: 1,
                     alignItems: "center",
                     justifyContent: "space-between",
                   }}
                 >
-                  <Stack direction="row" spacing={1.5} alignItems="center">
+                  <Stack direction="row" spacing={1.5} sx={{ alignItems: "center", minWidth: 0 }}>
                     {isMobile && (
                       <IconButton onClick={() => setShowMobileList(true)} sx={{ color: NAVY, mr: 0.5 }} size="small">
-                        <ArrowBackIcon />
+                        <ArrowForwardIcon />
                       </IconButton>
                     )}
 
@@ -354,12 +373,12 @@ export default function Chat() {
                       {(activeConversation.other_participant?.display_name || "ت").trim()[0]}
                     </Avatar>
 
-                    <Box>
-                      <Typography sx={{ fontWeight: 700, fontSize: 15.5, color: NAVY }}>
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography noWrap sx={{ fontWeight: 700, fontSize: 15.5, color: NAVY }}>
                         {activeConversation.other_participant?.display_name || activeConversation.other_participant?.username}
                       </Typography>
-                      <Typography variant="caption" sx={{ color: MUTED }}>
-                        @{activeConversation.other_participant?.username || "همکار"}
+                      <Typography variant="caption" sx={{ color: MUTED, display: "block" }}>
+                        <bdi dir="ltr">@{activeConversation.other_participant?.username || "همکار"}</bdi>
                       </Typography>
                     </Box>
                   </Stack>
@@ -376,6 +395,7 @@ export default function Chat() {
                         color: "#786045",
                         fontWeight: 600,
                         fontSize: 12,
+                        maxWidth: "100%",
                         cursor: "pointer",
                         "&:hover": { bgcolor: "rgba(227, 195, 157, 0.5)" },
                       }}

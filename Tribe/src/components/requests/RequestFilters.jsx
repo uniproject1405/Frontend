@@ -1,7 +1,9 @@
 import { Box, Button, InputBase } from "@mui/material";
 import { FILTERS } from "../../utils/requestStatus";
+import { fa } from "../../utils/fa";
 
-export default function RequestFilters({ filter, onFilterChange, query, onQueryChange, onSearch }) {
+// Each filter shows its own count, so the tab needs no separate stat boxes.
+export default function RequestFilters({ filter, onFilterChange, query, onQueryChange, onSearch, counts }) {
   return (
     <Box
       sx={{
@@ -12,7 +14,7 @@ export default function RequestFilters({ filter, onFilterChange, query, onQueryC
         mb: { xs: 2, md: 2.6 },
       }}
     >
-      {/* جستجو — اول در DOM → سمت راست */}
+      {/* جست‌وجو — اول در DOM → سمت راست */}
       <Box
         component="form"
         role="search"
@@ -39,8 +41,8 @@ export default function RequestFilters({ filter, onFilterChange, query, onQueryC
           fullWidth
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
-          placeholder="جستجو در نام پروژه‌ها"
-          slotProps={{ input: { "aria-label": "جستجو در نام پروژه‌ها" } }}
+          placeholder="جست‌وجو در نام پروژه‌ها"
+          slotProps={{ input: { "aria-label": "جست‌وجو در نام پروژه‌ها" } }}
           sx={{ px: 1.4, fontSize: { xs: 12, md: 12.5 }, height: { xs: 32, md: 34 } }}
         />
         <Button
@@ -58,11 +60,11 @@ export default function RequestFilters({ filter, onFilterChange, query, onQueryC
             "&:hover": { bgcolor: "#142B52", boxShadow: "none" },
           }}
         >
-          جستجو
+          جست‌وجو
         </Button>
       </Box>
 
-      {/* فیلتر وضعیت — بعد از جستجو؛ «همه» اولین و راست‌ترین، بقیه به سمت چپ */}
+      {/* فیلتر وضعیت — بعد از جست‌وجو؛ «همه» اولین و راست‌ترین، بقیه به سمت چپ */}
       <Box
         role="group"
         aria-label="فیلتر بر اساس وضعیت"
@@ -79,6 +81,7 @@ export default function RequestFilters({ filter, onFilterChange, query, onQueryC
               onClick={() => onFilterChange(value)}
               sx={{
                 minWidth: 0,
+                gap: 0.8,
                 minHeight: { xs: 38, md: 40 },
                 flex: { xs: "1 1 auto", md: "0 0 auto" },
                 px: 2.2,
@@ -97,6 +100,11 @@ export default function RequestFilters({ filter, onFilterChange, query, onQueryC
               }}
             >
               {label}
+              {counts && (
+                <Box component="span" sx={{ opacity: 0.7, fontWeight: 700 }}>
+                  {fa(counts[value === "all" ? "total" : value] ?? 0)}
+                </Box>
+              )}
             </Button>
           );
         })}
