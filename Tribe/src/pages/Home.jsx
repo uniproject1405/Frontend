@@ -12,6 +12,7 @@ import LatestProjects from "../components/LatestProjects";
 import ProjectCallout from "../components/ProjectCallout";
 import HowTribeWorks from "../components/HowTribeWorks";
 import heroNetworkImage from "../assets/tribe-home-hero-network.jpg";
+import { useAuth } from "../hooks/useAuth.js";
 
 const COLORS = {
   navy: "#071739",
@@ -44,6 +45,8 @@ const categories = [
 ];
 
 export default function Home() {
+  // Signed-in visitors get "create a project"; everyone else gets "log in / sign up".
+  const { isAuthenticated } = useAuth();
   return (
     <Box
       dir="rtl"
@@ -191,7 +194,7 @@ export default function Home() {
             >
               <Button
                 component={Link}
-                to="/create-project"
+                to={isAuthenticated ? "/create-project" : "/login"}
                 variant="contained"
                 endIcon={<ArrowBackRoundedIcon />}
                 sx={{
@@ -209,7 +212,7 @@ export default function Home() {
                   },
                 }}
               >
-                 ورود / ثبت نام 
+                {isAuthenticated ? "ساخت پروژه" : "ورود / ثبت نام"}
               </Button>
 
               <Button

@@ -192,21 +192,7 @@ export default function MyRequestsPanel({
 
   return (
     <Box>
-      <Box sx={{ mb: { xs: 2.5, md: 3.5 }, textAlign: "start" }}>
-        <Typography sx={{ color: "#718198", fontSize: { xs: 11, md: 12 }, mb: 0.7 }}>
-          فضای همکاری شما
-        </Typography>
-        <Typography
-          variant="h5"
-          sx={{ fontWeight: 800, color: "#071739", mb: 0.45, fontSize: { xs: 22, sm: 26, md: 30 } }}
-        >
-          درخواست‌های همکاری من
-        </Typography>
-        <Typography sx={{ color: "#637791", lineHeight: 1.8, fontSize: { xs: 12, md: 13 } }}>
-          مسیر پیوستن به تیم‌های دیگر را دنبال کنید؛ همه درخواست‌های ارسالی شما، در یک جا.
-        </Typography>
-      </Box>
-
+      {/* My Projects already shows the page title; this tab starts at its stats. */}
       <RequestStats counts={counts} />
 
       <RequestFilters
