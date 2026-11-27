@@ -7,7 +7,7 @@ export const SEED_VERSION = "8";
 const HOUR = 3600 * 1000;
 const ago = (hours) => new Date(Date.now() - hours * HOUR).toISOString();
 
-const person = (id, name, headline, bio, skills) => ({ id: `user-${id}`, name, headline, bio, skills });
+const person = (id, name, headline, bio, skills) => ({ id: `user-${id}`, username: id, name, headline, bio, skills });
 
 const people = {
   sara: person("sara", "سارا م.", "مهندس یادگیری ماشین", "پایان‌نامه‌ام درباره‌ی تکرار فاصله‌دار را به یک پروژه‌ی جانبی تبدیل کردم که حالا کاربر واقعی دارد. هدف‌های کوچک هفتگی، بازبینی کد صادقانه و هم‌تیمی‌هایی را دوست دارم که زود سؤال می‌پرسند.", ["Python", "PyTorch", "React"]),

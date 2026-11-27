@@ -33,13 +33,18 @@ export function SkillChips({ skills = [], max }) {
 const initials = name => (name || '').split(' ').map(w => w[0]).join('').slice(0, 2);
 
 export function CreatorRow({ creator }) {
-  const { name = 'نامشخص', role = 'ایجادکننده‌ی پروژه' } = creator || {};
+  const { name = 'نامشخص', username, role = 'ایجادکننده‌ی پروژه' } = creator || {};
   return (
     <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center', minWidth: 0 }}>
       <Avatar sx={{ width: 36, height: 36, fontSize: 14, bgcolor: '#CDD5DB', color: NAVY }}>{initials(name)}</Avatar>
       <Box sx={{ minWidth: 0 }}>
         <Typography noWrap sx={{ fontWeight: 600, fontSize: 14 }}>{name}</Typography>
-        <Typography variant="caption" color="text.secondary">{role}</Typography>
+        {/* Azin: show the owner's @handle when they have one */}
+        {username ? (
+          <Typography variant="caption" color="text.secondary" dir="ltr" sx={{ display: 'block', textAlign: 'right' }}>@{username}</Typography>
+        ) : (
+          <Typography variant="caption" color="text.secondary">{role}</Typography>
+        )}
       </Box>
     </Stack>
   );

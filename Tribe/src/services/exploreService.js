@@ -13,7 +13,7 @@ async function loadProjects() {
     openRoles: [],
     ...p,
     accepted: requests.filter(r => String(r.projectId) === String(p.id) && r.status === 'accepted').length,
-    creator: { name: getOwner(p.id).name, role: 'ایجادکننده‌ی پروژه' },
+    creator: { name: getOwner(p.id).name, username: getOwner(p.id).username, role: 'ایجادکننده‌ی پروژه' },
   }));
 }
 
