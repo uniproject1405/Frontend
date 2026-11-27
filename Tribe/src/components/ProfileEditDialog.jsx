@@ -3,7 +3,7 @@ import {
   Alert, Autocomplete, Avatar, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle,
   FormControlLabel, Stack, Switch, TextField, Typography,
 } from '@mui/material';
-import { isTelegram, isUrl } from '../utils/links';
+import { isUrl } from '../utils/links';
 import { fa } from '../utils/fa';
 
 const NAVY = '#071739';
@@ -13,7 +13,8 @@ const initials = (name = '') => name.trim().split(/\s+/).map(w => w[0]).join('')
 
 const toForm = p => ({
   ...p,
-  links: { ...p.links },
+  username: p.username || '',
+  links: { email: '', ...p.links },
   openToCollab: { ...p.openToCollab },
   availableToHelp: { ...p.availableToHelp },
   helpTopics: p.helpTopics.join('\n'),
@@ -48,7 +49,8 @@ export default function ProfileEditDialog({ open, profile, onClose, onSave }) {
     if (!form.name.trim()) next.name = 'نام را وارد کنید.';
     if (!isUrl(form.links.github.trim())) next.github = 'آدرس معتبر نیست (با https:// شروع شود).';
     if (!isUrl(form.links.linkedin.trim())) next.linkedin = 'آدرس معتبر نیست (با https:// شروع شود).';
-    if (!isTelegram(form.links.telegram.trim())) next.telegram = 'نام کاربری (مثل @name) یا لینک t.me وارد کنید.';
+    const email = (form.links.email || '').trim();
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) next.email = 'ایمیل معتبر نیست.';
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -109,6 +111,20 @@ export default function ProfileEditDialog({ open, profile, onClose, onSave }) {
               onChange={e => set('name', e.target.value)} slotProps={{ htmlInput: { maxLength: 60 } }}
             />
             <TextField
+              label="نام کاربری"
+              value={form.username}
+              onChange={e => set('username', e.target.value)}
+              placeholder="مثلاً: niusha_dev"
+              helperText="نام کاربری شما در Tribe (حداکثر ۲۰ کاراکتر)"
+              slotProps={{
+                htmlInput: {
+                  dir: 'ltr',
+                  style: { textAlign: 'left' },
+                  maxLength: 20,
+                },
+              }}
+            />
+            <TextField
               label="عنوان کوتاه" value={form.headline} onChange={e => set('headline', e.target.value)}
               helperText="مثلاً: توسعه‌دهنده‌ی فول‌استک · در حال ساخت وبی دسترس‌پذیرتر"
               slotProps={{ htmlInput: { maxLength: 100 } }}
@@ -149,8 +165,12 @@ export default function ProfileEditDialog({ open, profile, onClose, onSave }) {
                   slotProps={ltrInput}
                 />
                 <TextField
-                  label="تلگرام" placeholder="@username" value={form.links.telegram}
-                  onChange={e => setIn('links', 'telegram', e.target.value)} error={!!errors.telegram} helperText={errors.telegram}
+                  label="ایمیل"
+                  placeholder="example@gmail.com"
+                  value={form.links.email}
+                  onChange={e => setIn('links', 'email', e.target.value)}
+                  error={!!errors.email}
+                  helperText={errors.email}
                   slotProps={ltrInput}
                 />
               </Stack>
