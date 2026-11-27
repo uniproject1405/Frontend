@@ -1,59 +1,66 @@
+/* Tribe global styles — RTL-first */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: 'Vazirmatn', system-ui, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 15px/1.5 var(--sans);
-  letter-spacing: 0;
-  color-scheme: light;
-  color: var(--text);
-  background: var(--bg);
+  font-family: "Vazirmatn", "Segoe UI", Arial, sans-serif;
+  color: #071739;
+  background: #F3F7FC;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
 
+html {
+  min-width: 320px;
+  min-height: 100%;
+  direction: rtl;
 }
 
 body {
+  min-width: 320px;
+  min-height: 100vh;
   margin: 0;
+  direction: rtl;
+  text-align: right;
+  font-family: "Vazirmatn", "Segoe UI", Arial, sans-serif;
+  background: #F3F7FC;
+  color: #071739;
 }
 
-p {
-  margin: 0;
-}
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
-}
 #root {
   width: 100%;
-  min-height: 100svh;
-  text-align: start;
+  min-height: 100vh;
+  margin: 0;
+  direction: rtl;
+  text-align: right;
+  box-sizing: border-box;
 }
+
+/* Predictable sizing across all sections and responsive layouts. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Keep media from overflowing their section containers. */
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+/* Form controls should inherit Tribe typography and page direction. */
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+
+/* Avoid Vite starter styles overriding MUI Typography and page sections. */
+
 /* RTL: directional icons (back arrow, send) must point the reading way */
 [data-testid="ArrowBackIcon"],
 [data-testid="ArrowBackRoundedIcon"],

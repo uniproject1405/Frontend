@@ -10,7 +10,7 @@ import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
-import { createProject } from "../services/mockProjectService";
+import { createProject } from "../services/projectService";
 import { validateProject, validateProjectStep } from "../utils/projectValidation";
 import { fa } from "../utils/fa";
 

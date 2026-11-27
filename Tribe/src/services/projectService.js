@@ -1,53 +1,16 @@
+// Single service boundary used by pages/components.
+// Default: local mock. Set VITE_USE_PROJECTS_API=true only when backend is ready.
+import * as mock from "./mockProjectService";
+import * as api from "./apiProjectService";
 
-const PROJECTS_API_URL = import.meta.env.VITE_PROJECTS_API_URL;
+const useApi = import.meta.env.VITE_USE_PROJECTS_API === "true";
+const adapter = useApi ? api : mock;
 
-function getProjectsApiUrl() {
-  if (!PROJECTS_API_URL) {
-    throw new Error(
-      "Projects API is not configured yet."
-    );
-  }
-
-  return PROJECTS_API_URL;
-}
-
-async function readResponse(response) {
-  if (!response.ok) {
-    throw new Error(
-      `Project request failed with status ${response.status}.`
-    );
-  }
-
-  if (response.status === 204) {
-    return null;
-  }
-
-  return response.json();
-}
-
-export async function getMyProjects({ signal } = {}) {
-  const url = getProjectsApiUrl();
-
-  const response = await fetch(url, {
-    method: "GET",
-    credentials: "include",
-    signal,
-  });
-
-  return readResponse(response);
-}
-
-export async function createProject(projectData) {
-  const url = getProjectsApiUrl();
-
-  const response = await fetch(url, {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(projectData),
-  });
-
-  return readResponse(response);
-}
+export const getMyProjects = (...args) => adapter.getMyProjects(...args);
+export const createProject = (...args) => adapter.createProject(...args);
+export const getProjectById = (...args) => adapter.getProjectById(...args);
+export const updateProject = (...args) => adapter.updateProject(...args);
+export const closeProject = (...args) => adapter.closeProject(...args);
+export const getProjectRequests = (...args) => adapter.getProjectRequests(...args);
+export const updateRequestStatus = (...args) => adapter.updateRequestStatus(...args);
+export const resetMockData = (...args) => mock.resetMockData(...args);
