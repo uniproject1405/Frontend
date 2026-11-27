@@ -17,7 +17,7 @@ const TYPES = {
 export default function ExploreProjectCard({ project }) {
   const { id, title, type, description = '', requiredSkills = [], capacity = 0, accepted = 0, openRoles = [], status, creator } = project;
   const available = Math.max(capacity - accepted, 0);
-  const { label: typeLabel, Icon } = TYPES[type] || TYPES.development;
+  const typeInfo = TYPES[type];
 
   return (
     <Card
@@ -31,13 +31,16 @@ export default function ExploreProjectCard({ project }) {
       >
         <Stack direction="row" spacing={1} sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <CreatorRow creator={creator} />
-          <StatusChip status={status} />
+          <StatusChip status={status} full={available === 0} />
         </Stack>
 
-        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', color: 'text.secondary', mb: 1 }}>
-          <Icon fontSize="small" />
-          <Typography variant="overline" sx={{ letterSpacing: 0, fontWeight: 600 }}>{typeLabel}</Typography>
-        </Stack>
+        {/* Only a project that states its type shows it; no guessed default. */}
+        {typeInfo && (
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center', color: 'text.secondary', mb: 1 }}>
+            <typeInfo.Icon fontSize="small" />
+            <Typography variant="overline" sx={{ letterSpacing: 0, fontWeight: 600 }}>{typeInfo.label}</Typography>
+          </Stack>
+        )}
 
         <Typography variant="h6" sx={{ fontWeight: 700, color: NAVY, lineHeight: 1.5, mb: 1 }}>
           {title}
@@ -54,10 +57,13 @@ export default function ExploreProjectCard({ project }) {
         <SkillChips skills={requiredSkills} />
 
         <Box sx={{ mt: 'auto', pt: 2 }}>
-          <CapacityMeter accepted={accepted} capacity={capacity} sx={{ mb: 1.5 }} />
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {available && openRoles.length ? openRoles.join('، ') : available ? 'جایگاه خالی دارد' : 'تیم تکمیل است؛ جایگاه خالی وجود ندارد'}
-          </Typography>
+          <CapacityMeter accepted={accepted} capacity={capacity} sx={{ mb: 2 }} />
+          {/* The meter already shows free seats; only add the open roles when there are any. */}
+          {available > 0 && openRoles.length > 0 && (
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              {openRoles.join('، ')}
+            </Typography>
+          )}
           {/* span, not button: the whole card is already the link */}
           <Button
             component="span"

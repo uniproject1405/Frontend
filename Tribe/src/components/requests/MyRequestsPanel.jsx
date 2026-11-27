@@ -267,7 +267,7 @@ export default function MyRequestsPanel({
           <SearchOffRoundedIcon sx={{ fontSize: 40, color: "text.secondary" }} />
           <Typography variant="h6">درخواستی پیدا نشد</Typography>
           <Typography color="text.secondary">
-            با این جستجو یا فیلتر، درخواستی وجود ندارد.
+            با این جست‌وجو یا فیلتر، درخواستی وجود ندارد.
           </Typography>
           <Button variant="outlined" onClick={clearFilters}>
             پاک کردن فیلترها
@@ -301,7 +301,7 @@ export default function MyRequestsPanel({
         <DialogActions>
           <Button onClick={() => setToWithdraw(null)}>نگه داشتن</Button>
           <Button color="error" onClick={confirmWithdraw}>
-            بله، پس بگیر
+            بله، پس می‌گیرم
           </Button>
         </DialogActions>
       </Dialog>

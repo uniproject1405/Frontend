@@ -10,13 +10,13 @@ export default function JoinRequestCard({ request, busy, canAccept, onDecide }) 
 
   return (
     <Box component="article" sx={{ bgcolor: '#fff', border: '1px solid #E3E8EF', borderRadius: 3, p: 3 }}>
-      <Typography variant="h6" fontWeight={700} color={NAVY} lineHeight={1.5}>{name}</Typography>
-      <Typography variant="body2" color="text.secondary" mt={0.25}>
+      <Typography variant="h6" color={NAVY} sx={{ fontWeight: 700, lineHeight: 1.5 }}>{name}</Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25 }}>
         {role} · {timeAgo(appliedAt)} درخواست داد
       </Typography>
 
       {skills.length > 0 && (
-        <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" mt={1.75}>
+        <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap", mt: 1.75 }}>
           {skills.map(s => (
             <Box key={s} component="span" sx={{ px: 1.5, py: 0.5, borderRadius: 1.5, fontSize: 13, bgcolor: '#F0F3F8', color: '#4B6382' }}>
               {s}
@@ -25,9 +25,9 @@ export default function JoinRequestCard({ request, busy, canAccept, onDecide }) 
         </Stack>
       )}
 
-      <Typography color="text.secondary" lineHeight={2} mt={2} sx={{ whiteSpace: 'pre-line' }}>{message}</Typography>
+      <Typography color="text.secondary" sx={{ lineHeight: 2, mt: 2, whiteSpace: 'pre-line' }}>{message}</Typography>
 
-      <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" mt={2.5} minHeight={40}>
+      <Stack direction="row" spacing={1.5} sx={{ alignItems: "center", justifyContent: "flex-end", mt: 2.5, minHeight: 40 }}>
         {status === 'pending' ? (
           <>
             {!canAccept && (
@@ -53,7 +53,7 @@ export default function JoinRequestCard({ request, busy, canAccept, onDecide }) 
             </Button>
           </>
         ) : (
-          <Stack direction="row" spacing={0.75} alignItems="center" sx={{ color: NAVY, fontWeight: 700, fontSize: 14 }}>
+          <Stack direction="row" spacing={0.75} sx={{ alignItems: "center", color: NAVY, fontWeight: 700, fontSize: 14 }}>
             {status === 'accepted' && <CheckIcon sx={{ fontSize: 18 }} />}
             <span>{status === 'accepted' ? 'پذیرفته شد' : 'رد شد'}</span>
           </Stack>

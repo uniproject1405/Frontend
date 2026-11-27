@@ -323,8 +323,9 @@ export function formatChatTime(iso) {
   const now = new Date();
   const diffHours = (now - d) / (1000 * 60 * 60);
 
-  const hours = fa(String(d.getHours()).padStart(2, "0"));
-  const minutes = fa(String(d.getMinutes()).padStart(2, "0"));
+  // Pad after converting: fa() goes through Number(), which would drop a "0" pad.
+  const hours = fa(d.getHours()).padStart(2, "۰");
+  const minutes = fa(d.getMinutes()).padStart(2, "۰");
   const timeStr = `${hours}:${minutes}`;
 
   if (diffHours < 24 && d.getDate() === now.getDate()) {

@@ -1,11 +1,10 @@
 import { NavLink } from "react-router";
-import { Box, Chip, Container, Stack } from "@mui/material";
+import { Box, Container } from "@mui/material";
 
 import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
 import { useNotifications } from "../services/notificationService";
 import { useChatList } from "../services/chatService";
-import { useMyStats } from "../services/membershipService";
 import { fa } from "../utils/fa";
 
 const NAVY = "#071739";
@@ -21,16 +20,8 @@ const TABS = [
 // Signed-in shell: the same header + footer as the public pages, plus a light sub-nav.
 // (Replaces the old dark sidebar so the whole site looks like one app.)
 function DashboardLayout({ children }) {
-  const stats = useMyStats();
   const { unread } = useNotifications();
   const { totalUnread } = useChatList();
-
-
-  const statChips = [
-    ["درخواست برای بررسی", stats.toReview, "/my-projects?tab=review", stats.toReview > 0],
-    ["در انتظار پاسخ", stats.waiting, "/my-projects?tab=requests"],
-    ["تیم‌های عضو شده", stats.joined, "/my-projects?tab=joined"],
-  ];
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#F4F6F8", display: "flex", flexDirection: "column" }}>
@@ -70,19 +61,6 @@ function DashboardLayout({ children }) {
       </Box>
 
       <Container maxWidth="lg" sx={{ py: 4, flex: 1 }}>
-        <Stack direction="row" useFlexGap spacing={1} sx={{ flexWrap: "wrap", mb: 3 }}>
-          {statChips.map(([label, value, href, highlight]) => (
-            <Chip
-              key={label}
-              component={NavLink}
-              to={href}
-              clickable
-              label={`${label}: ${fa(value)}`}
-              variant="outlined"
-              sx={{ bgcolor: highlight ? "#E3C39D" : "#fff", color: NAVY, borderColor: highlight ? "#E3C39D" : "#E3E8EF", fontWeight: highlight ? 700 : 500 }}
-            />
-          ))}
-        </Stack>
         {children}
       </Container>
 

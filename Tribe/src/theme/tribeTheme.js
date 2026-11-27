@@ -66,6 +66,9 @@ const tribeTheme = createTheme({
   },
 
   components: {
+    // Flex gap is direction-neutral; margin-based spacing lands on the wrong side
+    // when a Stack sits inside an LTR box (the RTL plugin flips the margins).
+    MuiStack: { defaultProps: { useFlexGap: true } },
     MuiButton: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -78,6 +81,9 @@ const tribeTheme = createTheme({
             boxShadow: "none",
           },
         }),
+        // Logical margins follow the text direction, so the icon never glues to the label.
+        startIcon: { marginLeft: 0, marginRight: 0, marginInlineStart: -4, marginInlineEnd: 8 },
+        endIcon: { marginLeft: 0, marginRight: 0, marginInlineStart: 8, marginInlineEnd: -4 },
       },
     },
 

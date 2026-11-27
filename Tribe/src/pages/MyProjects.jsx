@@ -410,11 +410,12 @@ function MyProjects() {
         onChange={(_, value) => setSearchParams(value === "created" ? {} : { tab: value }, { replace: true })}
         variant="scrollable"
         scrollButtons="auto"
-        sx={{ mb: 3, borderBottom: 1, borderColor: "divider" }}
+        allowScrollButtonsMobile
+        sx={{ mb: 3, borderBottom: 1, borderColor: "divider", "& .MuiTab-root": { minWidth: 0, px: { xs: 1.5, sm: 2 } } }}
       >
         <Tab value="created" label="ساخته‌شده" />
         <Tab value="review" label="برای بررسی" />
-        <Tab value="joined" label="عضو شده" />
+        <Tab value="joined" label="عضوشده" />
         <Tab value="requests" label="درخواست‌های ارسالی" />
       </Tabs>
 

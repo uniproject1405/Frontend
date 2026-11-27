@@ -12,7 +12,7 @@ export default function RequestFilters({ filter, onFilterChange, query, onQueryC
         mb: { xs: 2, md: 2.6 },
       }}
     >
-      {/* جستجو — اول در DOM → سمت راست */}
+      {/* جست‌وجو — اول در DOM → سمت راست */}
       <Box
         component="form"
         role="search"
@@ -39,8 +39,8 @@ export default function RequestFilters({ filter, onFilterChange, query, onQueryC
           fullWidth
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
-          placeholder="جستجو در نام پروژه‌ها"
-          slotProps={{ input: { "aria-label": "جستجو در نام پروژه‌ها" } }}
+          placeholder="جست‌وجو در نام پروژه‌ها"
+          slotProps={{ input: { "aria-label": "جست‌وجو در نام پروژه‌ها" } }}
           sx={{ px: 1.4, fontSize: { xs: 12, md: 12.5 }, height: { xs: 32, md: 34 } }}
         />
         <Button
@@ -58,11 +58,11 @@ export default function RequestFilters({ filter, onFilterChange, query, onQueryC
             "&:hover": { bgcolor: "#142B52", boxShadow: "none" },
           }}
         >
-          جستجو
+          جست‌وجو
         </Button>
       </Box>
 
-      {/* فیلتر وضعیت — بعد از جستجو؛ «همه» اولین و راست‌ترین، بقیه به سمت چپ */}
+      {/* فیلتر وضعیت — بعد از جست‌وجو؛ «همه» اولین و راست‌ترین، بقیه به سمت چپ */}
       <Box
         role="group"
         aria-label="فیلتر بر اساس وضعیت"

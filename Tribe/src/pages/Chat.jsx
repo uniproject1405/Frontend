@@ -30,7 +30,7 @@ import {
   startOrGetConversation,
   formatChatTime,
 } from "../services/chatService";
-import { fa } from "../utils/fa";
+import { fa, faCount } from "../utils/fa";
 
 const NAVY = "#071739";
 const NAVY_HOVER = "#0E2452";
@@ -177,8 +177,9 @@ export default function Chat() {
       {/* Main Chat Card */}
       <Card
         sx={{
-          height: { xs: "calc(100vh - 200px)", md: 620 },
-          minHeight: 520,
+          // On a phone the list alone needs no fixed height (it left a big empty box).
+          height: { xs: isMobile && showMobileList ? "auto" : "calc(100vh - 200px)", md: 620 },
+          minHeight: isMobile && showMobileList ? 0 : 520,
           display: "flex",
           overflow: "hidden",
           border: `1px solid ${BORDER}`,
@@ -260,8 +261,8 @@ export default function Chat() {
                         },
                       }}
                     >
-                      <Stack direction="row" spacing={1.5} alignItems="flex-start">
-                        <Badge badgeContent={unread} color="error" overlap="circular">
+                      <Stack direction="row" spacing={1.5} sx={{ alignItems: "flex-start" }}>
+                        <Badge badgeContent={faCount(unread)} invisible={!unread} color="error" overlap="circular">
                           <Avatar
                             sx={{
                               width: 44,
@@ -277,7 +278,7 @@ export default function Chat() {
                         </Badge>
 
                         <Box sx={{ flex: 1, minWidth: 0 }}>
-                          <Stack direction="row" justifyContent="space-between" alignItems="baseline" sx={{ mb: 0.4 }}>
+                          <Stack direction="row" spacing={1} sx={{ justifyContent: "space-between", alignItems: "baseline", mb: 0.4 }}>
                             <Typography sx={{ fontWeight: isSelected || unread > 0 ? 700 : 600, fontSize: 14.5, color: NAVY }} noWrap>
                               {name}
                             </Typography>
@@ -287,7 +288,7 @@ export default function Chat() {
                           </Stack>
 
                           {conv.project && (
-                            <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 0.5 }}>
+                            <Stack direction="row" spacing={0.5} sx={{ alignItems: "center", mb: 0.5 }}>
                               <FolderOpenOutlinedIcon sx={{ fontSize: 13, color: "#786045" }} />
                               <Typography sx={{ fontSize: 11.5, color: "#786045", fontWeight: 500 }} noWrap>
                                 {conv.project.title}
@@ -334,7 +335,7 @@ export default function Chat() {
                     justifyContent: "space-between",
                   }}
                 >
-                  <Stack direction="row" spacing={1.5} alignItems="center">
+                  <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
                     {isMobile && (
                       <IconButton onClick={() => setShowMobileList(true)} sx={{ color: NAVY, mr: 0.5 }} size="small">
                         <ArrowBackIcon />

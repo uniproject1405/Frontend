@@ -19,12 +19,12 @@ export default function TeamGlance({ capacity, accepted, hasRequests }) {
 
   return (
     <Box component="aside" sx={{ bgcolor: '#fff', border: '1px solid #E3E8EF', borderRadius: 3, p: 3 }}>
-      <Typography variant="caption" color="text.secondary" fontWeight={600}>نگاهی به تیم شما</Typography>
+      <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>نگاهی به تیم شما</Typography>
 
-      <Typography variant="h5" fontWeight={800} color={NAVY} mt={1.5}>
+      <Typography variant="h5" color={NAVY} sx={{ fontWeight: 800, mt: 1.5 }}>
         {fa(filled)} از {fa(capacity)} جایگاه پر شده
       </Typography>
-      <Typography variant="body2" color="text.secondary" mt={0.5}>
+      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
         {fa(accepted)} عضو پذیرفته‌شده
       </Typography>
 
@@ -35,13 +35,13 @@ export default function TeamGlance({ capacity, accepted, hasRequests }) {
         sx={{ height: 6, borderRadius: 3, my: 2.5, bgcolor: '#CDD5DB', '& .MuiLinearProgress-bar': { bgcolor: NAVY } }}
       />
 
-      <Typography fontWeight={700} color={NAVY}>
+      <Typography color={NAVY} sx={{ fontWeight: 700 }}>
         {isOpen ? `${fa(available)} جایگاه خالی` : 'جایگاه خالی نداریم'}
       </Typography>
-      <Typography variant="body2" color="text.secondary" mt={1.5}>
+      <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>
         {isOpen ? 'جذب عضو باز است' : 'جذب عضو تکمیل شده است'}
       </Typography>
-      <Typography variant="body2" color="text.secondary" lineHeight={1.9} mt={1.5}>{hint}</Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.9, mt: 1.5 }}>{hint}</Typography>
     </Box>
   );
 }

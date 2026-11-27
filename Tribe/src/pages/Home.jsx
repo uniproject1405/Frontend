@@ -157,17 +157,17 @@ export default function Home() {
                 lineHeight: 1.32,
                 letterSpacing: 0,
                 fontSize: {
-                  xs: "34px",
-                  sm: "44px",
-                  md: "52px",
-                  lg: "56px",
+                  xs: "30px",
+                  sm: "42px",
+                  md: "46px",
+                  lg: "50px",
                 },
                 width: "100%",
                 maxWidth: "650px",
                 ml: "auto",
               }}
             >
-              هم‌تیمی‌های هم‌مسیرت را پیدا کن؛
+              هم‌تیمی‌های هم‌مسیرتان را پیدا کنید؛
               <Box component="span" sx={{ display: "block" }}>
                 با هم،{" "}
                 <Box
@@ -176,7 +176,7 @@ export default function Home() {
                 >
                   ایده‌های بزرگ
                 </Box>{" "}
-                بساز.
+                بسازید.
               </Box>
             </Typography>
 
@@ -195,7 +195,7 @@ export default function Home() {
                 unicodeBidi: "plaintext",
               }}
             >
-              در ترایب، ایده‌ات را با افرادی همراه کن که مهارت و انگیزه‌ی
+              در Tribe، ایده‌تان را با افرادی همراه کنید که مهارت و انگیزه‌ی
               پیش‌بردنش را دارند؛ از اولین گفت‌وگو و تقسیم نقش‌ها تا ساختن
               نتیجه‌ای واقعی و ارزشمند.
             </Typography>
@@ -404,7 +404,7 @@ export default function Home() {
               <Box
                 component="img"
                 src={heroNetworkImage}
-                alt="شبکه همکاری ترایب"
+                alt="شبکه همکاری Tribe"
                 sx={{
                   width: "100%",
                   height: "100%",

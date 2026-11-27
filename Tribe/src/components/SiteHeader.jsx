@@ -16,7 +16,7 @@ import NotificationRow from './NotificationRow';
 
 import { useMyStats } from '../services/membershipService';
 import { useStoredJson } from '../services/store';
-import { fa } from '../utils/fa';
+import { fa, faCount } from '../utils/fa';
 import { useAuth } from '../hooks/useAuth.js';
 import { useLogout } from '../hooks/useLogout.js';
 
@@ -58,12 +58,12 @@ function UserMenu() {
   return (
     <>
       <IconButton onClick={() => navigate('/chat')} aria-label="گفت‌وگو و مذاکره" sx={{ color: '#4B6382' }}>
-        <Badge badgeContent={chatUnread} max={99} color="primary">
+        <Badge badgeContent={faCount(chatUnread)} invisible={!chatUnread} color="primary">
           <ForumOutlinedIcon />
         </Badge>
       </IconButton>
       <IconButton onClick={(e) => setBell(e.currentTarget)} aria-label="اعلان‌ها" sx={{ color: '#4B6382' }}>
-        <Badge badgeContent={unread} max={99} color="error">
+        <Badge badgeContent={faCount(unread)} invisible={!unread} color="error">
           <NotificationsNoneIcon />
         </Badge>
       </IconButton>

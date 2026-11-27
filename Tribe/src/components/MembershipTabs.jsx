@@ -73,7 +73,7 @@ function MembershipTabs({ tab, onToast }) {
             key={project.id}
             to={`/my-projects/${project.id}/requests`}
             title={project.title}
-            meta={`${fa(count)} نفر می‌خواهند عضو شوند`}
+            meta={`${fa(count)} نفر ${count === 1 ? "می‌خواهد عضو شود" : "می‌خواهند عضو شوند"}`}
             action={<Button variant="contained" sx={{ position: "relative", zIndex: 1 }} component={RouterLink} to={`/my-projects/${project.id}/requests`}>بررسی {fa(count)}</Button>}
           />
         ))}
@@ -133,7 +133,7 @@ function MembershipTabs({ tab, onToast }) {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setToWithdraw(null)}>نگه داشتن</Button>
-          <Button color="error" onClick={confirmWithdraw}>بله، پس بگیر</Button>
+          <Button color="error" onClick={confirmWithdraw}>بله، پس می‌گیرم</Button>
         </DialogActions>
       </Dialog>
     </>

@@ -26,13 +26,13 @@ export default function DecisionToast({ toast, onClose }) {
         boxShadow: '0 12px 30px rgba(7,23,57,.25)',
       }}
     >
-      <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
+      <Stack direction="row" spacing={2} sx={{ alignItems: "center", justifyContent: "space-between" }}>
         <Box>
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
             <CheckIcon sx={{ fontSize: 18 }} />
-            <Typography fontWeight={700} fontSize={14}>{toast.title}</Typography>
+            <Typography sx={{ fontWeight: 700, fontSize: 14 }}>{toast.title}</Typography>
           </Stack>
-          <Typography fontSize={13} mt={0.5} sx={{ color: 'rgba(255,255,255,.75)' }}>{toast.text}</Typography>
+          <Typography sx={{ fontSize: 13, mt: 0.5, color: 'rgba(255,255,255,.75)' }}>{toast.text}</Typography>
         </Box>
         <IconButton
           size="small"

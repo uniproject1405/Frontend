@@ -84,7 +84,7 @@ export default function ProfileEditDialog({ open, profile, onClose, onSave }) {
         <DialogTitle sx={{ fontWeight: 800, color: NAVY }}>ویرایش پروفایل</DialogTitle>
 
         <DialogContent dividers>
-          <Stack spacing={3} pt={0.5}>
+          <Stack spacing={3} sx={{ pt: 0.5 }}>
             {/* Avatar */}
             <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
               <Avatar src={form.avatarUrl || undefined} sx={{ width: 72, height: 72, fontSize: 24, bgcolor: '#CDD5DB', color: NAVY }}>
@@ -99,7 +99,7 @@ export default function ProfileEditDialog({ open, profile, onClose, onSave }) {
                     <Button size="small" color="inherit" onClick={() => set('avatarUrl', '')}>حذف تصویر</Button>
                   )}
                 </Stack>
-                <Typography variant="caption" color={avatarError ? 'error' : 'text.secondary'} display="block" mt={0.5}>
+                <Typography variant="caption" color={avatarError ? 'error' : 'text.secondary'} sx={{ display: "block", mt: 0.5 }}>
                   {avatarError || `فرمت تصویر، حداکثر ${MAX_AVATAR_MB} مگابایت`}
                 </Typography>
                 <input ref={fileRef} type="file" accept="image/*" hidden onChange={onPickAvatar} />
@@ -152,7 +152,7 @@ export default function ProfileEditDialog({ open, profile, onClose, onSave }) {
 
             {/* Optional links */}
             <Box>
-              <Typography fontWeight={700} color={NAVY} mb={1.5}>لینک‌ها (اختیاری)</Typography>
+              <Typography color={NAVY} sx={{ fontWeight: 700, mb: 1.5 }}>لینک‌ها (اختیاری)</Typography>
               <Stack spacing={2}>
                 <TextField
                   label="گیت‌هاب" placeholder="https://github.com/username" value={form.links.github}
@@ -178,7 +178,7 @@ export default function ProfileEditDialog({ open, profile, onClose, onSave }) {
 
             {/* Collaboration status */}
             <Box>
-              <Typography fontWeight={700} color={NAVY} mb={1}>وضعیت همکاری</Typography>
+              <Typography color={NAVY} sx={{ fontWeight: 700, mb: 1 }}>وضعیت همکاری</Typography>
               <FormControlLabel
                 control={<Switch checked={form.openToCollab.enabled} onChange={e => setIn('openToCollab', 'enabled', e.target.checked)} />}
                 label="آماده‌ی همکاری هستم"

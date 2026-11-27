@@ -47,7 +47,7 @@ function EmptyState({ tab, hasRequests }) {
         textAlign: 'center',
       }}
     >
-      <Typography fontWeight={700} color={NAVY} mb={1}>
+      <Typography color={NAVY} sx={{ fontWeight: 700, mb: 1 }}>
         {content[tab][0]}
       </Typography>
       <Typography color="text.secondary" variant="body2">
@@ -201,7 +201,7 @@ export default function ProjectRequests() {
         بازگشت به پروژه‌های من
       </Button>
 
-      <Box mb={4}>
+      <Box sx={{ mb: 4 }}>
         <Typography
           component="h1"
           sx={{
@@ -236,7 +236,7 @@ export default function ProjectRequests() {
             placeItems: 'center',
           }}
         >
-          <Stack alignItems="center" spacing={2}>
+          <Stack spacing={2} sx={{ alignItems: "center" }}>
             <CircularProgress />
             <Typography color="text.secondary">
               در حال بارگذاری درخواست‌ها...

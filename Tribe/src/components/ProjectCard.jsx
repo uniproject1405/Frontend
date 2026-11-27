@@ -32,9 +32,8 @@ export default function ProjectCard({ project, onEdit, onClose, onRequests }) {
   const remainingSkills = Math.max(skills.length - visibleSkills.length, 0);
   const isClosed = String(project.status ?? "").toLowerCase() === "closed";
   const category = String(project.category ?? "").trim();
-  const displayCategory = !category || category.toUpperCase() === "MY PROJECT"
-    ? "پروژه من"
-    : category;
+  // Every card here is the user's own project, so a "my project" label adds nothing.
+  const displayCategory = !category || category.toUpperCase() === "MY PROJECT" ? "" : category;
 
   const capacity = Number(project.capacity);
   const hasCapacity = project.capacity !== "" && project.capacity != null && Number.isFinite(capacity) && capacity > 0;
@@ -69,9 +68,11 @@ export default function ProjectCard({ project, onEdit, onClose, onRequests }) {
             <Box sx={{ width: 38, height: 38, borderRadius: "10px", bgcolor: "#EEF2F6", color: NAVY, display: "grid", placeItems: "center", flexShrink: 0 }}>
               <CodeOutlinedIcon sx={{ fontSize: 21 }} />
             </Box>
-            <Typography sx={{ color: BLUE, fontWeight: 750, fontSize: 11, letterSpacing: ".5px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-              {displayCategory}
-            </Typography>
+            {displayCategory && (
+              <Typography sx={{ color: BLUE, fontWeight: 750, fontSize: 11, letterSpacing: ".5px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                {displayCategory}
+              </Typography>
+            )}
           </Box>
           <Chip
             size="small" label={isClosed ? "بسته‌شده" : "فعال"}
@@ -131,9 +132,11 @@ export default function ProjectCard({ project, onEdit, onClose, onRequests }) {
                 ? hasAccepted ? `${formatFaNumber(accepted)} پذیرفته‌شده از ${formatFaNumber(capacity)} نفر` : `ظرفیت کل تیم: ${formatFaNumber(capacity)} نفر`
                 : "ظرفیت تیم: —"}
             </Typography>
-            <Typography sx={{ fontSize: 11.5, color: NAVY, fontWeight: 700 }}>
-              {available == null ? "ظرفیت باقی‌مانده: —" : `${formatFaNumber(available)} نفر ظرفیت باقی‌مانده`}
-            </Typography>
+            {available != null && (
+              <Typography sx={{ fontSize: 11.5, color: NAVY, fontWeight: 700 }}>
+                {`${formatFaNumber(available)} نفر ظرفیت باقی‌مانده`}
+              </Typography>
+            )}
           </Box>
           <LinearProgress
             variant="determinate" value={progressValue}

@@ -68,7 +68,7 @@ export default function ProjectCallout() {
             color: "#FFFFFF",
           }}
         >
-          ایده‌ات شایسته یک تیم خوبه.
+          ایده‌ی شما شایسته‌ی یک تیم خوب است.
         </Typography>
 
         <Typography
@@ -79,8 +79,8 @@ export default function ProjectCallout() {
             lineHeight: 1.9,
           }}
         >
-          آدم‌های مناسب را پیدا کن، تیمت را بساز و ایده‌ات را به یک پروژه واقعی
-          تبدیل کن.
+          افراد مناسب را پیدا کنید، تیمتان را بسازید و ایده‌تان را به یک پروژه‌ی واقعی
+          تبدیل کنید.
         </Typography>
 
         <Button

@@ -5,13 +5,14 @@ import { fa } from '../utils/fa';
 // so a project always looks the same wherever it appears.
 const NAVY = '#071739';
 
-export function StatusChip({ status, sx }) {
-  const isOpen = status === 'open';
+export function StatusChip({ status, full = false, sx }) {
+  // A full team is no longer recruiting, even while the project itself is open.
+  const isOpen = status === 'open' && !full;
   return (
     <Chip
       size="small"
       variant="outlined"
-      label={isOpen ? 'در حال جذب عضو' : 'جذب عضو تکمیل شده'}
+      label={isOpen ? 'در حال جذب عضو' : 'تیم تکمیل است'}
       color={isOpen ? 'success' : 'default'}
       sx={{ flexShrink: 0, ...sx }}
     />
