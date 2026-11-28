@@ -1,8 +1,7 @@
 import { getToken } from "../utils/tokenStorage.js";
 
 // خالی = درخواست‌ها از طریق پروکسی Vite (vite.config.js) به بک‌اند می‌روند
-// Paths already start with /api, so a trailing slash or /api is trimmed (no /api/api).
-const BASE_URL = (import.meta.env.VITE_API_URL ?? "").trim().replace(/\/+$/, "").replace(/\/api$/, "");
+const BASE_URL = import.meta.env.VITE_API_URL ?? "";
 
 // طبق مستندات بک‌اند فرمت هدر باید Token باشد، نه Bearer
 const AUTH_SCHEME = "Token";
@@ -45,7 +44,7 @@ export async function request(path, { method = "GET", body, auth = true } = {}) 
   }
 
   if (!res.ok) {
-    if (res.status === 401 && auth && unauthorizedHandler && token !== "mock-token") unauthorizedHandler();
+    if (res.status === 401 && auth && unauthorizedHandler) unauthorizedHandler();
     throw new ApiError(res.status, data);
   }
   return data;
