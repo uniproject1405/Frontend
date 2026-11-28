@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300" role="img" aria-labelledby="title desc">
+<title id="title">Tribe</title><desc id="desc">Three connected people forming a community symbol beside the Tribe wordmark.</desc>
+
+<g transform="translate(20 28) scale(0.88)"><g stroke="none">
+      <circle cx="150" cy="55" r="28" fill="#071739"/>
+      <path d="M102 174 C102 126 121 101 150 101 C179 101 198 126 198 174 Q198 190 182 190 H118 Q102 190 102 174Z" fill="#071739"/>
+      <circle cx="61" cy="83" r="23" fill="#4B6382"/>
+      <path d="M22 177 C22 139 37 119 61 119 C82 119 96 137 99 166 Q100 181 86 181 H34 Q22 181 22 177Z" fill="#4B6382"/>
+      <circle cx="239" cy="83" r="23" fill="#A68868"/>
+      <path d="M201 166 C204 137 218 119 239 119 C263 119 278 139 278 177 Q278 181 266 181 H214 Q200 181 201 166Z" fill="#A68868"/>
+    </g></g>
+<text x="330" y="164" font-family="Inter, Arial, sans-serif" font-size="112" font-weight="700" letter-spacing="-4" fill="#071739">Tribe</text>
+<text x="337" y="218" font-family="Vazirmatn, Arial, sans-serif" font-size="25" fill="#071739">Together, we learn better. We build better.</text>
+</svg>
