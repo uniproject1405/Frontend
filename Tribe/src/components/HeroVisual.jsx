@@ -52,8 +52,8 @@ export default function HeroVisual() {
             <path d="M12 2c.6 5.200 3.800 8.400 9 9-5.200.6-8.400 3.800-9 9-.6-5.200-3.800-8.400-9-9 5.200-.6 8.400-3.800 9-9Z" />
           </svg>
           <span>
-            <small>یک ایده داری؟</small>
-            <strong>آدم‌هایش را پیدا کن</strong>
+            <small>ایده‌ای دارید؟</small>
+            <strong>هم‌تیمی‌هایش را پیدا کنید</strong>
           </span>
         </div>
 

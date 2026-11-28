@@ -41,8 +41,18 @@ public/                       لوگوی Tribe (همین فایل آیکون ت�
 
 ## نکته‌ها
 
-- برای محافظت از یک صفحه جدید، مسیرش را داخل `<ProtectedRoute>` در `App.jsx` بگذارید.
+- برای محافظت از یک صفحه جدید، مسیرش را داخل `<ProtectedRoute>` در `src/app/router.jsx` بگذارید.
 - برای خروج: `import { LogoutButton, useLogout } from "../logout/index.js"` (دکمه آماده یا hook برای هر منوی دلخواه).
 - `useAuth.js` تنها محل ساخت `AuthContext` و هوک `useAuth` است؛ `AuthProvider.jsx` از همان استفاده می‌کند.
 - رنگ‌ها را فقط از `styles/tokens.css` تغییر دهید تا همه صفحه‌ها هماهنگ بمانند.
 - حرکت‌ها با تنظیم «کاهش حرکت» سیستم‌عامل خودکار خاموش می‌شوند؛ برای حذف کامل، import فایل `styles/motion.css` را از `main.jsx` بردارید.
+
+## ساختار و قرارداد کد (Structure and conventions)
+
+- `src/app/` — `router.jsx` تنها جدول مسیرها (`createBrowserRouter`)، `providers.jsx` تم + RTL + AuthProvider.
+- `src/theme/tribeTheme.js` — تنها تم MUI (رنگ‌ها: `#071739`، شنی `#E3C39D`، پس‌زمینه `#F4F6F8`؛ فونت Vazirmatn).
+- `src/layouts/` — `PublicLayout` (هدر + فوتر) و `DashboardLayout` (هدر + نوار فرعی + فوتر).
+- `src/features/` — `auth`، `logout`، `legal`، `not-found`.
+- `src/pages/`، `src/components/` (اجزای مشترک پروژه در `projectParts.jsx`)، `src/services/`، `src/mocks/`، `src/utils/` (`fa.js` اعداد فارسی).
+- صفحه جدید: کامپوننت در `pages/`، یک خط در `router.jsx` (داخل `ProtectedRoute` اگر نیاز به ورود دارد).
+- `.env` برای توسعه `VITE_USE_MOCK=true` دارد (ورود با هر ایمیل و رمز `12345678`)؛ برای بک‌اند واقعی `false` کنید.

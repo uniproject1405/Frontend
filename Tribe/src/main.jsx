@@ -1,26 +1,26 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import { CacheProvider } from "@emotion/react";
-import { CssBaseline, ThemeProvider } from "@mui/material";
+import { RouterProvider } from "react-router/dom";
 
-import { cacheRtl, theme } from "./styles/theme.js";
-import { AuthProvider } from "./context/AuthProvider.jsx";
-import App from "./App.jsx";
-
+import Providers from "./app/providers.jsx";
+import router from "./app/router.jsx";
+import { ensureSeed } from "./mocks/seedData";
+import "@fontsource/vazirmatn/300.css";
+import "@fontsource/vazirmatn/400.css";
+import "@fontsource/vazirmatn/500.css";
+import "@fontsource/vazirmatn/600.css";
+import "@fontsource/vazirmatn/700.css";
+import "@fontsource/vazirmatn/800.css";
 import "./index.css";
+import "./styles/tokens.css";
+import "./styles/motion.css";
+
+ensureSeed();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter>
-      <CacheProvider value={cacheRtl}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <AuthProvider>
-            <App />
-          </AuthProvider>
-        </ThemeProvider>
-      </CacheProvider>
-    </BrowserRouter>
+    <Providers>
+      <RouterProvider router={router} />
+    </Providers>
   </StrictMode>
 );

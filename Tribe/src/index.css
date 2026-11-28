@@ -1,59 +1,68 @@
-/* استایل سراسری برنامه: رنگ‌های مشترک و حرکت‌ها. استایل هر صفحه در src/styles است. */
-
-/* رنگ‌های مشترک همه صفحه‌ها (هماهنگ با طراحی صفحه اصلی Tribe) */
+/* Tribe global styles — RTL-first */
 :root {
-  --navy: #0b1b3d;
-  --navy-hover: #17295a;
-  --bg: #f4f6fa;
-  --surface: #ffffff;
-  --line: #dfe5ee;
-  --line-soft: #e6ebf2;
-  --text-muted: #4a5870;
-  --text-faint: #5f6f8a;
-  --beige: #ecdcc4;
-  --brown: #8a5f2a;
+  font-family: "Vazirmatn", "Segoe UI", Arial, sans-serif;
+  color: #071739;
+  background: #F3F7FC;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/*
-  حرکت‌های کم و ملایم.
-  همه با تنظیم «کاهش حرکت» سیستم‌عامل (prefers-reduced-motion) خودکار خاموش می‌شوند.
-  برای حذف کامل، این بخش (از @keyframes تا آخر فایل) را پاک کنید.
-*/
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: none; }
-}
-@keyframes fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-/* شناور بودن آرام؛ چرخش کج عنصرها با خاصیت rotate جدا اعمال می‌شود */
-@keyframes float-y {
-  to { transform: translateY(calc(var(--float, 8px) * -1)); }
-}
-/* نفس کشیدن حلقه پشت کارت */
-@keyframes breathe {
-  to { scale: 1.035; }
-}
-/* ضربان نقطه‌های تزئینی (رنگ از --dot می‌آید) */
-@keyframes dot-pulse {
-  0%, 100% { box-shadow: 0 0 0 .45em rgba(var(--dot), .2); }
-  50% { box-shadow: 0 0 0 .9em rgba(var(--dot), .06); }
-}
-/* لرزش کوتاه فیلدی که خطا دارد */
-@keyframes shake {
-  0%, 100% { transform: none; }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
+html {
+  min-width: 320px;
+  min-height: 100%;
+  direction: rtl;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  html { scroll-behavior: smooth; } /* کلیک روی فهرست صفحه قوانین */
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  direction: rtl;
+  text-align: right;
+  font-family: "Vazirmatn", "Segoe UI", Arial, sans-serif;
+  background: #F3F7FC;
+  color: #071739;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation: none !important;
-    transition: none !important;
-  }
+#root {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  direction: rtl;
+  text-align: right;
+  box-sizing: border-box;
+}
+
+/* Predictable sizing across all sections and responsive layouts. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Keep media from overflowing their section containers. */
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+/* Form controls should inherit Tribe typography and page direction. */
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+
+/* Avoid Vite starter styles overriding MUI Typography and page sections. */
+
+/* RTL arrows: ArrowBack (←) means "go to", ArrowForward (→) means "back". No flip needed.
+   Only the send icon is mirrored so it points the reading way. */
+[data-testid="SendRoundedIcon"] {
+  transform: scaleX(-1);
 }

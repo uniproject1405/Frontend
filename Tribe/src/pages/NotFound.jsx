@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import "../styles/not-found.css";
 import logo from "../assets/logo/tribe-logo.svg";
