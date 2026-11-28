@@ -1,16 +1,15 @@
-import { Link } from 'react-router';
 import { Box, Container, Divider, Stack, Typography } from '@mui/material';
 import TribeLogo from './TribeLogo';
+import SiteLink from './SiteLink';
 
 const NAVY = '#071739';
 
+// [label, route]. No route yet → rendered as a disabled "به‌زودی" link.
 const COLUMNS = [
-  ['کاوش', ['کاوش پروژه‌ها', 'یافتن افراد', 'تبادل مهارت']],
-  ['جامعه', ['راهنمای استفاده', 'داستان ما', 'قوانین و راهنما']],
-  ['پشتیبانی', ['مرکز راهنما', 'ارتباط با ما', 'ارسال بازخورد']],
+  ['کاوش', [['کاوش پروژه‌ها', '/explore'], ['یافتن افراد'], ['تبادل مهارت']]],
+  ['جامعه', [['راهنمای استفاده'], ['داستان ما'], ['قوانین و راهنما', '/terms']]],
+  ['پشتیبانی', [['مرکز راهنما'], ['ارتباط با ما'], ['ارسال بازخورد']]],
 ];
-
-const linkSx = { color: '#4B6382', textDecoration: 'none', fontSize: 14, '&:hover': { color: NAVY } };
 
 export default function SiteFooter() {
   return (
@@ -19,7 +18,7 @@ export default function SiteFooter() {
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 1fr 1fr 1fr' }, gap: 4 }}>
           <Box>
             <TribeLogo height={100} />
-            <Typography sx={{ color: 'text.secondary', mt: 2, maxWidth: 260, lineHeight: 1.9 }}>
+            <Typography color="text.secondary" sx={{ mt: 2, maxWidth: 260, lineHeight: 1.9 }}>
               خانه‌ای برای کسانی که می‌سازند، یاد می‌گیرند و ایده‌ها را به واقعیت تبدیل می‌کنند.
             </Typography>
           </Box>
@@ -28,9 +27,7 @@ export default function SiteFooter() {
             <Box key={title}>
               <Typography sx={{ fontWeight: 700, fontSize: 14, color: NAVY, mb: 1.5 }}>{title}</Typography>
               <Stack spacing={1}>
-                {links.map(label => (
-                  <Typography key={label} component="a" href="#" sx={linkSx}>{label}</Typography>
-                ))}
+                {links.map(([label, to]) => <SiteLink key={label} label={label} to={to} />)}
               </Stack>
             </Box>
           ))}
@@ -39,11 +36,11 @@ export default function SiteFooter() {
         <Divider sx={{ my: 4 }} />
 
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ justifyContent: 'space-between' }}>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>© ۲۰۲۶ Tribe. بهتر، با هم.</Typography>
+          <Typography variant="body2" color="text.secondary">© ۲۰۲۶ Tribe. بهتر، با هم.</Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <Typography component="a" href="#" variant="body2" sx={linkSx}>حریم خصوصی</Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>·</Typography>
-            <Typography component={Link} to="/terms" variant="body2" sx={linkSx}>قوانین استفاده</Typography>
+            <SiteLink label="حریم خصوصی" />
+            <Typography variant="body2" color="text.secondary">·</Typography>
+            <SiteLink label="قوانین استفاده" to="/terms" />
           </Stack>
         </Stack>
       </Container>

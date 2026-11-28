@@ -9,7 +9,7 @@ import { useAuth } from "./useAuth.js";
     <MenuItem onClick={logout}>خروج</MenuItem>
 
   کار می‌کند: توکن را در سرور باطل و در مرورگر پاک می‌کند (AuthProvider)
-  و کاربر در صفحه کاوش پروژه‌ها می‌ماند.
+  و کاربر را به صفحه ورود می‌برد.
 */
 export function useLogout() {
   const { logout } = useAuth();
@@ -17,6 +17,6 @@ export function useLogout() {
 
   return useCallback(() => {
     logout();
-    navigate("/explore", { replace: true });
+    navigate("/login", { replace: true });
   }, [logout, navigate]);
 }

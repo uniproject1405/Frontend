@@ -140,7 +140,7 @@ const sections = [
   },
 ];
 
-const pad = (n) => String(n).padStart(2, "0");
+const pad = (n) => new Intl.NumberFormat("fa-IR", { minimumIntegerDigits: 2 }).format(n);
 
 export default function TermsPage() {
   return (
@@ -211,7 +211,7 @@ export default function TermsPage() {
         </div>
 
         <footer className="terms-footer">
-          <span>© Tribe · tribehub.ir</span>
+          <span>© Tribe</span>
           <span>هر مهارت، یک تکه از پازل.</span>
           <Link to="/signup">بازگشت به ثبت‌نام</Link>
         </footer>

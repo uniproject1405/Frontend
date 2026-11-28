@@ -14,9 +14,10 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 // ورود: هر ایمیلی با رمز 12345678 · ثبت‌نام: همه‌چیز جز taken@example.com
 const mockAuthService = {
   async login({ email, password }) {
-    await sleep(700);
-    if (password === "12345678") {
-      return { token: "mock-token", user: { id: 1, email, username: email } };
+    await sleep(400);
+    if (password === "12345678" || password === "password123") {
+      const username = email.split("@")[0] || email;
+      return { token: "mock-token", user: { id: 1, email, username } };
     }
     throw new ApiError(400, { non_field_errors: ["Invalid credentials."] });
   },
@@ -37,6 +38,7 @@ const mockAuthService = {
   async requestPasswordReset() {
     await sleep(700);
   },
+  // Mock: token "invalid" plays an expired link
   async validateResetToken({ token }) {
     await sleep(400);
     if (token === "invalid") throw new ApiError(400, { valid: false });
@@ -44,6 +46,7 @@ const mockAuthService = {
   async confirmPasswordReset() {
     await sleep(700);
   },
+  googleLoginUrl: () => null, // no Google in mock mode
 };
 
 // ----- حالت واقعی: آدرس‌ها طبق مستندات بک‌اند -----
@@ -79,7 +82,7 @@ const realAuthService = {
     return request("/api/users/me/");
   },
 
-  // POST /api/users/password-reset/ ← همیشه ۲۰۰؛ لینک به /reset-password?uid=..&token=.. می‌رسد
+  // POST /api/users/password-reset/ ← always 200; the email links to /reset-password?uid=..&token=..
   async requestPasswordReset(email) {
     await request("/api/users/password-reset/", {
       method: "POST",
@@ -88,13 +91,9 @@ const realAuthService = {
     });
   },
 
-  // POST /api/users/password-reset/validate/ ← ۴۰۰ یعنی لینک نامعتبر یا منقضی
+  // POST /api/users/password-reset/validate/ ← 400 means the link is invalid or expired
   async validateResetToken({ uid, token }) {
-    await request("/api/users/password-reset/validate/", {
-      method: "POST",
-      body: { uid, token },
-      auth: false,
-    });
+    await request("/api/users/password-reset/validate/", { method: "POST", body: { uid, token }, auth: false });
   },
 
   // POST /api/users/password-reset/confirm/
@@ -105,6 +104,9 @@ const realAuthService = {
       auth: false,
     });
   },
+
+  // The backend sends Google back to /login or /signup with ?token=&email=&username= (or ?error=)
+  googleLoginUrl: (mode) => `/api/users/google/login/?mode=${mode}`,
 };
 
 export const authService = USE_MOCK ? mockAuthService : realAuthService;

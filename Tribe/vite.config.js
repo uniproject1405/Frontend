@@ -1,15 +1,23 @@
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
 
-// https://vite.dev/config/
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+
 export default defineConfig({
   plugins: [react()],
   server: {
-    // درخواست‌های /api را به بک‌اند محلی می‌فرستد؛ نیازی به تنظیم CORS در بک‌اند نیست
+    // Proxy backend requests
     proxy: {
-      '/api': { target: 'http://127.0.0.1:8000', changeOrigin: true },
-      // عکس‌های پروفایل که بک‌اند در /media سرو می‌کند
-      '/media': { target: 'http://127.0.0.1:8000', changeOrigin: true },
+      // API requests
+      "/api": {
+        target: "http://127.0.0.1:8000",
+        changeOrigin: true,
+      },
+
+      // Profile images and uploaded media
+      "/media": {
+        target: "http://127.0.0.1:8000",
+        changeOrigin: true,
+      },
     },
   },
-})
+});
