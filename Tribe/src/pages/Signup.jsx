@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import {
   Box,
@@ -19,6 +19,7 @@ import AuthLayout from "../layouts/AuthLayout.jsx";
 import EmailField from "../components/EmailField.jsx";
 import FormField, { FieldBubble } from "../components/FormField.jsx";
 import FormMessage from "../components/FormMessage.jsx";
+import { useGoogleReturn } from "../hooks/useGoogleReturn.js";
 import GoogleButton from "../components/GoogleButton.jsx";
 import PasswordField from "../components/PasswordField.jsx";
 import SubmitButton from "../components/SubmitButton.jsx";
@@ -39,6 +40,16 @@ export default function Signup() {
     setMessage(text);
     setMessageType("error");
   }
+
+  const showInfo = useCallback((text) => {
+    setMessage(text);
+    setMessageType("info");
+  }, []);
+  const showGoogleError = useCallback((text) => {
+    setMessage(text);
+    setMessageType("error");
+  }, []);
+  const startGoogle = useGoogleReturn("signup", showGoogleError, showInfo);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -110,12 +121,7 @@ export default function Signup() {
         line2: "یک تکه از پازل.",
       }}
     >
-      <GoogleButton
-        onClick={() => {
-          setMessage("برای ادامه، حساب گوگل خود را انتخاب کنید.");
-          setMessageType("info");
-        }}
-      />
+      <GoogleButton label="ثبت‌نام با گوگل" onClick={startGoogle} />
 
       <Divider className="auth-divider">یا</Divider>
 

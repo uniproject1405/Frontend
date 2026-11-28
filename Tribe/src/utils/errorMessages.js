@@ -23,5 +23,13 @@ export function getErrorMessage(error, mode = "login") {
     }
     return "اطلاعات واردشده معتبر نیست. دوباره بررسی کنید.";
   }
+  if (mode === "forgot" && error.status === 400) {
+    return "ایمیل واردشده معتبر نیست.";
+  }
+  if (mode === "reset" && error.status === 400) {
+    if (error.data?.new_password) return "رمز عبور باید حداقل ۸ نویسه باشد.";
+    if (error.data?.confirm_password) return "تکرار رمز عبور با رمز عبور یکسان نیست.";
+    return "لینک بازیابی نامعتبر است یا منقضی شده است. دوباره درخواست بدهید.";
+  }
   return "مشکلی پیش آمد. کمی بعد دوباره امتحان کنید.";
 }

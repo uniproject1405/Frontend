@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { useCallback, useState } from "react";
+import { Link as RouterLink } from "react-router";
 import {
   Box,
   Divider,
@@ -15,6 +15,7 @@ import { useFieldError } from "../hooks/useFieldError.js";
 import AuthLayout from "../layouts/AuthLayout.jsx";
 import EmailField from "../components/EmailField.jsx";
 import FormMessage from "../components/FormMessage.jsx";
+import { useGoogleReturn } from "../hooks/useGoogleReturn.js";
 import GoogleButton from "../components/GoogleButton.jsx";
 import PasswordField from "../components/PasswordField.jsx";
 import SubmitButton from "../components/SubmitButton.jsx";
@@ -31,6 +32,16 @@ export default function Login() {
     setMessage(text);
     setMessageType("error");
   }
+
+  const showInfo = useCallback((text) => {
+    setMessage(text);
+    setMessageType("info");
+  }, []);
+  const showGoogleError = useCallback((text) => {
+    setMessage(text);
+    setMessageType("error");
+  }, []);
+  const startGoogle = useGoogleReturn("login", showGoogleError, showInfo);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -69,12 +80,7 @@ export default function Login() {
         line2: "یک تکه از پازل.",
       }}
     >
-      <GoogleButton
-        onClick={() => {
-          setMessage("برای ادامه، حساب گوگل خود را انتخاب کنید.");
-          setMessageType("info");
-        }}
-      />
+      <GoogleButton label="ورود با گوگل" onClick={startGoogle} />
 
       <Divider className="auth-divider">
         یا
