@@ -43,38 +43,63 @@ function toSkill(name) {
 }
 
 function toProject(project) {
-  const creator = project.creator && typeof project.creator === 'object'
-    ? {
-        name: project.creator.name || project.creator.username || 'عضو Tribe',
-        username: project.creator.username || '',
-      }
-    : { name: 'عضو Tribe', username: '' };
+  const rawCreator = project.creator && typeof project.creator === 'object'
+    ? project.creator
+    : {};
+
+  const creatorName = rawCreator.name
+    || rawCreator.full_name
+    || [rawCreator.first_name, rawCreator.last_name].filter(Boolean).join(' ')
+    || project.creator_name
+    || rawCreator.username
+    || project.creator_username
+    || 'عضو Tribe';
+
+  const creator = {
+    name: creatorName,
+    username: rawCreator.username || project.creator_username || '',
+    avatar: rawCreator.avatar || rawCreator.avatar_url
+      || rawCreator.profile_image || rawCreator.profile_picture
+      || project.creator_avatar || '',
+  };
+
+  const capacity = Number(project.capacity) || 0;
+  const accepted = Number(
+    project.accepted_count ?? project.accepted ?? project.members_count
+  ) || 0;
+  const remaining = project.remaining_capacity == null
+    ? Math.max(capacity - accepted, 0)
+    : Math.max(Number(project.remaining_capacity) || 0, 0);
+
+  const rawSkills = project.skills || project.required_skills || [];
+  const skills = Array.isArray(rawSkills) ? rawSkills : [];
 
   return {
-    // public_id is the backend's detail-route identifier (UUID).
-    id: project.public_id,
+    id: project.public_id || project.id,
     title: project.title || '',
     goal: project.goal || '',
     description: project.description || project.goal || '',
-    type: project.project_type || '',
-    customType: project.custom_project_type || '',
-    requiredSkills: (project.skills || []).map(toSkill),
-    capacity: Number(project.capacity) || 0,
-    accepted: Number(project.accepted_count) || 0,
-    // These fields are not provided by this backend version.
-    openRoles: [],
+    type: project.project_type || project.type || '',
+    customType: project.custom_project_type || project.customType || '',
+    requiredSkills: skills.map(toSkill),
+    capacity,
+    accepted,
+    remaining,
+    openRoles: Array.isArray(project.open_roles) ? project.open_roles : [],
     status: project.status || 'open',
     createdAt: project.created_at || null,
     creator,
   };
 }
 
-function buildParams({ search = '', skill = '', status = 'open' } = {}) {
+function buildParams({ search = '', skill = '', status = '' } = {}) {
   const params = new URLSearchParams();
   if (search.trim()) params.set('search', search.trim());
   // The backend expects the skill NAME, not a database ID.
   if (skill) params.set('skill', skill);
-  if (status) params.set('status', status);
+  // The backend defaults to open-only when `status` is missing, so the
+  // "all statuses" option must send status=all explicitly.
+  params.set('status', status || 'all');
   return params;
 }
 
@@ -92,7 +117,7 @@ async function fetchExplore(filters = {}) {
 export async function getExploreProjects(filters = {}) {
   if (USE_MOCK) {
     await wait();
-    const { search = '', skill = '', status = 'open' } = filters;
+    const { search = '', skill = '', status = '' } = filters;
     const query = search.trim().toLowerCase();
     return mockProjects.filter(project =>
       (!query || project.title.toLowerCase().includes(query)
