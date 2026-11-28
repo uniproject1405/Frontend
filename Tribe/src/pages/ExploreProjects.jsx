@@ -12,8 +12,9 @@ import { skillLabel } from '../utils/skillLabel';
 import { fa } from '../utils/fa';
 
 const NAVY = '#071739';
-const EMPTY_FILTERS = { search: '', skill: '', status: 'open' };
+const EMPTY_FILTERS = { search: '', skill: '', status: '' };
 const STATUS_OPTIONS = [
+  { value: '', label: 'همه وضعیت‌ها' },
   { value: 'open', label: 'در حال جذب عضو' },
   { value: 'closed', label: 'جذب عضو تکمیل شده' },
 ];
