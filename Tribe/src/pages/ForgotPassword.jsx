@@ -11,8 +11,6 @@ import EmailField from "../components/EmailField.jsx";
 import SubmitButton from "../components/SubmitButton.jsx";
 import FormMessage from "../components/FormMessage.jsx";
 import { EMAIL_RE, EMPTY_MSG } from "../utils/validation.js";
-import { authService } from "../services/authService.js";
-import { getErrorMessage } from "../utils/errorMessages.js";
 import { useFieldError } from "../hooks/useFieldError.js";
 
 export default function ForgotPassword() {
@@ -21,7 +19,7 @@ export default function ForgotPassword() {
   const [messageType, setMessageType] = useState("error");
   const { errorFor, fail, onInput } = useFieldError();
 
-  async function handleSubmit(event) {
+  function handleSubmit(event) {
     event.preventDefault();
 
     if (loading) return;
@@ -37,17 +35,12 @@ export default function ForgotPassword() {
 
     setLoading(true);
 
-    try {
-      await authService.requestPasswordReset(email);
-      // بک‌اند برای جلوگیری از شناسایی حساب‌ها همیشه موفق جواب می‌دهد
-      setMessage("اگر حسابی با این ایمیل وجود داشته باشد، لینک بازیابی برایتان ارسال شد.");
-      setMessageType("success");
-    } catch (error) {
-      setMessage(getErrorMessage(error, "forgot"));
-      setMessageType("error");
-    } finally {
-      setLoading(false);
-    }
+    // فعلاً بک‌اند بازیابی رمز متصل نیست
+    setMessage(
+      "ایمیل شما ثبت شد. برای ارسال لینک بازیابی باید API بک‌اند متصل شود."
+    );
+    setMessageType("info");
+    setLoading(false);
   }
 
   return (

@@ -33,9 +33,6 @@ export function AuthProvider({ children }) {
     [save]
   );
 
-  // Google sign-in returns a token in the URL (Negar's flow)
-  const completeGoogleLogin = useCallback((token, user) => save({ token, user }, true), [save]);
-
   // پاک کردن نشست فقط در مرورگر
   const clearSession = useCallback(() => {
     clearStored();
@@ -71,10 +68,9 @@ export function AuthProvider({ children }) {
       isAuthenticated: Boolean(auth.token),
       login,
       register,
-      completeGoogleLogin,
       logout,
     }),
-    [auth, login, register, completeGoogleLogin, logout]
+    [auth, login, register, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

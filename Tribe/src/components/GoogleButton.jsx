@@ -24,7 +24,7 @@ function GoogleIcon() {
 }
 
 // دکمه «ادامه با گوگل» (در ورود و ثبت‌نام یکسان است)
-export default function GoogleButton({ onClick, label = "ادامه با گوگل" }) {
+export default function GoogleButton({ onClick }) {
   return (
     <Button
       fullWidth
@@ -33,7 +33,7 @@ export default function GoogleButton({ onClick, label = "ادامه با گوگ�
       className="auth-google"
       onClick={onClick}
     >
-      {label}
+      ادامه با گوگل
     </Button>
   );
 }
