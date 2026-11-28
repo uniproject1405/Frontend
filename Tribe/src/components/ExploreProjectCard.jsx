@@ -12,8 +12,10 @@ const NAVY = '#071739';
 
 const TYPES = {
   startup: { label: 'استارتاپ', Icon: CodeIcon },
+  development: { label: 'توسعه نرم‌افزار', Icon: CodeIcon },
   learning: { label: 'یادگیری', Icon: MenuBookIcon },
   research: { label: 'پژوهش و علم', Icon: ScienceIcon },
+  academic: { label: 'دانشگاهی', Icon: MenuBookIcon },
   personal: { label: 'پروژه شخصی', Icon: CodeIcon },
 };
 
@@ -21,8 +23,13 @@ const initials = name => (name || 'عضو').split(' ').map(w => w[0]).join('').s
 
 // Whole card is a link to the project details page
 export default function ExploreProjectCard({ project }) {
-  const { id, title, type, description, requiredSkills = [], capacity, accepted, openRoles = [], status, creator } = project;
-  const available = Math.max(capacity - accepted, 0);
+  const {
+    id, title, type, description, requiredSkills = [], capacity = 0,
+    accepted = 0, remaining, openRoles = [], status, creator,
+  } = project;
+  const available = remaining == null
+    ? Math.max(capacity - accepted, 0)
+    : Math.max(Number(remaining) || 0, 0);
   const isOpen = status === 'open';
   const percent = capacity ? Math.round((accepted / capacity) * 100) : 0;
   const typeInfo = TYPES[type];
@@ -39,7 +46,11 @@ export default function ExploreProjectCard({ project }) {
       >
         <Stack direction="row" spacing={1} sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center', minWidth: 0 }}>
-            <Avatar sx={{ width: 36, height: 36, fontSize: 14, bgcolor: '#CDD5DB', color: NAVY }}>
+            <Avatar
+              src={creator?.avatar || undefined}
+              alt={creator?.name || 'عضو Tribe'}
+              sx={{ width: 36, height: 36, fontSize: 14, bgcolor: '#CDD5DB', color: NAVY }}
+            >
               {initials(creator?.name)}
             </Avatar>
             <Box sx={{ minWidth: 0 }}>
