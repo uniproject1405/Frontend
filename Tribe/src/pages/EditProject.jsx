@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 
 import { Link, useNavigate, useParams } from "react-router";
@@ -93,7 +93,7 @@ function EditProject() {
   }
 
   function addSkill() {
-    const value = skillInput.trim();
+    const value = skillInput.replace(/[,،]/g, "").trim();
 
     if (
       value &&
@@ -108,7 +108,7 @@ function EditProject() {
   }
 
   function handleSkillKeyDown(event) {
-    if (event.key === "Enter" || event.key === ",") {
+    if (event.key === "Enter" || event.key === "," || event.key === "،") {
       event.preventDefault();
       addSkill();
     }
@@ -124,7 +124,7 @@ function EditProject() {
     event.preventDefault();
 
     const finalSkills = [...skills];
-    const pendingSkill = skillInput.trim();
+    const pendingSkill = skillInput.replace(/[,،]/g, "").trim();
 
     if (
       pendingSkill &&
@@ -207,11 +207,11 @@ function EditProject() {
   }
 
   return (
-    <Box sx={{ width: "100%", maxWidth: 1000, mx: "auto", minWidth: 0, px: { xs: 0, sm: 1 } }}>
+    <Box sx={{ width: "100%", maxWidth: 1200, mx: "auto", minWidth: 0, px: { xs: 0, sm: 1 } }}>
       <Button
         component={Link}
         to="/my-projects"
-        startIcon={<ArrowBackRoundedIcon />}
+        startIcon={<ArrowForwardRoundedIcon />}
         sx={{ mb: 2.5, borderRadius: "8px", fontWeight: 600 }}
       >
         بازگشت به پروژه‌های من
@@ -266,7 +266,7 @@ function EditProject() {
                 error={Boolean(errors.title)}
                 helperText={errors.title}
                 required
-                inputProps={{ maxLength: 80 }}
+                slotProps={{ htmlInput: { maxLength: 80 } }}
               />
 
               <TextField
@@ -277,7 +277,7 @@ function EditProject() {
                 error={Boolean(errors.goal)}
                 helperText={errors.goal}
                 required
-                inputProps={{ maxLength: 160 }}
+                slotProps={{ htmlInput: { maxLength: 160 } }}
               />
 
               <TextField
@@ -290,7 +290,7 @@ function EditProject() {
                 error={Boolean(errors.description)}
                 helperText={errors.description}
                 required
-                inputProps={{ maxLength: 1000 }}
+                slotProps={{ htmlInput: { maxLength: 1000 } }}
               />
 
               <Box>
@@ -311,8 +311,7 @@ function EditProject() {
                   direction="row"
                   spacing={1}
                   useFlexGap
-                  flexWrap="wrap"
-                  sx={{ mt: 2, maxWidth: "100%", overflowWrap: "anywhere" }}
+                  sx={{ flexWrap: "wrap", mt: 2, maxWidth: "100%", overflowWrap: "anywhere" }}
                 >
                   {skills.map((skill) => (
                     <Chip
@@ -338,7 +337,7 @@ function EditProject() {
                 onChange={handleChange}
                 error={Boolean(errors.capacity)}
                 helperText={errors.capacity}
-                inputProps={{ min: 1, step: 1 }}
+                slotProps={{ htmlInput: { min: 1, step: 1 } }}
                 required
               />
 
@@ -349,8 +348,7 @@ function EditProject() {
               <Stack
                 direction={{ xs: "column", sm: "row" }}
                 spacing={2}
-                justifyContent="flex-end"
-                sx={{ pt: 1 }}
+                sx={{ justifyContent: "flex-end", pt: 1 }}
               >
                 <Button
                   component={Link}

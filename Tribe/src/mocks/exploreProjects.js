@@ -47,7 +47,7 @@ const exploreProjects = [
     accepted: 2,
     openRoles: ['توسعه‌دهنده‌ی فرانت‌اند', 'توسعه‌دهنده‌ی بک‌اند'],
     status: 'open',
-    creator: { name: 'سارا محمدی', username: 'sara_mohamadi' },
+    creator: { name: 'سارا محمدی', username: 'sara_mohamadi'},
   },
   {
     id: 'project-5',

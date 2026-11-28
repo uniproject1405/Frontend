@@ -1,212 +1,74 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router";
-import {
-  AppBar,
-  Avatar,
-  Badge,
-  Box,
-  Container,
-  IconButton,
-  InputBase,
-  Toolbar,
-} from "@mui/material";
+import { NavLink, useLocation } from "react-router";
+import { Box, Container } from "@mui/material";
 
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
-import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
-import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
-import TribeLogo from "../components/TribeLogo";
+import { useNotifications } from "../services/notificationService";
+import { useChatList } from "../services/chatService";
+import { fa } from "../utils/fa";
 
-const colors = {
-  navy: "#071739",
-  blue: "#4B6382",
-  beige: "#A68868",
-  border: "#E9EDF2",
-  background: "#F3F7FC",
-};
+const NAVY = "#071739";
 
-// Only paths verified in the current project are links.
-// Do not guess teammates' route names: the other headings are display-only.
-const navigationItems = [
-  { label: "کاوش پروژه‌ها", path: null },
-  { label: "پروژه‌های من", path: "/my-projects" },
-  { label: "یافتن افراد", path: null },
-  { label: "تبادل مهارت", path: null },
-  { label: "راهنمای استفاده", path: null },
+const TABS = [
+  ["پروژه‌های من", "/my-projects", true],
+  ["ساخت پروژه", "/create-project"],
+  ["گفت‌وگو و مذاکره", "/chat", false, false, "chat"],
+  ["اعلان‌ها", "/notifications", false, true],
+  ["پروفایل", "/profile"],
 ];
 
-function DashboardLayout({ children, pageTitle = "داشبورد" }) {
-  const location = useLocation();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const isProjectsPage =
-    location.pathname.startsWith("/my-projects") ||
-    location.pathname === "/create-project";
-
-  const renderNavItem = (item, mobile = false) => {
-    const active = item.path === "/my-projects" && isProjectsPage;
-    const commonSx = {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: mobile ? "flex-start" : "center",
-      minHeight: mobile ? 42 : 40,
-      px: mobile ? 2 : { lg: 1.1, xl: 1.6 },
-      py: mobile ? 1 : 0.6,
-      borderRadius: "8px",
-      color: active ? colors.navy : "#53657A",
-      fontWeight: active ? 750 : 500,
-      fontSize: { xs: 13, lg: 12.5, xl: 13.5 },
-      textDecoration: "none",
-      whiteSpace: "nowrap",
-      backgroundColor: "transparent",
-      transition: "color .18s ease, background-color .18s ease",
-    };
-
-    if (!item.path) {
-      return (
-        <Box key={item.label} component="span" sx={{ ...commonSx, cursor: "default" }}>
-          {item.label}
-        </Box>
-      );
-    }
-
-    return (
-      <Box
-        key={item.label}
-        component={Link}
-        to={item.path}
-        aria-current={active ? "page" : undefined}
-        onClick={mobile ? () => setMobileMenuOpen(false) : undefined}
-        sx={{
-          ...commonSx,
-          cursor: "pointer",
-          "&:hover": { color: colors.navy, bgcolor: "#F4F6F9" },
-          ...(active ? { "&::after": mobile ? {} : {
-            content: '""', position: "absolute", bottom: 13, height: 2,
-            bgcolor: colors.beige, borderRadius: 2,
-          }} : {}),
-          position: "relative",
-        }}
-      >
-        {item.label}
-      </Box>
-    );
-  };
+// Signed-in shell: the same header + footer as the public pages, plus a light sub-nav.
+// (Replaces the old dark sidebar so the whole site looks like one app.)
+function DashboardLayout({ children }) {
+  const { unread } = useNotifications();
+  const { totalUnread } = useChatList();
+  const onChat = useLocation().pathname.startsWith("/chat");
 
   return (
-    <Box
-      dir="rtl"
-      sx={{
-        width: "100%",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        background:
-          "linear-gradient(135deg, #F5F9FD 0%, #EAF3FB 55%, #F3F7FC 100%)",
-        color: colors.navy,
-      }}
-    >
-      <AppBar
-        position="sticky"
-        elevation={0}
-        sx={{
-          bgcolor: "#FFFFFF",
-          color: colors.navy,
-          borderBottom: `1px solid ${colors.border}`,
-          boxShadow: "0 2px 12px rgba(7, 23, 57, 0.025)",
-        }}
-      >
-        <Toolbar
-          sx={{
-            minHeight: { xs: "66px !important", md: "78px !important" },
-            width: "100%",
-            maxWidth: "1536px",
-            mx: "auto",
-            boxSizing: "border-box",
-            px: { xs: 2, sm: 3, lg: 5, xl: 6 },
-            gap: { xs: 1, lg: 1.5, xl: 2 },
-          }}
-        >
-          {/* Compact Tribe brand, modeled on the supplied navbar reference. */}
-          <Box
-              component={Link}
-              to="/my-projects"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                textDecoration: "none",
-                flexShrink: 0,
-                mr: { xs: 0, lg: 2.5, xl: 4 },
-              }}
-            >
-              <TribeLogo />
-            </Box>
+    <Box sx={{ minHeight: "100vh", bgcolor: "#F4F6F8", display: "flex", flexDirection: "column" }}>
+      <SiteHeader />
 
-          {/* Full-width, flat desktop navigation: no sidebar or colored pill. */}
-          <Box component="nav" aria-label="منوی اصلی"
-            sx={{ display: { xs: "none", lg: "flex" }, alignItems: "center",
-              gap: { lg: 0, xl: 0.5 }, flexGrow: 1, minWidth: 0 }}>
-            {navigationItems.map((item) => renderNavItem(item))}
+      <Box sx={{ bgcolor: "#fff", borderBottom: "1px solid #E3E8EF" }}>
+        <Container maxWidth="lg">
+          <Box component="nav" aria-label="بخش‌های داشبورد" sx={{ display: "flex", gap: 0.5, overflowX: "auto", scrollbarWidth: "none" }}>
+            {TABS.map(([label, href, end, badge, kind]) => (
+              <Box
+                key={href}
+                component={NavLink}
+                to={href}
+                end={end}
+                sx={{
+                  px: 2, py: 1.5, flexShrink: 0, textDecoration: "none", fontSize: 15, color: "#4B6382",
+                  borderBottom: "2px solid transparent", whiteSpace: "nowrap",
+                  "&:hover": { color: NAVY },
+                  "&.active": { color: NAVY, fontWeight: 700, borderBottomColor: NAVY },
+                }}
+              >
+                {label}
+                {badge && unread > 0 && (
+                  <Box component="span" sx={{ ml: 1, px: 0.9, borderRadius: 10, bgcolor: "#B42318", color: "#fff", fontSize: 11, fontWeight: 700, lineHeight: "18px", display: "inline-block" }}>
+                    {unread > 99 ? "۹۹+" : fa(unread)}
+                  </Box>
+                )}
+                {kind === "chat" && totalUnread > 0 && (
+                  <Box component="span" sx={{ ml: 1, px: 0.9, borderRadius: 10, bgcolor: "#071739", color: "#E3C39D", fontSize: 11, fontWeight: 700, lineHeight: "18px", display: "inline-block" }}>
+                    {totalUnread > 99 ? "۹۹+" : fa(totalUnread)}
+                  </Box>
+                )}
+              </Box>
+            ))}
           </Box>
-
-          <Box sx={{ flexGrow: { xs: 1, lg: 0 } }} />
-
-          {/* Existing search, notifications and account remain visible. */}
-          <Box sx={{ display: "flex", alignItems: "center",
-            gap: { xs: 0.25, sm: 0.75, xl: 1.2 }, flexShrink: 0 }}>
-            <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center",
-              height: 36, width: { md: 115, xl: 158 }, gap: 0.7, px: 1,
-              border: `1px solid ${colors.border}`, bgcolor: "#FBFCFE", borderRadius: "8px" }}>
-              <SearchRoundedIcon sx={{ fontSize: 18, color: colors.blue }} />
-              <InputBase disabled placeholder="جست‌وجو..." inputProps={{ "aria-label": "جست‌وجو" }}
-                sx={{ width: "100%", fontSize: 11.5,
-                  "& .MuiInputBase-input.Mui-disabled": { WebkitTextFillColor: colors.blue, opacity: 0.65 } }} />
-            </Box>
-            <IconButton disabled aria-label="اعلان‌ها" sx={{
-              color: colors.navy,
-              "&.Mui-disabled": { color: colors.navy },
-            }}>
-              <Badge variant="dot" color="primary" invisible>
-                <NotificationsNoneRoundedIcon sx={{ fontSize: 22 }} />
-              </Badge>
-            </IconButton>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5,
-              pl: { xs: 0.3, sm: 1.2 }, borderLeft: { sm: `1px solid ${colors.border}` } }}>
-              <Avatar sx={{ width: 34, height: 34, bgcolor: "#E2EAF3", color: colors.navy,
-                border: "1px solid #D4DEE9", fontSize: 11, fontWeight: 700 }}>ک</Avatar>
-              <KeyboardArrowDownRoundedIcon sx={{ fontSize: 18, color: colors.blue,
-                display: { xs: "none", sm: "block" } }} />
-            </Box>
-            <IconButton
-              aria-label={mobileMenuOpen ? "بستن منو" : "باز کردن منو"}
-              aria-expanded={mobileMenuOpen}
-              onClick={() => setMobileMenuOpen((value) => !value)}
-              sx={{ display: { xs: "inline-flex", lg: "none" }, color: colors.navy }}
-            >
-              {mobileMenuOpen ? <CloseRoundedIcon /> : <MenuRoundedIcon />}
-            </IconButton>
-          </Box>
-        </Toolbar>
-        {mobileMenuOpen && (
-          <Box component="nav" aria-label="منوی موبایل"
-            sx={{ display: { xs: "flex", lg: "none" }, flexDirection: "column",
-              p: 1.5, bgcolor: "#FFFFFF", borderTop: `1px solid ${colors.border}` }}>
-            {navigationItems.map((item) => renderNavItem(item, true))}
-          </Box>
-        )}
-      </AppBar>
-
-      <Box component="main" aria-label={pageTitle}
-        sx={{ width: "100%", flex: 1, boxSizing: "border-box",
-          px: { xs: 2, sm: 3, md: 4, lg: 4 }, pt: { xs: 3.5, md: 4 }, pb: 6 }}>
-        <Container maxWidth={false} disableGutters sx={{ maxWidth: "1600px", mx: "auto" }}>
-          {children}
         </Container>
       </Box>
 
-      {/* Shared team footer, displayed below the page content. */}
-      <SiteFooter />
+      <Container maxWidth="lg" sx={{ py: 4, flex: 1 }}>
+        {children}
+      </Container>
+
+      {/* On a phone the chat fills the screen like a messaging app, so the footer is hidden there. */}
+      <Box sx={{ display: { xs: onChat ? "none" : "block", md: "block" } }}>
+        <SiteFooter />
+      </Box>
     </Box>
   );
 }

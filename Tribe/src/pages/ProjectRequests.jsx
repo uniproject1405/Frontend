@@ -1,319 +1,348 @@
-import { useCallback, useEffect, useState } from "react";
+
+import { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   Box,
   Button,
-  Card,
-  CardContent,
-  Chip,
   CircularProgress,
-  Divider,
   Stack,
+  Tab,
+  Tabs,
   Typography,
-} from "@mui/material";
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import PeopleOutlineRoundedIcon from "@mui/icons-material/PeopleOutlineRounded";
-import { Link, useParams } from "react-router";
+} from '@mui/material';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { Link, useParams } from 'react-router';
+
 import {
   getProjectById,
   getProjectRequests,
   updateRequestStatus,
-} from "../services/mockProjectService";
+} from '../services/mockProjectService';
 
-function ProjectRequests() {
-  const { projectId } = useParams();
-  const [project, setProject] = useState(null);
-  const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState("");
-  const [actionError, setActionError] = useState("");
-  const [actionMessage, setActionMessage] = useState("");
-  const [updatingId, setUpdatingId] = useState(null);
+import { directory } from '../mocks/owners';
+import { fa } from '../utils/fa';
 
-  const loadData = useCallback(async () => {
-    setLoading(true);
-    setLoadError("");
-    try {
-      const [projectData, requestData] = await Promise.all([
-        getProjectById(projectId),
-        getProjectRequests(projectId),
-      ]);
-      setProject(projectData);
-      if (!Array.isArray(requestData)) {
-        throw new Error("اطلاعات درخواست‌ها معتبر نیست.");
-      }
-      setRequests(requestData);
-    } catch (error) {
-      setLoadError(error.message || "بارگذاری درخواست‌های پروژه انجام نشد.");
-      setProject(null);
-      setRequests([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [projectId]);
+import JoinRequestCard from '../components/JoinRequestCard';
+import TeamGlance from '../components/TeamGlance';
+import DecisionToast from '../components/DecisionToast';
 
-  useEffect(() => {
-    let cancelled = false;
+const NAVY = '#071739';
 
-    Promise.all([getProjectById(projectId), getProjectRequests(projectId)])
-      .then(([projectData, requestData]) => {
-        if (cancelled) return;
-        if (!Array.isArray(requestData)) {
-          throw new Error("اطلاعات درخواست‌ها معتبر نیست.");
-        }
-        setProject(projectData);
-        setRequests(requestData);
-      })
-      .catch((error) => {
-        if (cancelled) return;
-        setLoadError(error.message || "بارگذاری درخواست‌های پروژه انجام نشد.");
-        setProject(null);
-        setRequests([]);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [projectId]);
-
-  async function handleRequestAction(requestId, nextStatus) {
-    if (updatingId !== null) return;
-    setUpdatingId(requestId);
-    setActionError("");
-    setActionMessage("");
-
-    try {
-      const updated = await updateRequestStatus(requestId, nextStatus);
-      setRequests((previous) =>
-        previous.map((request) =>
-          String(request.id) === String(updated.id) ? updated : request
-        )
-      );
-      setActionMessage(
-        nextStatus === "accepted"
-          ? "درخواست عضویت با موفقیت پذیرفته شد."
-          : "درخواست عضویت رد شد."
-      );
-    } catch (error) {
-      setActionError(error.message || "به‌روزرسانی درخواست انجام نشد.");
-    } finally {
-      setUpdatingId(null);
-    }
-  }
+function EmptyState({ tab, hasRequests }) {
+  const content = {
+    pending: hasRequests
+      ? ['درخواست در انتظاری وجود ندارد', 'همه درخواست‌های عضویت بررسی شده‌اند.']
+      : ['هنوز درخواستی دریافت نکرده‌اید', 'وقتی کسی برای عضویت در پروژه درخواست بدهد، اینجا نمایش داده می‌شود.'],
+    accepted: ['هنوز عضوی پذیرفته نشده است', 'درخواست‌های پذیرفته‌شده در این بخش نمایش داده می‌شوند.'],
+    rejected: ['درخواستی رد نشده است', 'درخواست‌هایی که رد می‌کنید در این بخش قرار می‌گیرند.'],
+  };
 
   return (
     <Box
       sx={{
-        width: "100%",
-        maxWidth: 1000,
-        mx: "auto",
-        minWidth: 0,
-        pb: 3,
-        "& .MuiButton-root": { borderRadius: "8px", textTransform: "none", fontWeight: 700 },
-        "& .MuiCard-root": { borderRadius: "16px", overflow: "hidden" },
-        "& .MuiAlert-root": { borderRadius: "8px" },
-        "& .MuiChip-root": { borderRadius: "8px" },
+        bgcolor: '#fff',
+        border: '1px solid #E3E8EF',
+        borderRadius: 3,
+        p: 4,
+        textAlign: 'center',
       }}
     >
+      <Typography color={NAVY} sx={{ fontWeight: 700, mb: 1 }}>
+        {content[tab][0]}
+      </Typography>
+      <Typography color="text.secondary" variant="body2">
+        {content[tab][1]}
+      </Typography>
+    </Box>
+  );
+}
+
+export default function ProjectRequests() {
+  const { projectId } = useParams();
+
+  const [project, setProject] = useState(null);
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
+  const [actionError, setActionError] = useState('');
+  const [tab, setTab] = useState('pending');
+  const [recent, setRecent] = useState(() => new Set());
+  const [busyId, setBusyId] = useState(null);
+  const [toast, setToast] = useState(null);
+
+  // Fetch and apply are split so the effect only sets state inside promise callbacks.
+  const loadData = useCallback(
+    () =>
+      Promise.all([getProjectById(projectId), getProjectRequests(projectId)])
+        .then(([projectData, requestData]) => {
+          if (!Array.isArray(requestData)) {
+            throw new Error('داده‌های درخواست‌ها نامعتبر است.');
+          }
+          setProject(projectData);
+          setRequests(requestData);
+        })
+        .catch((error) => {
+          setLoadError(error.message || 'بارگذاری درخواست‌ها ممکن نشد.');
+          setProject(null);
+          setRequests([]);
+        })
+        .finally(() => setLoading(false)),
+    [projectId],
+  );
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  const retry = () => {
+    setLoading(true);
+    setLoadError('');
+    loadData();
+  };
+
+  const accepted = requests.filter(
+    (request) => request.status === 'accepted'
+  ).length;
+
+  const pendingCount = requests.filter(
+    (request) => request.status === 'pending'
+  ).length;
+
+  const acceptedCount = accepted;
+
+  const rejectedCount = requests.filter(
+    (request) => request.status === 'rejected'
+  ).length;
+
+  const canAccept = project
+    ? accepted < Number(project.capacity)
+    : false;
+
+  const visibleRequests = requests
+    .filter((request) => {
+      if (tab === 'pending') {
+        return request.status === 'pending' || recent.has(request.id);
+      }
+
+      return request.status === tab;
+    })
+    .map((request) => {
+      const person = directory[request.userId] || {};
+
+      return {
+        ...request,
+        id: request.id,
+        name:
+          person.name ||
+          request.applicantName ||
+          request.userName ||
+          request.applicant?.name ||
+          'نام متقاضی نامشخص',
+        role: person.headline || '',
+        appliedAt: request.createdAt,
+        skills: Array.isArray(person.skills) ? person.skills : [],
+        message: request.message || '',
+      };
+    });
+
+  async function handleDecision(request, decision) {
+    if (busyId !== null) return;
+
+    setBusyId(request.id);
+    setActionError('');
+
+    try {
+      const updated = await updateRequestStatus(request.id, decision);
+
+      setRequests((previous) =>
+        previous.map((item) =>
+          String(item.id) === String(updated.id) ? updated : item
+        )
+      );
+
+      setRecent((previous) => new Set([...previous, request.id]));
+
+      setToast({
+        title:
+          decision === 'accepted'
+            ? 'درخواست پذیرفته شد'
+            : 'درخواست رد شد',
+        text:
+          decision === 'accepted'
+            ? `درخواست ${request.name} با موفقیت پذیرفته شد.`
+            : `درخواست ${request.name} رد شد.`,
+      });
+    } catch (error) {
+      setActionError(
+        error.message || 'ثبت تصمیم انجام نشد. دوباره تلاش کنید.'
+      );
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  return (
+    <Box sx={{ width: '100%', maxWidth: 1200, mx: 'auto', pb: 4 }}>
+      <DecisionToast
+        toast={toast}
+        onClose={() => setToast(null)}
+      />
+
       <Button
         component={Link}
-        to="/my-projects"
-        startIcon={<ArrowBackRoundedIcon />}
-        sx={{ mb: 2.5, px: 1.5 }}
+        to="/my-projects?tab=review"
+        startIcon={<ArrowForwardIcon />}
+        sx={{
+          mb: 3,
+          color: NAVY,
+          fontWeight: 700,
+        }}
       >
-        بازگشت به پروژه‌های من
+        بازگشت به درخواست‌های بررسی
       </Button>
 
-      <Stack spacing={1.5} sx={{ mb: 3 }}>
+      <Box sx={{ mb: 4 }}>
         <Typography
           component="h1"
           sx={{
-            fontSize: { xs: 30, sm: 34, md: 38 },
+            fontSize: { xs: 26, sm: 32 },
             fontWeight: 800,
-            letterSpacing: "-1px",
-            lineHeight: 1.2,
-            color: "#071739",
+            color: NAVY,
+            mb: 1,
           }}
         >
-          درخواست‌های عضویت پروژه
+          بررسی درخواست‌های عضویت
         </Typography>
-        {project?.title && (
-          <Chip
-            label={project.title}
-            size="small"
-            sx={{
-              alignSelf: "flex-start",
-              maxWidth: "100%",
-              bgcolor: "#E8EEF3",
-              color: "#4B6382",
-              fontWeight: 700,
-              "& .MuiChip-label": {
-                display: "block",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              },
-            }}
-          />
-        )}
-      </Stack>
+
+        <Typography color="text.secondary">
+          {project?.title || 'درخواست‌های عضویت پروژه'}
+        </Typography>
+
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          mt={1}
+          lineHeight={2}
+        >
+          درخواست‌های عضویت را بررسی کنید و هم‌تیمی‌های مناسب را به پروژه خود اضافه کنید.
+        </Typography>
+      </Box>
 
       {loading && (
-        <Card>
-          <CardContent
-            sx={{
-              py: 8,
-              display: "grid",
-              placeItems: "center",
-              gap: 2,
-            }}
-          >
-            <CircularProgress aria-label="در حال بارگذاری درخواست‌های پروژه" />
-            <Typography color="text.secondary">در حال بارگذاری درخواست‌ها...</Typography>
-          </CardContent>
-        </Card>
+        <Box
+          sx={{
+            minHeight: 250,
+            display: 'grid',
+            placeItems: 'center',
+          }}
+        >
+          <Stack spacing={2} sx={{ alignItems: "center" }}>
+            <CircularProgress />
+            <Typography color="text.secondary">
+              در حال بارگذاری درخواست‌ها...
+            </Typography>
+          </Stack>
+        </Box>
       )}
 
       {!loading && loadError && (
         <Stack spacing={2}>
           <Alert severity="error">{loadError}</Alert>
           <Button
-            onClick={loadData}
             variant="outlined"
-            sx={{ alignSelf: "flex-start", borderColor: "#4B6382", color: "#071739" }}
+            onClick={retry}
+            sx={{ alignSelf: 'flex-start' }}
           >
-            تلاش مجدد
+            تلاش دوباره
           </Button>
         </Stack>
       )}
 
-      {!loading && !loadError && (
-        <Stack spacing={2.5}>
-          {actionMessage && <Alert severity="success">{actionMessage}</Alert>}
-          {actionError && <Alert severity="error">{actionError}</Alert>}
+      {!loading && !loadError && project && (
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: 'minmax(0, 1fr)',
+              md: 'minmax(0, 2fr) minmax(260px, 1fr)',
+            },
+            gap: 3,
+            alignItems: 'start',
+          }}
+        >
+          <Box sx={{ minWidth: 0 }}>
+            <Box
+              sx={{
+                borderBottom: '1px solid #E3E8EF',
+                mb: 3,
+              }}
+            >
+              <Tabs
+                value={tab}
+                onChange={(_, value) => setTab(value)}
+                variant="scrollable"
+                scrollButtons="auto"
+                sx={{
+                  '& .MuiTab-root': {
+                    fontWeight: 700,
+                    minWidth: 'auto',
+                  },
+                  '& .Mui-selected': {
+                    color: NAVY,
+                  },
+                  '& .MuiTabs-indicator': {
+                    bgcolor: NAVY,
+                  },
+                }}
+              >
+                <Tab
+                  value="pending"
+                  label={`در انتظار (${fa(pendingCount)})`}
+                />
+                <Tab
+                  value="accepted"
+                  label={`پذیرفته‌شده (${fa(acceptedCount)})`}
+                />
+                <Tab
+                  value="rejected"
+                  label={`ردشده (${fa(rejectedCount)})`}
+                />
+              </Tabs>
+            </Box>
 
-          {requests.length === 0 ? (
-            <Card>
-              <CardContent sx={{ p: { xs: 3, md: 5 }, minHeight: 280, display: "grid", placeItems: "center" }}>
-                <Stack spacing={2} alignItems="center" textAlign="center" sx={{ py: 3, maxWidth: 490 }}>
-                  <Box
-                    sx={{
-                      width: 56,
-                      height: 56,
-                      display: "grid",
-                      placeItems: "center",
-                      bgcolor: "#F0F3F8",
-                      borderRadius: "16px",
-                    }}
-                  >
-                    <PeopleOutlineRoundedIcon
-                      sx={{ fontSize: 28, color: "#4B6382" }}
-                    />
-                  </Box>
-                  <Typography variant="h6">هنوز درخواست عضویتی ثبت نشده است</Typography>
-                  <Typography color="text.secondary">
-                    درخواست‌های مربوط به این پروژه در این بخش نمایش داده می‌شوند.
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    هر زمان فردی برای عضویت در پروژه درخواست ارسال کند، درخواست او در این بخش نمایش داده می‌شود.
-                  </Typography>
-                </Stack>
-              </CardContent>
-            </Card>
-          ) : (
-            requests.map((request) => {
-              const status = request.status || "unknown";
-              const applicantName =
-                request.applicantName ||
-                request.userName ||
-                request.applicant?.name ||
-                "نام متقاضی در دسترس نیست";
-              const isPending = status === "pending";
-              const statusLabel = {
-                pending: "در انتظار بررسی",
-                accepted: "پذیرفته‌شده",
-                rejected: "ردشده",
-              }[status] || "نامشخص";
-              const isUpdating = updatingId !== null;
+            {actionError && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {actionError}
+              </Alert>
+            )}
 
-              return (
-                <Card key={request.id}>
-                  <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                    <Stack spacing={2}>
-                      <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        justifyContent="space-between"
-                        alignItems={{ xs: "flex-start", sm: "center" }}
-                        spacing={1}
-                      >
-                        <Typography
-                          variant="h6"
-                          sx={{ overflowWrap: "anywhere", color: "#071739", fontWeight: 700 }}
-                        >
-                          {applicantName}
-                        </Typography>
-                        <Chip
-                          label={statusLabel}
-                          size="small"
-                          color={
-                            status === "accepted"
-                              ? "success"
-                              : status === "rejected"
-                                ? "error"
-                                : "default"
-                          }
-                          variant="outlined"
-                        />
-                      </Stack>
+            {visibleRequests.length === 0 ? (
+              <EmptyState
+                tab={tab}
+                hasRequests={requests.length > 0}
+              />
+            ) : (
+              <Stack spacing={2}>
+                {visibleRequests.map((request) => (
+                  <JoinRequestCard
+                    key={request.id}
+                    request={request}
+                    busy={busyId === request.id}
+                    canAccept={canAccept}
+                    onDecide={handleDecision}
+                  />
+                ))}
+              </Stack>
+            )}
+          </Box>
 
-                      {request.message && (
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          sx={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}
-                        >
-                          {request.message}
-                        </Typography>
-                      )}
-
-                      <Divider />
-
-                      <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        spacing={1.5}
-                        sx={{ pt: 0.5 }}
-                      >
-                        <Button
-                          variant="contained"
-                          color="success"
-                          sx={{ px: 3, minWidth: 100 }}
-                          disabled={!isPending || isUpdating}
-                          onClick={() => handleRequestAction(request.id, "accepted")}
-                        >
-                          {updatingId === request.id ? "در حال ثبت..." : "پذیرفتن"}
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          sx={{ px: 3, minWidth: 100 }}
-                          disabled={!isPending || isUpdating}
-                          onClick={() => handleRequestAction(request.id, "rejected")}
-                        >
-                          رد درخواست
-                        </Button>
-                      </Stack>
-                    </Stack>
-                  </CardContent>
-                </Card>
-              );
-            })
-          )}
-        </Stack>
+          <TeamGlance
+            capacity={Number(project.capacity) || 0}
+            accepted={accepted}
+            hasRequests={requests.length > 0}
+          />
+        </Box>
       )}
     </Box>
   );
 }
-
-export default ProjectRequests;

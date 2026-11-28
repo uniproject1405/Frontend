@@ -1,169 +1,102 @@
 
 import { createTheme } from "@mui/material/styles";
 
-// Tribe Design System
-const colors = {
-  navy: "#071739",
-  navyHover: "#123C62",
-  blue: "#4B6382",
-  mutedBlue: "#A4B5C4",
-  border: "#D6E0ED",
-  brown: "#A68868",
-  beige: "#E3C39D",
-  canvas: "#F3F7FC",
-  white: "#FFFFFF",
-};
-
 const tribeTheme = createTheme({
   direction: "rtl",
-
   palette: {
     mode: "light",
 
     primary: {
-      main: colors.navy,
-      light: colors.blue,
+      main: "#071739",
+      light: "#4B6382",
       dark: "#050F26",
-      contrastText: colors.white,
+      contrastText: "#FFFFFF",
     },
 
     secondary: {
-      main: colors.brown,
-      light: colors.beige,
+      main: "#A68868",
+      light: "#E3C39D",
       dark: "#786045",
-      contrastText: colors.white,
+      contrastText: "#FFFFFF",
     },
 
     background: {
-      default: colors.canvas,
-      paper: colors.white,
+      default: "#F5F8FA",
+      paper: "#FFFFFF",
     },
 
     text: {
-      primary: colors.navy,
-      secondary: colors.blue,
+      primary: "#071739",
+      secondary: "#4B6382",
     },
 
-    divider: colors.border,
-    error: { main: "#B42318" },
-    success: { main: "#14866D" },
+    divider: "#CDD5DB",
+
+    error: {
+      main: "#B42318",
+    },
   },
 
   typography: {
-    
     fontFamily: '"Vazirmatn", "Segoe UI", Arial, sans-serif',
 
     h4: {
-      fontWeight: 750,
+      fontWeight: 700,
       letterSpacing: "-0.8px",
     },
 
     h5: {
-      fontWeight: 750,
-      letterSpacing: "-0.6px",
+      fontWeight: 700,
+      letterSpacing: "-0.5px",
     },
 
     h6: {
-      fontWeight: 700,
-      letterSpacing: "-0.3px",
-    },
-
-    subtitle1: {
       fontWeight: 600,
     },
 
     button: {
-      fontWeight: 650,
+      fontWeight: 600,
       textTransform: "none",
-      letterSpacing: 0,
     },
   },
 
+  
   shape: {
-    borderRadius: 12,
+    borderRadius: 8,
   },
 
   components: {
-    MuiCssBaseline: {
-      styleOverrides: {
-        body: {
-          backgroundColor: colors.canvas,
-          color: colors.navy,
-          WebkitFontSmoothing: "antialiased",
-        },
-      },
-    },
-
-    // Modern buttons
+    // Flex gap is direction-neutral; margin-based spacing lands on the wrong side
+    // when a Stack sits inside an LTR box (the RTL plugin flips the margins).
+    MuiStack: { defaultProps: { useFlexGap: true } },
     MuiButton: {
       styleOverrides: {
-        root: {
-          minHeight: 42,
-          borderRadius: 12,
-          padding: "9px 20px",
+        root: ({ theme }) => ({
+          borderRadius: theme.shape.borderRadius,
+          padding: "10px 20px",
           boxShadow: "none",
           textTransform: "none",
-          transition:
-            "background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease",
 
           "&:hover": {
             boxShadow: "none",
           },
-        },
-
-        containedPrimary: {
-          background:
-            "linear-gradient(135deg, #164E7C 0%, #071739 100%)",
-          boxShadow: "0 5px 15px rgba(7, 23, 57, 0.13)",
-
-          "&:hover": {
-            background:
-              "linear-gradient(135deg, #215D90 0%, #102B50 100%)",
-            boxShadow: "0 7px 18px rgba(7, 23, 57, 0.17)",
-          },
-        },
-
-        containedSecondary: {
-          backgroundColor: colors.brown,
-
-          "&:hover": {
-            backgroundColor: "#937253",
-          },
-        },
-
-        outlined: {
-          borderColor: colors.border,
-
-          "&:hover": {
-            borderColor: colors.mutedBlue,
-            backgroundColor: "#F5F8FD",
-          },
-        },
+        }),
+        // Logical margins follow the text direction, so the icon never glues to the label.
+        startIcon: { marginLeft: 0, marginRight: 0, marginInlineStart: -4, marginInlineEnd: 8 },
+        endIcon: { marginLeft: 0, marginRight: 0, marginInlineStart: 8, marginInlineEnd: -4 },
       },
     },
 
-    // Project cards
     MuiCard: {
       styleOverrides: {
-        root: {
-          borderRadius: 16,
-          border: `1px solid ${colors.border}`,
-          backgroundImage: "none",
-          boxShadow:
-            "0 9px 28px rgba(24, 53, 88, 0.055)",
-        },
+        root: ({ theme }) => ({
+          borderRadius: theme.shape.borderRadius * 2,
+          border: "1px solid #CDD5DB",
+          boxShadow: "0 8px 32px rgba(7, 23, 57, 0.05)",
+        }),
       },
     },
 
-    MuiPaper: {
-      styleOverrides: {
-        rounded: {
-          borderRadius: 16,
-        },
-      },
-    },
-
-    // Form fields
     MuiTextField: {
       defaultProps: {
         variant: "outlined",
@@ -173,91 +106,22 @@ const tribeTheme = createTheme({
 
     MuiOutlinedInput: {
       styleOverrides: {
-        root: {
-          borderRadius: 12,
-          backgroundColor: "#FBFCFF",
-          transition:
-            "background-color 180ms ease, box-shadow 180ms ease",
-
-          "& .MuiOutlinedInput-notchedOutline": {
-            borderColor: colors.border,
-          },
-
-          "&:hover .MuiOutlinedInput-notchedOutline": {
-            borderColor: colors.mutedBlue,
-          },
-
-          "&.Mui-focused": {
-            backgroundColor: colors.white,
-            boxShadow:
-              "0 0 0 3px rgba(75, 99, 130, 0.10)",
-          },
-
-          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            borderColor: colors.blue,
-            borderWidth: 1.5,
-          },
-        },
-
-        input: {
-          padding: "13px 15px",
-        },
-      },
-    },
-
-    MuiInputLabel: {
-      styleOverrides: {
-        root: {
-          color: colors.blue,
-          fontWeight: 500,
-        },
+        root: ({ theme }) => ({
+          borderRadius: theme.shape.borderRadius,
+          backgroundColor: "#FFFFFF",
+        }),
       },
     },
 
     MuiChip: {
       styleOverrides: {
-        root: {
-          borderRadius: 9,
-          fontWeight: 600,
-        },
-      },
-    },
-
-    // Create Project modal
-    // Scoped to avoid changing other dialogs.
-    MuiDialog: {
-      styleOverrides: {
-        root: {
-          "&.tribe-create-project-dialog .MuiBackdrop-root": {
-            backgroundColor: "rgba(10, 25, 49, 0.58)",
-            backdropFilter: "blur(7px)",
-            WebkitBackdropFilter: "blur(7px)",
-          },
-
-          "&.tribe-create-project-dialog .MuiDialog-paper": {
-            width: "min(860px, calc(100% - 24px))",
-            maxWidth: "none",
-            maxHeight: "min(90vh, 850px)",
-            margin: 12,
-            borderRadius: 26,
-            overflow: "hidden",
-            border:
-              "1px solid rgba(255, 255, 255, 0.8)",
-            boxShadow:
-              "0 28px 90px rgba(4, 18, 42, 0.28)",
-            backgroundColor: colors.white,
-          },
-
-          "@media (max-width: 600px)": {
-            "&.tribe-create-project-dialog .MuiDialog-paper": {
-              borderRadius: 18,
-              maxHeight: "calc(100dvh - 24px)",
-            },
-          },
-        },
+        root: ({ theme }) => ({
+          borderRadius: theme.shape.borderRadius,
+        }),
       },
     },
   },
+
 });
 
 export default tribeTheme;

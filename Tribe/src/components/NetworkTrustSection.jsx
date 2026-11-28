@@ -85,7 +85,7 @@ const notes = {
   bahram: {
     title: "بهرام کیانی",
     lines: [
-      "سامان احمدی — فانتوم — تعلیقی که می‌شود خواند",
+      "سامان احمدی — فانتوم — داستان معمایی تعاملی",
       "مریم کاویانی — سیگنال — یادداشت‌های هفتگی مهندسی",
     ],
   },
@@ -164,9 +164,9 @@ export default function NetworkTrustSection() {
             display: "grid",
             gridTemplateColumns: {
               xs: "1fr",
-              md: "320px minmax(0, 1fr)",
+              md: "minmax(0, 1fr) 320px",
             },
-            columnGap: { xs: 3, md: "120px", xl: "450px" },
+            columnGap: { xs: 3, md: 8, lg: 12 },
             rowGap: { xs: 3, md: 4 },
             width: "100%",
             alignItems: "center",
@@ -176,7 +176,7 @@ export default function NetworkTrustSection() {
           <Box
             onMouseLeave={() => setActiveId(null)}
             sx={{
-              order: { xs: 2, md: 1 },
+              order: { xs: 2, md: 2 },
               position: "relative",
               width: { xs: "min(100%, 290px)", sm: 310, md: 320 },
               aspectRatio: "1 / 1",
@@ -322,15 +322,11 @@ export default function NetworkTrustSection() {
           <Box
             dir="rtl"
             sx={{
-              order: { xs: 1, md: 2 },
-              direction: "rtl",
-              textAlign: "right",
+              order: { xs: 1, md: 1 },
               unicodeBidi: "plaintext",
               width: "100%",
               minWidth: 0,
               "& .MuiTypography-root": {
-                direction: "rtl",
-                textAlign: "right",
                 unicodeBidi: "plaintext",
                 width: "100%",
               },
@@ -357,9 +353,9 @@ export default function NetworkTrustSection() {
                 mb: 1.5,
               }}
             >
-              هیچ‌کس اینجا غریبه وارد
+              اینجا هیچ‌کس
               <br />
-              نمی‌شود.
+              غریبه نیست.
             </Typography>
 
             <Typography
@@ -371,8 +367,8 @@ export default function NetworkTrustSection() {
                 mb: 2.5,
               }}
             >
-              هر خط یعنی پروژه‌ای که دو عضو با هم ساخته‌اند. روی هر چهره برو تا
-              ببینی با چه کسانی کار کرده، بعد از یکی از آن‌ها معرفی بگیر.
+              هر خط یعنی پروژه‌ای که دو عضو با هم ساخته‌اند. نشانگر را روی هر چهره ببرید تا
+              ببینید با چه کسانی کار کرده است، سپس از یکی از آن‌ها بخواهید شما را معرفی کند.
             </Typography>
 
             <Box
@@ -381,12 +377,8 @@ export default function NetworkTrustSection() {
                 border: `1px solid ${COLORS.border}`,
                 borderRadius: "22px",
                 bgcolor: "#FCFDFF",
-                direction: "rtl",
-                textAlign: "right",
                 unicodeBidi: "plaintext",
                 "& .MuiTypography-root": {
-                  direction: "rtl",
-                  textAlign: "right",
                   unicodeBidi: "plaintext",
                   width: "100%",
                 },

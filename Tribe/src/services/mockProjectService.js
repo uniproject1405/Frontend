@@ -1,114 +1,169 @@
-// Mock adapter. Keep the same contract as the future API adapter.
+
+import initialProjects from "../mocks/projects";
+import { applySeed } from "../mocks/seedData";
+import { emitChange } from "./store";
+
 const PROJECTS_KEY = "tribe_projects";
 const REQUESTS_KEY = "tribe_project_requests";
-const MOCK_USER_KEY = "tribe_mock_user_id";
 
-function createId() {
-  return globalThis.crypto?.randomUUID?.() || `mock-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-}
-
-// Temporary identity for local development only. Replace this adapter with the
-// authenticated user's stable ID when the real auth/API is integrated.
-function getMockUserId() {
-  let userId = localStorage.getItem(MOCK_USER_KEY);
-  if (!userId) {
-    userId = createId();
-    localStorage.setItem(MOCK_USER_KEY, userId);
-  }
-  return userId;
-}
-
+// Read data from LocalStorage
 function readStorage(key, fallback) {
   try {
     const saved = localStorage.getItem(key);
-    if (!saved) return fallback;
-    const parsed = JSON.parse(saved);
-    return Array.isArray(parsed) ? parsed : fallback;
+    return saved ? JSON.parse(saved) : fallback;
   } catch {
     return fallback;
   }
 }
 
+// Save data to LocalStorage
 function writeStorage(key, data) {
   localStorage.setItem(key, JSON.stringify(data));
+  emitChange();
+}
+
+// Initialize projects
+function initializeProjects() {
+  const existing = localStorage.getItem(PROJECTS_KEY);
+
+  if (!existing) {
+    writeStorage(PROJECTS_KEY, initialProjects);
+  }
 }
 
 function getProjects() {
-  // Intentionally start empty: new users must not inherit demo projects.
-  return readStorage(PROJECTS_KEY, []);
+  initializeProjects();
+  return readStorage(PROJECTS_KEY, initialProjects);
 }
 
 function getRequests() {
   return readStorage(REQUESTS_KEY, []);
 }
 
-export async function getMyProjects({ signal } = {}) {
-  if (signal?.aborted) throw new DOMException("Request aborted", "AbortError");
-  const ownerId = getMockUserId();
-  return getProjects().filter((project) => String(project.ownerId) === String(ownerId));
+// GET all projects
+export async function getMyProjects() {
+  return getProjects();
 }
 
+// GET one project
 export async function getProjectById(projectId) {
-  const project = getProjects().find((item) => String(item.id) === String(projectId));
-  if (!project) throw new Error("پروژه موردنظر پیدا نشد.");
+  const projects = getProjects();
+
+  const project = projects.find(
+    (item) => String(item.id) === String(projectId)
+  );
+
+  if (!project) {
+    throw new Error("پروژه پیدا نشد.");
+  }
+
   return project;
 }
 
+// CREATE project
 export async function createProject(projectData) {
   const projects = getProjects();
-  const now = new Date().toISOString();
+
   const newProject = {
     ...projectData,
-    id: createId(),
-    ownerId: getMockUserId(),
-    status: projectData.status || "open",
-    createdAt: now,
-    updatedAt: now,
+    id: crypto.randomUUID(),
+    status: "open",
+    createdAt: new Date().toISOString(),
   };
+
   writeStorage(PROJECTS_KEY, [...projects, newProject]);
+
   return newProject;
 }
 
+// UPDATE project
 export async function updateProject(projectId, updates) {
   const projects = getProjects();
-  const ownerId = getMockUserId();
-  const index = projects.findIndex((item) =>
-    String(item.id) === String(projectId) && String(item.ownerId) === String(ownerId)
+
+  const index = projects.findIndex(
+    (item) => String(item.id) === String(projectId)
   );
-  if (index === -1) throw new Error("پروژه موردنظر پیدا نشد یا متعلق به شما نیست.");
+
+  if (index === -1) {
+    throw new Error("پروژه پیدا نشد.");
+  }
+
   const updatedProject = {
-    ...projects[index], ...updates, id: projects[index].id, ownerId,
+    ...projects[index],
+    ...updates,
+    id: projects[index].id,
     updatedAt: new Date().toISOString(),
   };
+
   const updatedProjects = [...projects];
   updatedProjects[index] = updatedProject;
+
   writeStorage(PROJECTS_KEY, updatedProjects);
+
   return updatedProject;
 }
 
+// CLOSE project
 export async function closeProject(projectId) {
-  return updateProject(projectId, { status: "closed" });
+  return updateProject(projectId, {
+    status: "closed",
+  });
 }
 
+// GET project requests
 export async function getProjectRequests(projectId) {
-  return getRequests().filter((request) => String(request.projectId) === String(projectId));
+  return getRequests().filter(
+    (request) => String(request.projectId) === String(projectId)
+  );
 }
 
+// UPDATE request status
 export async function updateRequestStatus(requestId, status) {
   const allowedStatuses = ["pending", "accepted", "rejected"];
-  if (!allowedStatuses.includes(status)) throw new Error("وضعیت درخواست معتبر نیست.");
+
+  if (!allowedStatuses.includes(status)) {
+    throw new Error("وضعیت درخواست نامعتبر است.");
+  }
+
   const requests = getRequests();
-  const index = requests.findIndex((request) => String(request.id) === String(requestId));
-  if (index === -1) throw new Error("درخواست موردنظر پیدا نشد.");
-  const updatedRequest = { ...requests[index], status };
+
+  const index = requests.findIndex(
+    (request) => String(request.id) === String(requestId)
+  );
+
+  if (index === -1) {
+    throw new Error("درخواست پیدا نشد.");
+  }
+
+  if (status === "accepted" && requests[index].status !== "accepted") {
+    const project = getProjects().find(
+      (item) => String(item.id) === String(requests[index].projectId)
+    );
+    const taken = requests.filter(
+      (request) =>
+        String(request.projectId) === String(requests[index].projectId) &&
+        request.status === "accepted"
+    ).length;
+    if (project && taken >= project.capacity) {
+      throw new Error("ظرفیت این پروژه تکمیل است. جای خالی وجود ندارد.");
+    }
+  }
+
+  const updatedRequest = {
+    ...requests[index],
+    status,
+  };
+
   const updatedRequests = [...requests];
   updatedRequests[index] = updatedRequest;
+
   writeStorage(REQUESTS_KEY, updatedRequests);
+
   return updatedRequest;
 }
 
-// Development helper. Resets data to an empty state, not demo seed records.
+// Reset mock data for development
 export async function resetMockData() {
-  writeStorage(PROJECTS_KEY, []);
-  writeStorage(REQUESTS_KEY, []);
+  applySeed();
+  emitChange();
 }

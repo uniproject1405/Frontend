@@ -12,6 +12,7 @@ import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
 import { createProject } from "../services/projectService";
 import { validateProject, validateProjectStep } from "../utils/projectValidation";
+import { fa } from "../utils/fa";
 
 const EMPTY = { title: "", goal: "", description: "", requiredSkills: "", capacity: "" };
 const STEPS = ["اطلاعات پایه", "معرفی پروژه", "تیم و مهارت‌ها", "بازبینی"];
@@ -93,8 +94,11 @@ function CreateProject({ open = true, onClose, onCreated }) {
   }
 
   function addSkill(raw = skillInput) {
-    const value = raw.trim();
-    if (!value) return;
+    const value = raw.replace(/[,،]/g, "").trim();
+    if (!value) {
+      setSkillInput("");
+      return;
+    }
     const updated = skills.some((skill) => skill.toLowerCase() === value.toLowerCase())
       ? skills : [...skills, value];
     setSkills(updated);
@@ -121,7 +125,7 @@ function CreateProject({ open = true, onClose, onCreated }) {
   async function next(event) {
     event.preventDefault();
     if (submitting) return;
-    const pending = skillInput.trim();
+    const pending = skillInput.replace(/[,،]/g, "").trim();
     const finalSkills = [...skills];
     if (pending && !finalSkills.some((s) => s.toLowerCase() === pending.toLowerCase())) {
       finalSkills.push(pending);
@@ -158,7 +162,7 @@ function CreateProject({ open = true, onClose, onCreated }) {
         value={form[name]}
         onChange={change}
         error={Boolean(errors[name])}
-        helperText={errors[name] || `${form[name].length}/${limit} کاراکتر`}
+        helperText={errors[name] || `${fa(form[name].length)}/${fa(limit)} کاراکتر`}
         inputRef={(node) => { refs.current[name] = node; }}
         slotProps={{ htmlInput: { maxLength: limit } }}
         required
@@ -228,7 +232,7 @@ function CreateProject({ open = true, onClose, onCreated }) {
                 <Box sx={{ width: 34, height: 34, borderRadius: "50%", display: "grid", placeItems: "center",
                   fontWeight: 700, fontSize: 13, border: index <= step ? "none" : `1px solid ${BORDER}`,
                   bgcolor: index <= step ? NAVY : SOFT, color: index <= step ? "white" : "#7E91A6" }}>
-                  {index < step ? <CheckRoundedIcon fontSize="small" /> : index + 1}
+                  {index < step ? <CheckRoundedIcon fontSize="small" /> : fa(index + 1)}
                 </Box>
                 <Typography sx={{ fontSize: { xs: 9, sm: 11.5 }, fontWeight: index === step ? 700 : 500,
                   color: index === step ? NAVY : BLUE, textAlign: "center" }}>{label}</Typography>
@@ -291,7 +295,7 @@ function CreateProject({ open = true, onClose, onCreated }) {
                   <TextField id="project-skills" placeholder="نام مهارت را وارد کنید"
                     value={skillInput} onChange={(e) => { setSkillInput(e.target.value);
                       setErrors((old) => ({ ...old, requiredSkills: "" })); }}
-                    onKeyDown={(e) => { if (["Enter", ","].includes(e.key)) { e.preventDefault(); addSkill(); }
+                    onKeyDown={(e) => { if (["Enter", ",", "،"].includes(e.key)) { e.preventDefault(); addSkill(); }
                       if (e.key === "Backspace" && !skillInput && skills.length) removeSkill(skills.at(-1)); }}
                     onBlur={() => addSkill()} inputRef={(node) => { refs.current.requiredSkills = node; }}
                     error={Boolean(errors.requiredSkills)} helperText={errors.requiredSkills || "برای افزودن مهارت، کلید Enter را فشار دهید"}
@@ -347,7 +351,7 @@ function CreateProject({ open = true, onClose, onCreated }) {
               </>}
               {step === 3 && <Box sx={{ p: { xs: 2, sm: 2.5 }, bgcolor: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: 2 }}>
                 {[["عنوان پروژه", form.title], ["هدف پروژه", form.goal], ["توضیحات", form.description],
-                  ["مهارت‌های موردنیاز", skills.join("، ")], ["ظرفیت تیم", form.capacity]].map(([label, value], index) => (
+                  ["مهارت‌های موردنیاز", skills.join("، ")], ["ظرفیت تیم", form.capacity ? `${fa(form.capacity)} عضو` : ""]].map(([label, value], index) => (
                   <Box key={label} sx={{ py: 1.1, borderBottom: index === 4 ? 0 : `1px solid ${BORDER}` }}>
                     <Typography sx={{ fontSize: 11, color: BLUE, fontWeight: 600 }}>{label}</Typography>
                     <Typography sx={{ fontSize: 13.5, color: NAVY, mt: .3, whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>
@@ -365,11 +369,11 @@ function CreateProject({ open = true, onClose, onCreated }) {
               sx={{ mr: "auto", color: NAVY, borderColor: BORDER, borderRadius: "9px",
                 fontSize: 13, "&:hover": { bgcolor: SOFT, borderColor: "#A4B5C4" } }}>انصراف</Button>
             {step > 0 && <Button type="button" onClick={() => { setStep(step - 1); setErrors({}); setMessage(""); }}
-              startIcon={<ArrowBackRoundedIcon />} variant="outlined"
+              startIcon={<ArrowForwardRoundedIcon />} variant="outlined"
               sx={{ color: NAVY, borderColor: BORDER, borderRadius: "9px", fontSize: 13,
                 "&:hover": { bgcolor: SOFT, borderColor: "#A4B5C4" } }}>قبلی</Button>}
             <Button type="submit" variant="contained" disabled={submitting}
-              endIcon={step === 3 ? <AutoAwesomeRoundedIcon /> : <ArrowForwardRoundedIcon />}
+              endIcon={step === 3 ? <AutoAwesomeRoundedIcon /> : <ArrowBackRoundedIcon />}
               sx={{ minWidth: { xs: 100, sm: 135 }, borderRadius: "9px", bgcolor: NAVY, fontSize: 13,
                 "&:hover": { bgcolor: "#14285A" } }}>
               {submitting ? "در حال ایجاد..." : step === 3 ? "ایجاد پروژه" : "بعدی"}

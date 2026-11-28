@@ -39,7 +39,7 @@ function CloseProjectDialog({
       aria-labelledby="close-project-dialog-title"
     >
       <DialogTitle id="close-project-dialog-title">
-        <Stack direction="row" alignItems="center" spacing={2}>
+        <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
           <Box
             sx={{
               width: 44,
